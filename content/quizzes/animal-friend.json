@@ -1,0 +1,239 @@
+{
+  "$schema": "typelog/quiz/v1",
+  "mode": "upsert",
+  "quiz": {
+    "slug": "animal-friend",
+    "title": "나와 가까운 동물은?",
+    "tagline": "열 가지 질문으로 찾는 나의 동물 친구",
+    "category": "animal",
+    "ageRange": { "min": 6, "max": 12 },
+    "cover": { "emoji": "🐾", "imageUrl": null },
+    "order": 20
+  },
+  "outcomes": [
+    { "id": "lion", "kind": "tally", "label": "사자" },
+    { "id": "rabbit", "kind": "tally", "label": "토끼" },
+    { "id": "dolphin", "kind": "tally", "label": "돌고래" },
+    { "id": "owl", "kind": "tally", "label": "부엉이" },
+    { "id": "fox", "kind": "tally", "label": "여우" },
+    { "id": "turtle", "kind": "tally", "label": "거북" }
+  ],
+  "items": [
+    {
+      "linkId": "animal_playground",
+      "type": "choice",
+      "emoji": "🛝",
+      "required": true,
+      "text": "친구들이 많은 놀이터에 갔을 때 나는?",
+      "options": [
+        { "oid": "a", "text": "먼저 가서 같이 놀자고 해요", "weights": { "lion": 2, "dolphin": 1 } },
+        { "oid": "b", "text": "조금 지켜보다가 다가가요", "weights": { "rabbit": 2, "turtle": 1 } },
+        { "oid": "c", "text": "무슨 놀이인지 먼저 살펴봐요", "weights": { "owl": 2, "fox": 1 } }
+      ]
+    },
+    {
+      "linkId": "animal_rainy_day",
+      "type": "choice",
+      "emoji": "🌧️",
+      "required": true,
+      "text": "비 오는 날 집에서 나는?",
+      "options": [
+        { "oid": "a", "text": "가족한테 놀자고 해요", "weights": { "dolphin": 2, "rabbit": 1 } },
+        { "oid": "b", "text": "재미있는 걸 새로 만들어요", "weights": { "fox": 2, "lion": 1 } },
+        { "oid": "c", "text": "이불 속에서 느긋하게 있어요", "weights": { "turtle": 2, "owl": 1 } }
+      ]
+    },
+    {
+      "linkId": "animal_new_class",
+      "type": "choice",
+      "emoji": "🎒",
+      "required": true,
+      "text": "새 학기 첫날, 교실에 들어가면?",
+      "options": [
+        { "oid": "a", "text": "누가 어디 앉는지 조용히 봐요", "weights": { "owl": 2, "turtle": 1 } },
+        { "oid": "b", "text": "옆자리에 먼저 인사해요", "weights": { "lion": 2, "fox": 1 } },
+        { "oid": "c", "text": "아는 얼굴을 찾아봐요", "weights": { "rabbit": 2, "dolphin": 1 } }
+      ]
+    },
+    {
+      "linkId": "animal_drawing",
+      "type": "choice",
+      "emoji": "🎨",
+      "required": true,
+      "text": "그림을 그릴 때 나는?",
+      "options": [
+        { "oid": "a", "text": "천천히 오래 공들여 그려요", "weights": { "turtle": 2, "dolphin": 1 } },
+        { "oid": "b", "text": "아무도 안 그린 걸 그려요", "weights": { "fox": 2, "owl": 1 } },
+        { "oid": "c", "text": "큼직하고 시원하게 그려요", "weights": { "lion": 2, "rabbit": 1 } }
+      ]
+    },
+    {
+      "linkId": "animal_cake",
+      "type": "choice",
+      "emoji": "🍰",
+      "required": true,
+      "text": "케이크가 한 조각 남았어요.",
+      "options": [
+        { "oid": "a", "text": "누가 먹을지 물어봐요", "weights": { "rabbit": 2, "owl": 1 } },
+        { "oid": "b", "text": "나눠 먹자고 해요", "weights": { "dolphin": 2, "fox": 1 } },
+        { "oid": "c", "text": "다음에 먹으려고 남겨둬요", "weights": { "turtle": 2, "lion": 1 } }
+      ]
+    },
+    {
+      "linkId": "animal_puzzle",
+      "type": "choice",
+      "emoji": "🧩",
+      "required": true,
+      "text": "어려운 퍼즐이 잘 안 맞을 때?",
+      "options": [
+        { "oid": "a", "text": "다른 방법을 이리저리 시도해요", "weights": { "fox": 2, "rabbit": 1 } },
+        { "oid": "b", "text": "설명서를 다시 읽어봐요", "weights": { "owl": 2, "dolphin": 1 } },
+        { "oid": "c", "text": "될 때까지 계속 붙잡아요", "weights": { "lion": 2, "turtle": 1 } }
+      ]
+    },
+    {
+      "linkId": "animal_camp",
+      "type": "choice",
+      "emoji": "🏕️",
+      "required": true,
+      "text": "캠핑에서 내가 맡고 싶은 일은?",
+      "options": [
+        { "oid": "a", "text": "다 같이 할 놀이를 정해요", "weights": { "dolphin": 2, "owl": 1 } },
+        { "oid": "b", "text": "텐트를 차근차근 세워요", "weights": { "turtle": 2, "fox": 1 } },
+        { "oid": "c", "text": "먹을 걸 챙기고 나눠줘요", "weights": { "rabbit": 2, "lion": 1 } }
+      ]
+    },
+    {
+      "linkId": "animal_book",
+      "type": "choice",
+      "emoji": "📚",
+      "required": true,
+      "text": "도서관에서 고르는 책은?",
+      "options": [
+        { "oid": "a", "text": "궁금한 걸 알려주는 책", "weights": { "owl": 2, "lion": 1 } },
+        { "oid": "b", "text": "귀여운 그림이 많은 책", "weights": { "rabbit": 2, "fox": 1 } },
+        { "oid": "c", "text": "친구들 이야기가 나오는 책", "weights": { "dolphin": 2, "turtle": 1 } }
+      ]
+    },
+    {
+      "linkId": "animal_music",
+      "type": "choice",
+      "emoji": "🎵",
+      "required": true,
+      "text": "노래를 들을 때 나는?",
+      "options": [
+        { "oid": "a", "text": "가사를 하나하나 따라 읽어요", "weights": { "owl": 2, "rabbit": 1 } },
+        { "oid": "b", "text": "나만 아는 노래를 찾아요", "weights": { "fox": 2, "turtle": 1 } },
+        { "oid": "c", "text": "크게 틀고 같이 불러요", "weights": { "lion": 2, "dolphin": 1 } }
+      ]
+    },
+    {
+      "linkId": "animal_bedtime",
+      "type": "choice",
+      "emoji": "🌙",
+      "required": true,
+      "text": "잠자기 전에 나는?",
+      "options": [
+        { "oid": "a", "text": "이불을 잘 정리하고 누워요", "weights": { "turtle": 2, "lion": 1 } },
+        { "oid": "b", "text": "오늘 있었던 일을 얘기해요", "weights": { "dolphin": 2, "rabbit": 1 } },
+        { "oid": "c", "text": "내일 뭐 할지 상상해요", "weights": { "fox": 2, "owl": 1 } }
+      ]
+    }
+  ],
+  "resolver": {
+    "strategy": "argmax",
+    "tiebreak": ["dolphin", "owl", "rabbit", "fox", "turtle", "lion"]
+  },
+  "resultTypes": [
+    {
+      "code": "lion",
+      "name": "씩씩한 사자",
+      "subtitle": "먼저 나서는 아이",
+      "emoji": "🦁",
+      "color": "#c9a84c",
+      "content": {
+        "summary": "하고 싶은 게 있으면 먼저 움직이는 편이에요. 큰 목소리로 친구들을 모으는 힘이 있어요.",
+        "strengths": ["먼저 시작할 용기가 있어요", "다 같이 하는 일을 잘 이끌어요"],
+        "cautions": ["가끔은 친구 이야기를 기다려 주면 더 좋아요"],
+        "tips": ["오늘 친구가 하고 싶어한 걸 하나 물어볼까요?"],
+        "goodWith": ["rabbit", "turtle"],
+        "funFact": "사자는 하루에 스무 시간까지 쉬기도 해요."
+      }
+    },
+    {
+      "code": "rabbit",
+      "name": "다정한 토끼",
+      "subtitle": "먼저 살펴보는 아이",
+      "emoji": "🐰",
+      "color": "#7c3aed",
+      "content": {
+        "summary": "새로운 곳에서는 먼저 가만히 살펴보는 편이에요. 친구가 불편해하는 걸 금방 알아채요.",
+        "strengths": ["친구의 기분을 잘 알아채요", "챙겨주는 걸 좋아해요"],
+        "cautions": ["하고 싶은 말을 삼키는 날이 있어요"],
+        "tips": ["오늘 하고 싶었던 말을 하나 꺼내 볼까요?"],
+        "goodWith": ["lion", "dolphin"],
+        "funFact": "토끼는 기분이 좋으면 폴짝 뛰어올라요."
+      }
+    },
+    {
+      "code": "dolphin",
+      "name": "즐거운 돌고래",
+      "subtitle": "같이 하는 걸 좋아하는 아이",
+      "emoji": "🐬",
+      "color": "#2f9e74",
+      "content": {
+        "summary": "같이 웃는 시간을 가장 좋아하는 편이에요. 무엇이든 함께 하면 더 재미있어져요.",
+        "strengths": ["분위기를 밝게 만들어요", "친구를 잘 챙겨요"],
+        "cautions": ["혼자 쉬는 시간도 필요해요"],
+        "tips": ["오늘 고마웠던 일을 하나 말해 볼까요?"],
+        "goodWith": ["rabbit", "owl"],
+        "funFact": "돌고래는 서로를 이름처럼 부르는 소리를 내요."
+      }
+    },
+    {
+      "code": "owl",
+      "name": "궁금한 부엉이",
+      "subtitle": "먼저 알아보는 아이",
+      "emoji": "🦉",
+      "color": "#6b5f8a",
+      "content": {
+        "summary": "왜 그런지 알아보는 걸 좋아하는 편이에요. 서두르지 않고 하나씩 확인해요.",
+        "strengths": ["차분하게 잘 알아봐요", "설명을 잘 기억해요"],
+        "cautions": ["다 알기 전에는 시작을 미루기도 해요"],
+        "tips": ["오늘 알게 된 걸 하나 알려줄까요?"],
+        "goodWith": ["dolphin", "fox"],
+        "funFact": "부엉이는 고개를 270도까지 돌릴 수 있어요."
+      }
+    },
+    {
+      "code": "fox",
+      "name": "반짝이는 여우",
+      "subtitle": "새로운 걸 찾는 아이",
+      "emoji": "🦊",
+      "color": "#e0455f",
+      "content": {
+        "summary": "아무도 생각 못 한 방법을 잘 떠올리는 편이에요. 늘 하던 대로는 조금 심심해요.",
+        "strengths": ["새로운 방법을 잘 찾아요", "막혔을 때 다른 길을 봐요"],
+        "cautions": ["하나를 끝까지 붙잡는 게 어려울 때가 있어요"],
+        "tips": ["오늘 시작한 것 하나를 끝까지 해볼까요?"],
+        "goodWith": ["owl", "lion"],
+        "funFact": "여우는 눈 속에서 나는 소리를 듣고 먹이를 찾아요."
+      }
+    },
+    {
+      "code": "turtle",
+      "name": "느긋한 거북",
+      "subtitle": "천천히 오래 하는 아이",
+      "emoji": "🐢",
+      "color": "#786b9c",
+      "content": {
+        "summary": "서두르지 않고 오래 하는 편이에요. 시작한 건 끝까지 해내요.",
+        "strengths": ["끝까지 하는 힘이 있어요", "차분해서 실수가 적어요"],
+        "cautions": ["빨리 정해야 할 때는 조금 답답할 수 있어요"],
+        "tips": ["오늘은 하나만 빠르게 정해 볼까요?"],
+        "goodWith": ["lion", "dolphin"],
+        "funFact": "거북은 등껍질 쪽으로 숨을 쉬는 종류도 있어요."
+      }
+    }
+  ]
+}

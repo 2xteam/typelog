@@ -272,3 +272,453 @@ a {
   color: var(--text-primary);
   box-shadow: 0 4px 15px rgba(38, 13, 63, 0.08);
 }
+
+
+/* ────────────────────────────────────────────────────────────
+ * 상단 내비 · 앱 스위처 · 푸터 — 앱들이 공유하는 시각 체계
+ * FitLog 에서 이식했고 [data-theme] 블록은 뺐다 (라이트 전용).
+ * 근거: my-obsidian-vault → 20-Design/앱 공통 UI와 아이콘.md
+ * ──────────────────────────────────────────────────────────── */
+
+.topnav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+  z-index: 100;
+}
+
+.topnav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--nav-height);
+  padding: 0 1.25rem;
+  flex-shrink: 0;
+}
+
+.topnav-logo-wrap {
+  position: relative;
+}
+
+.topnav-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 1.25rem;
+  font-weight: 900;
+  font-style: italic;
+  color: var(--accent);
+  text-decoration: none;
+  letter-spacing: -0.03em;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+}
+
+.topnav-logo:hover {
+  transform: none;
+}
+
+.topnav-logo-icon {
+  flex-shrink: 0;
+  border-radius: 8px;
+}
+
+.app-switcher {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: -8px;
+  min-width: 200px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 8px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  animation: app-switcher-in 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: top left;
+}
+
+@keyframes app-switcher-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.app-switcher-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  transition: background 0.15s, color 0.15s;
+}
+
+.app-switcher-item:hover {
+  background: var(--bg-elevated);
+}
+
+.app-switcher-item--active {
+  background: var(--bg-elevated);
+  color: var(--accent);
+}
+
+.app-switcher-icon {
+  flex-shrink: 0;
+  border-radius: 8px;
+}
+
+.app-brand-icon {
+  flex-shrink: 0;
+  border-radius: 10px;
+}
+
+.topnav-links {
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.topnav-link {
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.15s, background 0.15s;
+}
+
+.topnav-link:hover {
+  color: var(--text-primary);
+  background: var(--bg-card);
+  opacity: 1;
+}
+
+.topnav-link[data-active="true"] {
+  color: var(--text-primary);
+  background: var(--bg-card);
+}
+
+.topnav-logout {
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-decoration: none;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.topnav-logout:hover {
+  color: var(--text-secondary);
+  transform: none;
+}
+
+/* Hamburger → X animated icon */
+.topnav-hamburger {
+  display: none;
+  position: relative;
+  width: 36px;
+  height: 36px;
+  background: var(--bg-card);
+  border: none;
+  border-radius: 50%;
+  padding: 0;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+.topnav-hamburger:hover {
+  color: var(--text-primary);
+  transform: none;
+}
+
+.topnav-hamburger-line {
+  position: absolute;
+  left: 8px;
+  width: 20px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 1px;
+  transition: transform 0.3s ease, opacity 0.2s ease;
+}
+
+.topnav-hamburger-line--1 { top: 11px; }
+.topnav-hamburger-line--2 { top: 17px; }
+.topnav-hamburger-line--3 { top: 23px; }
+
+.topnav-hamburger--open .topnav-hamburger-line--1 {
+  transform: translateY(6px) rotate(45deg);
+}
+.topnav-hamburger--open .topnav-hamburger-line--2 {
+  opacity: 0;
+}
+.topnav-hamburger--open .topnav-hamburger-line--3 {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+/* ── Mobile expandable menu inside the nav bar ── */
+
+.topnav-menu {
+  display: none;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.25s ease,
+              padding 0.35s ease;
+  padding: 0 1.25rem;
+  flex-direction: column;
+}
+
+.topnav--open .topnav-menu {
+  max-height: 320px;
+  opacity: 1;
+  padding: 0 1.25rem 1rem;
+}
+
+.topnav-menu-link {
+  display: block;
+  padding: 0.75rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border-subtle);
+  transition: color 0.15s;
+}
+
+.topnav-menu-link:hover {
+  color: var(--text-primary);
+  opacity: 1;
+}
+
+.topnav-menu-link[data-active="true"] {
+  color: var(--accent);
+}
+
+/* 접힌 메뉴의 Logout — 위 링크들과 같은 줄 높이·정렬로 맞춘다.
+   버튼이라 폰트·배경·정렬을 명시해야 링크와 같아진다. */
+.topnav-menu-logout {
+  width: 100%;
+  border: none;
+  border-bottom: none;
+  background: none;
+  font-family: inherit;
+  text-align: left;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.topnav-menu-logout:hover {
+  color: var(--danger);
+}
+
+/* Click-away backdrop */
+.topnav-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  background: transparent;
+}
+
+/* Responsive breakpoints */
+@media (max-width: 768px) {
+  .topnav-links { display: none; }
+  .topnav-hamburger { display: flex; align-items: center; justify-content: center; }
+  .topnav-menu { display: flex; }
+}
+
+@media (min-width: 769px) {
+  .topnav {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: calc(100% - 24px);
+    max-width: 960px;
+  }
+  .topnav-hamburger { display: none; }
+  .topnav-menu { display: none !important; }
+}
+
+.field-hint {
+  margin: 6px 0 0;
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+/* NOTE 블록 */
+.note-block {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 11.5px;
+  line-height: 1.9;
+  color: var(--text-muted);
+  word-break: keep-all;
+}
+
+.note-block strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+
+/* ────────────────────────────────────────────────────────────
+ * 상단 네비 — 주 기능(Home · Inbody · History)만 노출하고
+ * 부가 기능(My · Notice · Q&A · Logout)은 "더보기"로 접는다.
+ * 모바일에서는 햄버거 메뉴 안에서 얇은 구분선 아래로 내려간다.
+ * ──────────────────────────────────────────────────────────── */
+
+.topnav-more-wrap {
+  position: relative;
+}
+
+.topnav-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.topnav-more-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 148px;
+  padding: 6px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  box-shadow: 0 18px 40px rgba(37, 13, 62, 0.18);
+  z-index: 60;
+  display: grid;
+  gap: 2px;
+}
+
+.topnav-more-item {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 9px;
+  background: none;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.topnav-more-item:hover {
+  background: var(--accent-subtle);
+  color: var(--accent);
+}
+
+.topnav-more-item--danger {
+  color: var(--text-muted);
+}
+
+.topnav-more-item--danger:hover {
+  background: var(--danger-subtle);
+  color: var(--danger);
+}
+
+/* 모바일 메뉴에서 부가 기능은 구분선 아래로.
+   `:first-of-type`는 같은 태그의 첫 형제(=Home)를 가리켜 쓸 수 없다.
+   주 기능 다음에 오는 첫 부가 기능만 골라 구분선을 준다. */
+.topnav-menu-link[data-sub="false"] + .topnav-menu-link[data-sub="true"] {
+  margin-top: 6px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.topnav-menu-link[data-sub="true"] {
+  color: var(--text-secondary);
+}
+
+/* ── myjane 워드마크 (푸터) ──
+ * `my`는 배경에 맞춰 본문 색을 쓰고, `jane`은 앱 테마와 무관하게
+ * myjane 브랜드 보라로 고정한다. 흰 배경에서는 my가 검정,
+ * 어두운 배경에서는 my가 흰색으로 보인다. */
+.myjane-mark {
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  color: var(--text-primary);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.myjane-mark:hover {
+  text-decoration: underline;
+}
+
+/* jane 은 브랜드 색이라 앱 액센트와 무관하게 보라 고정이다.
+   var(--accent) 를 쓰면 민트 액센트 앱에서 초록색 jane 이 나온다.
+   → my-obsidian-vault / 20-Design/앱 공통 UI와 아이콘.md */
+.myjane-mark > span {
+  color: #7c3aed;
+}
+
+/* ── 소개 페이지 레이아웃 ──
+ * 시트를 쌓는 화면의 바깥 컨테이너. 이 규칙이 없으면 시트가 화면 전체 폭으로
+ * 퍼져 결쩜사 패턴("옅은 배경 위에 둥근 시트")이 무너진다.
+ * 좁은 창에서는 티가 나지 않아 놓치기 쉽다 — 넓은 창에서 확인할 것.
+ * 근거: my-obsidian-vault → 20-Design/결쩜사 페이지 패턴.md
+ * ── */
+.page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: clamp(18px, 4vw, 28px) clamp(16px, 4.2vw, 24px) 40px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.row--wrap {
+  flex-wrap: wrap;
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.btn--sm {
+  padding: 7px 13px;
+  font-size: 12.5px;
+  border-radius: 9px;
+}
