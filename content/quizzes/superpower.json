@@ -1,0 +1,534 @@
+{
+  "$schema": "typelog/quiz/v1",
+  "mode": "upsert",
+  "_note": [
+    "창작한 유형이다. 상표·저작권이 있는 캐릭터를 쓰지 않는다.",
+    "여섯 유형 모두 강점 문장이 먼저 온다. 약점만 남는 유형을 두지 않는다.",
+    "선택지는 고른 유형에만 점수를 준다. 문항별 가중치는 빌더 주석 참고."
+  ],
+  "quiz": {
+    "slug": "superpower",
+    "title": "나에게 어울리는 초능력은?",
+    "tagline": "열 가지 질문으로 찾는 나의 힘",
+    "category": "power",
+    "ageRange": {
+      "min": 6,
+      "max": 13
+    },
+    "cover": {
+      "emoji": "🦸",
+      "imageUrl": null
+    },
+    "order": 70,
+    "shuffle": false
+  },
+  "outcomes": [
+    {
+      "id": "fly",
+      "kind": "tally",
+      "label": "하늘 날기"
+    },
+    {
+      "id": "strength",
+      "kind": "tally",
+      "label": "괴력"
+    },
+    {
+      "id": "invisible",
+      "kind": "tally",
+      "label": "투명 인간"
+    },
+    {
+      "id": "time",
+      "kind": "tally",
+      "label": "시간 멈추기"
+    },
+    {
+      "id": "mind",
+      "kind": "tally",
+      "label": "마음 읽기"
+    },
+    {
+      "id": "teleport",
+      "kind": "tally",
+      "label": "순간 이동"
+    }
+  ],
+  "resolver": {
+    "strategy": "argmax",
+    "tiebreak": [
+      "fly",
+      "strength",
+      "invisible",
+      "time",
+      "mind",
+      "teleport"
+    ]
+  },
+  "items": [
+    {
+      "linkId": "sp_late",
+      "type": "choice",
+      "emoji": "🏃",
+      "required": true,
+      "text": "약속에 늦었을 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "제일 빠른 길을 찾아 뛰어요",
+          "weights": {
+            "fly": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "짐을 다 들고라도 뛰어요",
+          "weights": {
+            "strength": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "조용히 들어가서 앉아요",
+          "weights": {
+            "invisible": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "sp_test",
+      "type": "choice",
+      "emoji": "📝",
+      "required": true,
+      "text": "시험지를 받으면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "문제를 먼저 다 읽어봐요",
+          "weights": {
+            "time": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "어려워하는 친구가 눈에 들어와요",
+          "weights": {
+            "mind": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "쉬운 것부터 빠르게 풀어요",
+          "weights": {
+            "teleport": 3
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "sp_party",
+      "type": "choice",
+      "emoji": "🎉",
+      "required": true,
+      "text": "사람 많은 자리에 가면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "전체 분위기를 먼저 살펴요",
+          "weights": {
+            "fly": 5
+          }
+        },
+        {
+          "oid": "b",
+          "text": "조용한 자리에 먼저 앉아요",
+          "weights": {
+            "invisible": 5
+          }
+        },
+        {
+          "oid": "c",
+          "text": "누가 어색해하는지 봐요",
+          "weights": {
+            "mind": 5
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "sp_heavy_box",
+      "type": "choice",
+      "emoji": "📦",
+      "required": true,
+      "text": "무거운 상자를 옮겨야 하면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "그냥 내가 들어요",
+          "weights": {
+            "strength": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "어떻게 들면 안전한지 먼저 봐요",
+          "weights": {
+            "time": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "몇 번에 나눠서 빨리 옮겨요",
+          "weights": {
+            "teleport": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "sp_future",
+      "type": "choice",
+      "emoji": "🔮",
+      "required": true,
+      "text": "내일 일이 걱정될 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "무슨 일이 생길지 미리 그려봐요",
+          "weights": {
+            "fly": 7
+          }
+        },
+        {
+          "oid": "b",
+          "text": "될 대로 되게 두고 준비만 해요",
+          "weights": {
+            "time": 7
+          }
+        },
+        {
+          "oid": "c",
+          "text": "같이 걱정해줄 사람을 찾아요",
+          "weights": {
+            "mind": 7
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "sp_broken",
+      "type": "choice",
+      "emoji": "🔧",
+      "required": true,
+      "text": "물건이 고장 났을 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "힘으로라도 다시 맞춰봐요",
+          "weights": {
+            "strength": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "고칠 수 있는지 조용히 살펴요",
+          "weights": {
+            "invisible": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "새 방법으로 바로 바꿔봐요",
+          "weights": {
+            "teleport": 3
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "sp_argue",
+      "type": "choice",
+      "emoji": "💬",
+      "required": true,
+      "text": "친구들이 말다툼하면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "한발 떨어져서 전체를 봐요",
+          "weights": {
+            "fly": 5
+          }
+        },
+        {
+          "oid": "b",
+          "text": "사이에 들어가서 막아요",
+          "weights": {
+            "strength": 5
+          }
+        },
+        {
+          "oid": "c",
+          "text": "잠깐 쉬고 다시 이야기하자고 해요",
+          "weights": {
+            "time": 5
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "sp_new_friend",
+      "type": "choice",
+      "emoji": "🫱",
+      "required": true,
+      "text": "새로 온 친구가 있으면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "먼저 말은 안 걸고 지켜봐요",
+          "weights": {
+            "invisible": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "표정을 보고 필요한 걸 물어봐요",
+          "weights": {
+            "mind": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "바로 가서 같이 놀자고 해요",
+          "weights": {
+            "teleport": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "sp_hide_seek",
+      "type": "choice",
+      "emoji": "🙈",
+      "required": true,
+      "text": "숨바꼭질을 하면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "높은 곳을 찾아 숨어요",
+          "weights": {
+            "fly": 7
+          }
+        },
+        {
+          "oid": "b",
+          "text": "아무도 안 볼 곳에 조용히 숨어요",
+          "weights": {
+            "invisible": 7
+          }
+        },
+        {
+          "oid": "c",
+          "text": "여기저기 옮겨다니며 숨어요",
+          "weights": {
+            "teleport": 7
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "sp_group_late",
+      "type": "choice",
+      "emoji": "⏳",
+      "required": true,
+      "text": "다들 늦어서 못 끝낼 것 같으면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "남은 걸 내가 다 맡아요",
+          "weights": {
+            "strength": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "순서를 다시 정해요",
+          "weights": {
+            "time": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "지친 사람을 먼저 챙겨요",
+          "weights": {
+            "mind": 3
+          }
+        }
+      ]
+    }
+  ],
+  "resultTypes": [
+    {
+      "code": "fly",
+      "name": "하늘 날기",
+      "subtitle": "멀리 보고 먼저 가는 힘",
+      "emoji": "🕊️",
+      "color": "#3a7bd5",
+      "content": {
+        "summary": "높이 올라가면 길이 다 보여요. 지금 여기만 보지 않고 다음에 뭐가 올지 먼저 알아차리는 사람에게 어울리는 힘이에요.",
+        "strengths": [
+          "멀리 있는 걸 미리 봐요",
+          "막힌 길을 넘어가요",
+          "답답한 자리에서 빠져나와요"
+        ],
+        "cautions": [
+          "가까이 있는 걸 지나칠 수 있어요",
+          "혼자 앞서 가버려요"
+        ],
+        "tips": [
+          "오늘은 바로 옆 사람에게 한 가지를 물어봐요."
+        ],
+        "funFact": "새가 나는 이유는 날개보다 **가벼운 뼈**에 있어요. 속이 비어 있어요.",
+        "goodWith": [
+          "teleport",
+          "time"
+        ]
+      }
+    },
+    {
+      "code": "strength",
+      "name": "괴력",
+      "subtitle": "무거운 걸 들어주는 힘",
+      "emoji": "💪",
+      "color": "#e0455f",
+      "content": {
+        "summary": "힘든 일이 생기면 먼저 나서요. 남이 못 드는 걸 대신 들어주기 때문에, 사람들이 어려울 때 나를 찾아요.",
+        "strengths": [
+          "힘든 일을 먼저 맡아요",
+          "포기하지 않고 밀어요",
+          "약속한 걸 끝까지 해요"
+        ],
+        "cautions": [
+          "혼자 다 들다 지쳐요",
+          "부드럽게 해야 할 때 세게 해요"
+        ],
+        "tips": [
+          "오늘은 무거운 것 하나를 같이 들자고 말해봐요."
+        ],
+        "funFact": "개미는 자기 몸무게의 오십 배를 들 수 있어요. 몸이 작을수록 힘이 세 보여요.",
+        "goodWith": [
+          "mind",
+          "fly"
+        ]
+      }
+    },
+    {
+      "code": "invisible",
+      "name": "투명 인간",
+      "subtitle": "조용히 지켜보는 힘",
+      "emoji": "👻",
+      "color": "#7c6f9c",
+      "content": {
+        "summary": "눈에 띄지 않아도 다 보고 있어요. 조용한 자리에서 남들이 못 본 걸 알아차리는 사람에게 어울리는 힘이에요.",
+        "strengths": [
+          "눈에 안 띄어도 편해요",
+          "남이 못 본 걸 알아차려요",
+          "소란 없이 도와줘요"
+        ],
+        "cautions": [
+          "내가 한 걸 아무도 몰라요",
+          "하고 싶은 걸 말하지 않아요"
+        ],
+        "tips": [
+          "오늘 내가 한 것 하나를 소리 내어 말해봐요."
+        ],
+        "funFact": "투명해지려면 빛이 몸을 그냥 지나가야 해요. 그러면 눈도 안 보여요.",
+        "goodWith": [
+          "time",
+          "teleport"
+        ]
+      }
+    },
+    {
+      "code": "time",
+      "name": "시간 멈추기",
+      "subtitle": "한 번 더 생각하는 힘",
+      "emoji": "⏱️",
+      "color": "#c9a84c",
+      "content": {
+        "summary": "급할 때 잠깐 멈추는 사람이에요. 다들 서두를 때 한 번 더 생각해서, 큰 실수를 막아내요.",
+        "strengths": [
+          "급한 상황에서 침착해요",
+          "실수를 미리 알아차려요",
+          "정확하게 해내요"
+        ],
+        "cautions": [
+          "생각이 길어져 시작이 늦어요",
+          "기회가 지나갈 수 있어요"
+        ],
+        "tips": [
+          "다 정하지 않았어도 한 걸음만 먼저 해봐요."
+        ],
+        "funFact": "빠르게 움직이면 시간이 아주 조금 느리게 흘러요. 정말이에요.",
+        "goodWith": [
+          "invisible",
+          "fly"
+        ]
+      }
+    },
+    {
+      "code": "mind",
+      "name": "마음 읽기",
+      "subtitle": "먼저 알아차리는 힘",
+      "emoji": "💗",
+      "color": "#d94f8a",
+      "content": {
+        "summary": "말하지 않아도 알아요. 표정만 보고 누가 힘든지 알아차려서, 먼저 다가가는 사람이에요.",
+        "strengths": [
+          "말 안 해도 알아차려요",
+          "다툰 사이를 이어줘요",
+          "따뜻한 말을 찾아내요"
+        ],
+        "cautions": [
+          "남의 기분에 내 기분이 흔들려요",
+          "싫다는 말을 못 해요"
+        ],
+        "tips": [
+          "오늘은 '지금은 어려워요' 라고 한 번 말해봐요."
+        ],
+        "funFact": "사람은 표정을 0.1초 만에 알아본다고 해요. 생각보다 훨씬 빨라요.",
+        "goodWith": [
+          "strength",
+          "invisible"
+        ]
+      }
+    },
+    {
+      "code": "teleport",
+      "name": "순간 이동",
+      "subtitle": "바로 움직이는 힘",
+      "emoji": "✨",
+      "color": "#2f9e74",
+      "content": {
+        "summary": "생각하면 벌써 가 있어요. 망설이는 시간이 짧아서, 남들이 준비할 때 이미 시작해 있는 사람이에요.",
+        "strengths": [
+          "시작이 빨라요",
+          "여러 곳을 잘 챙겨요",
+          "막히면 다른 길로 바로 가요"
+        ],
+        "cautions": [
+          "끝내기 전에 다음 걸 시작해요",
+          "천천히 해야 할 때 답답해요"
+        ],
+        "tips": [
+          "시작한 것 중 하나만 골라 오늘 끝내봐요."
+        ],
+        "funFact": "아주 작은 알갱이는 벽을 그냥 지나가기도 해요. 순간 이동과 조금 비슷해요.",
+        "goodWith": [
+          "fly",
+          "mind"
+        ]
+      }
+    }
+  ]
+}

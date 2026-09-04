@@ -92,12 +92,16 @@ export type User = InferSchemaType<typeof UserSchema>;
 export type UserDocument = HydratedDocument<User>;
 
 /**
- * `users` 컬렉션은 URI 기본 DB가 아닌 `MONGO_USER_DB`(기본 `user`) DB에 둡니다.
+ * `users` 컬렉션은 URI 기본 DB가 아닌 **`user` DB**에 있다. 다섯 앱이 같이 쓴다.
+ *
+ * 이름을 환경 변수로 받지 않는다. 공유 DB 이름은 서비스 전체의 고정된 사실이고,
+ * 환경 변수로 받으면 다른 앱의 `.env.local` 을 복사할 때 조용히 다른 DB를
+ * 가리킨다 → lib/db.ts 의 같은 사고 기록
+ *
  * 반드시 `connectDB()` 완료 후 호출하세요.
  */
 export function getUserModel(): Model<User> {
-  const dbName = (process.env.MONGO_USER_DB ?? "user").trim() || "user";
-  const userDb = mongoose.connection.useDb(dbName, { useCache: true });
+  const userDb = mongoose.connection.useDb("user", { useCache: true });
   return (
     (userDb.models.User as Model<User> | undefined) ??
     userDb.model<User>("User", UserSchema, "users")

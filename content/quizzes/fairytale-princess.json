@@ -1,0 +1,535 @@
+{
+  "$schema": "typelog/quiz/v1",
+  "mode": "upsert",
+  "_note": [
+    "디즈니 캐릭터 대신 **원작 동화**의 인물을 쓴다. 디즈니의 묘사는 상표·저작권이",
+    "살아 있지만, 그림·안데르센·페로·천일야화 원작은 저작권이 만료됐다.",
+    "인물을 '착한 편·나쁜 편'으로 나누지 않는다. 여섯 명 모두 강점이 먼저 온다.",
+    "선택지는 고른 인물에만 점수를 준다. 문항별 가중치는 빌더 주석 참고."
+  ],
+  "quiz": {
+    "slug": "fairytale-princess",
+    "title": "나와 닮은 동화 속 공주는?",
+    "tagline": "열 가지 질문으로 찾는 나의 동화 인물",
+    "category": "tale",
+    "ageRange": {
+      "min": 6,
+      "max": 12
+    },
+    "cover": {
+      "emoji": "👑",
+      "imageUrl": null
+    },
+    "order": 50,
+    "shuffle": false
+  },
+  "outcomes": [
+    {
+      "id": "cinderella",
+      "kind": "tally",
+      "label": "신데렐라"
+    },
+    {
+      "id": "snow",
+      "kind": "tally",
+      "label": "백설공주"
+    },
+    {
+      "id": "mermaid",
+      "kind": "tally",
+      "label": "인어공주"
+    },
+    {
+      "id": "rapunzel",
+      "kind": "tally",
+      "label": "라푼젤"
+    },
+    {
+      "id": "sleeping",
+      "kind": "tally",
+      "label": "숲속의 공주"
+    },
+    {
+      "id": "thumbelina",
+      "kind": "tally",
+      "label": "엄지공주"
+    }
+  ],
+  "resolver": {
+    "strategy": "argmax",
+    "tiebreak": [
+      "cinderella",
+      "snow",
+      "mermaid",
+      "rapunzel",
+      "sleeping",
+      "thumbelina"
+    ]
+  },
+  "items": [
+    {
+      "linkId": "pr_chores",
+      "type": "choice",
+      "emoji": "🧹",
+      "required": true,
+      "text": "하기 싫은 일을 맡았을 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "말없이 끝까지 해놓아요",
+          "weights": {
+            "cinderella": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "같이 하자고 사람을 모아요",
+          "weights": {
+            "snow": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "이걸 왜 해야 하는지 물어봐요",
+          "weights": {
+            "mermaid": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "pr_window",
+      "type": "choice",
+      "emoji": "🕯️",
+      "required": true,
+      "text": "심심한 오후에 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "책이나 물건을 들여다보며 시간을 보내요",
+          "weights": {
+            "rapunzel": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "느긋하게 쉬면서 아무것도 안 해요",
+          "weights": {
+            "sleeping": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "집 안에서 갈 수 있는 데를 다 가봐요",
+          "weights": {
+            "thumbelina": 3
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "pr_gift",
+      "type": "choice",
+      "emoji": "🎁",
+      "required": true,
+      "text": "갖고 싶은 걸 얻으려면 뭔가 포기해야 한다면?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "먼저 할 일을 다 해두고 기다려요",
+          "weights": {
+            "cinderella": 5
+          }
+        },
+        {
+          "oid": "b",
+          "text": "포기하더라도 갖는 쪽을 골라요",
+          "weights": {
+            "mermaid": 5
+          }
+        },
+        {
+          "oid": "c",
+          "text": "정말 필요한 건지 오래 생각해요",
+          "weights": {
+            "sleeping": 5
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "pr_stranger",
+      "type": "choice",
+      "emoji": "🚶",
+      "required": true,
+      "text": "처음 보는 사람이 말을 걸면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "반갑게 인사하고 이야기해요",
+          "weights": {
+            "snow": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "어떤 사람인지 궁금해서 물어봐요",
+          "weights": {
+            "rapunzel": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "조심하면서 짧게 대답해요",
+          "weights": {
+            "thumbelina": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "pr_locked",
+      "type": "choice",
+      "emoji": "🔑",
+      "required": true,
+      "text": "가고 싶은 곳에 못 가게 됐을 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "지금 할 수 있는 걸 먼저 해요",
+          "weights": {
+            "cinderella": 7
+          }
+        },
+        {
+          "oid": "b",
+          "text": "안에서 할 수 있는 재미를 찾아요",
+          "weights": {
+            "rapunzel": 7
+          }
+        },
+        {
+          "oid": "c",
+          "text": "때가 오기를 기다려요",
+          "weights": {
+            "sleeping": 7
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "pr_friend_cry",
+      "type": "choice",
+      "emoji": "💧",
+      "required": true,
+      "text": "친구가 속상해할 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "손을 잡고 괜찮다고 말해줘요",
+          "weights": {
+            "snow": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "지금 뭘 해주면 좋을지 바로 해요",
+          "weights": {
+            "mermaid": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "같이 나갈 길을 찾아줘요",
+          "weights": {
+            "thumbelina": 3
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "pr_new_place",
+      "type": "choice",
+      "emoji": "🗺️",
+      "required": true,
+      "text": "새로운 곳에 처음 갔을 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "할 일이 뭔지 먼저 살펴요",
+          "weights": {
+            "cinderella": 5
+          }
+        },
+        {
+          "oid": "b",
+          "text": "누가 있는지 먼저 봐요",
+          "weights": {
+            "snow": 5
+          }
+        },
+        {
+          "oid": "c",
+          "text": "여기 뭐가 있는지 다 둘러봐요",
+          "weights": {
+            "rapunzel": 5
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "pr_big_choice",
+      "type": "choice",
+      "emoji": "⚖️",
+      "required": true,
+      "text": "큰 결정을 해야 할 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "마음이 가는 쪽으로 바로 정해요",
+          "weights": {
+            "mermaid": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "며칠 두고 천천히 정해요",
+          "weights": {
+            "sleeping": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "다른 방법이 없나 더 찾아봐요",
+          "weights": {
+            "thumbelina": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "pr_hard_day",
+      "type": "choice",
+      "emoji": "🌧️",
+      "required": true,
+      "text": "정말 힘든 하루가 끝나면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "티 내지 않고 다음 날을 준비해요",
+          "weights": {
+            "cinderella": 7
+          }
+        },
+        {
+          "oid": "b",
+          "text": "속상한 걸 그대로 말해요",
+          "weights": {
+            "mermaid": 7
+          }
+        },
+        {
+          "oid": "c",
+          "text": "작은 걸로 기분을 바꿔요",
+          "weights": {
+            "thumbelina": 7
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "pr_secret_room",
+      "type": "choice",
+      "emoji": "🚪",
+      "required": true,
+      "text": "열지 말라는 문이 있으면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "열지 않고 그대로 둬요",
+          "weights": {
+            "snow": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "안에 뭐가 있을지 계속 궁금해요",
+          "weights": {
+            "rapunzel": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "때가 되면 알게 될 거라 생각해요",
+          "weights": {
+            "sleeping": 3
+          }
+        }
+      ]
+    }
+  ],
+  "resultTypes": [
+    {
+      "code": "cinderella",
+      "name": "신데렐라",
+      "subtitle": "묵묵히 버티다 기회를 잡는 사람",
+      "emoji": "👠",
+      "color": "#7c6f9c",
+      "content": {
+        "summary": "힘든 자리에서도 할 일을 해내요. 티 내지 않고 버티다가, 기회가 오면 놓치지 않고 잡아요. 그게 신데렐라가 강한 이유예요.",
+        "strengths": [
+          "해야 하는 일을 미루지 않아요",
+          "힘든 걸 오래 견뎌요",
+          "기회가 오면 바로 알아봐요"
+        ],
+        "cautions": [
+          "힘들다는 말을 너무 늦게 해요",
+          "혼자 다 하려고 해요"
+        ],
+        "tips": [
+          "오늘 힘든 일 하나를 누군가에게 말해봐요."
+        ],
+        "funFact": "신데렐라 이야기는 페로가 쓰기 전부터 세계 곳곳에 비슷한 형태로 있었어요.",
+        "goodWith": [
+          "snow",
+          "thumbelina"
+        ]
+      }
+    },
+    {
+      "code": "snow",
+      "name": "백설공주",
+      "subtitle": "누구에게나 마음을 여는 사람",
+      "emoji": "🍎",
+      "color": "#d94f8a",
+      "content": {
+        "summary": "처음 만난 사람에게도 마음을 열어요. 그래서 어디에 가도 도와주는 사람이 생겨요. 사람을 믿는 게 백설공주의 힘이에요.",
+        "strengths": [
+          "낯선 사람과도 금방 친해져요",
+          "함께 사는 방법을 찾아내요",
+          "고맙다는 말을 자주 해요"
+        ],
+        "cautions": [
+          "나쁜 뜻을 늦게 알아차려요",
+          "거절하기가 어려워요"
+        ],
+        "tips": [
+          "오늘은 '조금 생각해볼게요' 라고 말해봐요."
+        ],
+        "funFact": "일곱 난쟁이에게 원작에서는 이름이 없어요. 이름은 나중에 붙었어요.",
+        "goodWith": [
+          "cinderella",
+          "rapunzel"
+        ]
+      }
+    },
+    {
+      "code": "mermaid",
+      "name": "인어공주",
+      "subtitle": "원하는 걸 위해 크게 거는 사람",
+      "emoji": "🐚",
+      "color": "#3a7bd5",
+      "content": {
+        "summary": "정말 하고 싶은 게 생기면 큰 것도 걸어요. 안전한 자리에 머무르기보다 새로운 곳으로 가보는 쪽을 골라요.",
+        "strengths": [
+          "하고 싶은 게 분명해요",
+          "낯선 곳으로 먼저 가봐요",
+          "결정을 오래 미루지 않아요"
+        ],
+        "cautions": [
+          "잃는 것을 덜 세어봐요",
+          "돌아오기 어려운 선택도 해요"
+        ],
+        "tips": [
+          "큰 걸 정하기 전에 하루만 미뤄봐요."
+        ],
+        "funFact": "안데르센의 원작에서 인어공주는 목소리를 잃는 대신 걷게 돼요.",
+        "goodWith": [
+          "rapunzel",
+          "thumbelina"
+        ]
+      }
+    },
+    {
+      "code": "rapunzel",
+      "name": "라푼젤",
+      "subtitle": "갇혀도 자기 세계를 만드는 사람",
+      "emoji": "🪟",
+      "color": "#e0b845",
+      "content": {
+        "summary": "바깥에 못 나가도 안에서 할 걸 찾아내요. 궁금한 게 많고, 좁은 자리에서도 하루를 재미있게 만들어요.",
+        "strengths": [
+          "혼자 있는 시간을 잘 써요",
+          "궁금한 걸 끝까지 알아봐요",
+          "심심한 걸 재미있게 바꿔요"
+        ],
+        "cautions": [
+          "도와달라는 말을 늦게 해요",
+          "밖으로 나가는 첫걸음이 어려워요"
+        ],
+        "tips": [
+          "오늘은 안 해본 것 하나를 밖에서 해봐요."
+        ],
+        "funFact": "라푼젤은 원래 상추 종류의 이름이에요. 어머니가 그것을 먹고 싶어했어요.",
+        "goodWith": [
+          "mermaid",
+          "sleeping"
+        ]
+      }
+    },
+    {
+      "code": "sleeping",
+      "name": "숲속의 공주",
+      "subtitle": "천천히 오래 준비하는 사람",
+      "emoji": "🌹",
+      "color": "#c96f8c",
+      "content": {
+        "summary": "서두르지 않아요. 지금 당장 결과가 안 나와도 흔들리지 않고 자기 속도로 가요. 오래 걸리는 일을 맡기면 잘해내요.",
+        "strengths": [
+          "급한 상황에서도 침착해요",
+          "오래 걸리는 일을 이어가요",
+          "남의 속도에 흔들리지 않아요"
+        ],
+        "cautions": [
+          "시작이 늦어질 수 있어요",
+          "지금 해야 할 걸 미룰 수 있어요"
+        ],
+        "tips": [
+          "오늘 미뤄둔 것 하나를 5분만 해봐요."
+        ],
+        "funFact": "이 이야기는 잠든 사이 숲이 자라 성을 덮는 장면으로 유명해요.",
+        "goodWith": [
+          "rapunzel",
+          "cinderella"
+        ]
+      }
+    },
+    {
+      "code": "thumbelina",
+      "name": "엄지공주",
+      "subtitle": "작아도 길을 찾아내는 사람",
+      "emoji": "🌼",
+      "color": "#2f9e74",
+      "content": {
+        "summary": "몸집이 작아도 겁내지 않아요. 큰 것과 맞서 싸우지 않고, 대신 지나갈 길을 찾아내요. 그래서 어디서든 살아남아요.",
+        "strengths": [
+          "막히면 다른 길을 찾아요",
+          "작은 것도 잘 알아봐요",
+          "무서운 자리에서도 포기하지 않아요"
+        ],
+        "cautions": [
+          "도움을 받는 걸 미안해해요",
+          "혼자 오래 버티다 지쳐요"
+        ],
+        "tips": [
+          "오늘은 누군가에게 한 가지만 부탁해봐요."
+        ],
+        "funFact": "엄지공주는 안데르센이 만든 이야기예요. 키가 엄지손가락만 해요.",
+        "goodWith": [
+          "cinderella",
+          "mermaid"
+        ]
+      }
+    }
+  ]
+}

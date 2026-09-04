@@ -8,6 +8,7 @@ import { getAttemptModel, type AttemptDoc } from "@/models/Attempt";
 import { ENGINE_VERSION, flattenItems, score, type Answer } from "@/lib/scoring";
 import type { Item } from "@/lib/quizTypes";
 import { publicItem } from "@/lib/quizPublic";
+import { signClaim } from "@/lib/claimToken";
 
 export const runtime = "nodejs";
 
@@ -74,6 +75,15 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
 
     if (attempt.status === "completed") {
       /**
+       * 게스트 **본인**이 자기 결과를 보고 있을 때만 이관 표를 함께 준다.
+       * 화면은 이 표를 가입 링크에 실어 보내고, 돌아온 뒤 그 1건만 옮긴다.
+       * 공유 링크로 들어온 남에게는 주지 않는다 → lib/claimToken.ts
+       */
+      if (attempt.owner.kind === "guest" && guestKey && guestKey === attempt.owner.guestKey) {
+        body.claimToken = signClaim(String(attempt._id), guestKey);
+      }
+
+      /**
        * 결과 문장은 **지금** 읽는다. 코드·점수만 스냅샷하고 문장은 최신을 쓴다 —
        * 오타를 고쳤는데 과거 결과가 옛 문장을 계속 보여주면 안 된다.
        */
@@ -113,15 +123,27 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
           ? { code: runnerUp.code, name: runnerUp.name, emoji: runnerUp.emoji }
           : null,
         goodWith: goodWith.map((g) => ({ code: g.code, name: g.name, emoji: g.emoji })),
-        outcomes: (attempt.result?.outcomes ?? []).map((o) => {
+        /**
+         * **양쪽 이름이 있는 축만 내려보낸다.**
+         *
+         * 화면은 이걸로 "어느 쪽에 가까운가요?" 를 그린다. `tally` outcome 은
+         * 한쪽만 있는 세는 칸이라 left·right 가 없고, 그대로 보내면 이름표만
+         * 있고 값은 빈 줄이 여섯 개 그려진다. 수치를 보여주지 않기로 했으니
+         * (그래프 없음) 양쪽 이름이 없으면 할 말이 아예 없는 것이다.
+         * → my-obsidian-vault / 10-Projects/TypeLog.md
+         */
+        outcomes: (attempt.result?.outcomes ?? []).flatMap((o) => {
           const decl = (quiz.outcomes ?? []).find((d) => d.id === o.id);
-          return {
-            id: o.id,
-            label: decl?.label ?? o.id,
-            pomp: o.pomp,
-            left: decl?.left ?? null,
-            right: decl?.right ?? null,
-          };
+          if (!decl?.left?.code || !decl?.right?.code) return [];
+          return [
+            {
+              id: o.id,
+              label: decl.label ?? o.id,
+              pomp: o.pomp,
+              left: decl.left,
+              right: decl.right,
+            },
+          ];
         }),
       };
     } else {

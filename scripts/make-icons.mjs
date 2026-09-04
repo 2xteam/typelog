@@ -12,20 +12,27 @@ import path from "node:path";
 import sharp from "sharp";
 
 const SRC = path.join(process.cwd(), "public", "app-icon.svg");
+/**
+ * 16px 은 **다른 그림**을 쓴다.
+ *
+ * 원본을 16px 로 줄이면 게이지 호와 토끼가 같은 몇 픽셀을 나눠 쓰면서 회색
+ * 덩어리가 된다. 32px 에서는 읽히므로 원본을 쓴다. 좌표만 보고 판단하지 말고
+ * 항상 축소해서 확대해 볼 것 → public/app-icon-16.svg 주석
+ */
+const SRC_16 = path.join(process.cwd(), "public", "app-icon-16.svg");
 
-/** 이름 → 크기. 쓰임은 볼트의 표와 같다 */
+/** 이름 → [크기, 원본]. 쓰임은 볼트의 표와 같다 */
 const TARGETS = [
-  ["icon.png", 192], // PWA · 일반
-  ["favicon.png", 32], // 탭
-  ["site-title-icon.png", 64], // TopNav 로고
-  ["typelog-link-icon.png", 56], // 다른 앱 스위처
-  ["typelog-icon-512.png", 512], // 원본 보관
+  ["icon.png", 192, SRC], // PWA · 일반
+  ["favicon.png", 32, SRC], // 탭 (HiDPI)
+  ["favicon-16.png", 16, SRC_16], // 탭 (일반 DPI) — 단순화 변형
+  ["site-title-icon.png", 64, SRC], // TopNav 로고
+  ["typelog-link-icon.png", 56, SRC], // 다른 앱 스위처
+  ["typelog-icon-512.png", 512, SRC], // 원본 보관
 ];
 
-const svg = await readFile(SRC);
-
-for (const [name, size] of TARGETS) {
+for (const [name, size, src] of TARGETS) {
   const out = path.join(process.cwd(), "public", name);
-  await sharp(svg, { density: 600 }).resize(size, size).png().toFile(out);
-  console.log(`${name.padEnd(24)} ${size}×${size}`);
+  await sharp(await readFile(src), { density: 900 }).resize(size, size).png().toFile(out);
+  console.log(`${name.padEnd(24)} ${size}×${size}  ${path.basename(src)}`);
 }

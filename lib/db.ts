@@ -7,16 +7,21 @@ dns.setDefaultResultOrder("ipv4first");
 const MONGODB_URI = process.env.MONGO_URI;
 
 /**
- * 이 앱의 데이터가 들어갈 DB 이름.
+ * 이 앱의 데이터가 들어갈 DB 이름 — **상수다. 환경 변수로 바꿀 수 없다.**
  *
- * URI 뒤에 붙은 경로(`.../type`)에 의존하지 않고 **명시적으로 지정**한다.
- * 다른 앱의 연결 문자열을 그대로 붙여 넣으면 URI 경로가 다른 DB를 가리켜
- * 조용히 엉뚱한 DB에 쓰기 때문이다. (2026-09-02 FitLog가 `math` DB에
- * measurements 를 쓰던 사고)
+ * URI 뒤에 붙은 경로(`.../type`)에 의존하지 않는다. 다른 앱의 연결 문자열을
+ * 그대로 붙여 넣으면 URI 경로가 다른 DB를 가리켜 조용히 엉뚱한 DB에 쓴다.
+ * (2026-09-02 FitLog가 `math` DB에 measurements 를 쓰던 사고)
+ *
+ * ⚠️ 한때 `process.env.MONGO_DB ?? "type"` 이었다. 그러면 **막은 것이 아니다** —
+ * 2hbk 의 `.env.local` 을 복사하면 `MONGO_DB=hamhibokka` 도 같이 따라와서,
+ * URI 경로를 안 믿는 대신 환경 변수를 믿는 같은 사고가 난다.
+ * (2026-09-04 TypeLog 의 quizzes·resulttypes·attempts 33건이 `hamhibokka` DB
+ * 안에 들어가 있던 사고) DB 이름은 이 앱의 고정된 사실이므로 코드에만 둔다.
  *
  * → my-obsidian-vault / 40-Infra/MongoDB Atlas.md
  */
-const MONGODB_DB = (process.env.MONGO_DB ?? "type").trim() || "type";
+const MONGODB_DB = "type";
 
 type MongooseCache = {
   conn: typeof mongoose | null;

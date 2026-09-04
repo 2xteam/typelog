@@ -1,0 +1,534 @@
+{
+  "$schema": "typelog/quiz/v1",
+  "mode": "upsert",
+  "_note": [
+    "창작한 유형이다. 상표·저작권이 있는 캐릭터를 쓰지 않는다.",
+    "여섯 유형 모두 강점 문장이 먼저 온다. 약점만 남는 유형을 두지 않는다.",
+    "선택지는 고른 유형에만 점수를 준다. 문항별 가중치는 빌더 주석 참고."
+  ],
+  "quiz": {
+    "slug": "fairy-type",
+    "title": "나는 어떤 요정일까?",
+    "tagline": "열 가지 질문으로 찾는 나의 요정",
+    "category": "fairy",
+    "ageRange": {
+      "min": 5,
+      "max": 11
+    },
+    "cover": {
+      "emoji": "🧚",
+      "imageUrl": null
+    },
+    "order": 80,
+    "shuffle": false
+  },
+  "outcomes": [
+    {
+      "id": "flower",
+      "kind": "tally",
+      "label": "꽃 요정"
+    },
+    {
+      "id": "water",
+      "kind": "tally",
+      "label": "물 요정"
+    },
+    {
+      "id": "wind",
+      "kind": "tally",
+      "label": "바람 요정"
+    },
+    {
+      "id": "star",
+      "kind": "tally",
+      "label": "별 요정"
+    },
+    {
+      "id": "flame",
+      "kind": "tally",
+      "label": "불꽃 요정"
+    },
+    {
+      "id": "forest",
+      "kind": "tally",
+      "label": "숲 요정"
+    }
+  ],
+  "resolver": {
+    "strategy": "argmax",
+    "tiebreak": [
+      "flower",
+      "water",
+      "wind",
+      "star",
+      "flame",
+      "forest"
+    ]
+  },
+  "items": [
+    {
+      "linkId": "fa_morning_garden",
+      "type": "choice",
+      "emoji": "🌤️",
+      "required": true,
+      "text": "아침에 정원에 나가면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "어떤 꽃이 피었는지 봐요",
+          "weights": {
+            "flower": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "물을 주면서 하루를 시작해요",
+          "weights": {
+            "water": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "한 바퀴 뛰고 와요",
+          "weights": {
+            "wind": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "fa_night",
+      "type": "choice",
+      "emoji": "🌌",
+      "required": true,
+      "text": "밤이 되면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "창밖 하늘을 오래 봐요",
+          "weights": {
+            "star": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "불을 켜고 하고 싶던 걸 해요",
+          "weights": {
+            "flame": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "조용히 누워서 하루를 되짚어요",
+          "weights": {
+            "forest": 3
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "fa_gift_friend",
+      "type": "choice",
+      "emoji": "🎀",
+      "required": true,
+      "text": "친구에게 선물을 준다면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "예쁘게 포장해서 줘요",
+          "weights": {
+            "flower": 5
+          }
+        },
+        {
+          "oid": "b",
+          "text": "재미있는 걸 골라서 줘요",
+          "weights": {
+            "wind": 5
+          }
+        },
+        {
+          "oid": "c",
+          "text": "친구가 갖고 싶다고 했던 걸 줘요",
+          "weights": {
+            "flame": 5
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "fa_new_rule",
+      "type": "choice",
+      "emoji": "📜",
+      "required": true,
+      "text": "새 규칙이 생기면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "일단 맞춰보면서 지내요",
+          "weights": {
+            "water": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "왜 생겼는지 먼저 알아봐요",
+          "weights": {
+            "star": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "예전 방식이 좋았다고 생각해요",
+          "weights": {
+            "forest": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "fa_stage",
+      "type": "choice",
+      "emoji": "🎤",
+      "required": true,
+      "text": "무대에 나가야 하면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "옷이랑 준비물을 먼저 챙겨요",
+          "weights": {
+            "flower": 7
+          }
+        },
+        {
+          "oid": "b",
+          "text": "무슨 말을 할지 정해둬요",
+          "weights": {
+            "star": 7
+          }
+        },
+        {
+          "oid": "c",
+          "text": "떨려도 그냥 나가요",
+          "weights": {
+            "flame": 7
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "fa_trip",
+      "type": "choice",
+      "emoji": "🚌",
+      "required": true,
+      "text": "여행을 간다면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "가는 곳에 맞춰 즐겨요",
+          "weights": {
+            "water": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "안 가본 데를 가고 싶어요",
+          "weights": {
+            "wind": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "매년 가던 데가 좋아요",
+          "weights": {
+            "forest": 3
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "fa_helper",
+      "type": "choice",
+      "emoji": "🫶",
+      "required": true,
+      "text": "누가 도와달라고 하면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "웃으면서 바로 도와줘요",
+          "weights": {
+            "flower": 5
+          }
+        },
+        {
+          "oid": "b",
+          "text": "어떻게 도울지 맞춰서 해줘요",
+          "weights": {
+            "water": 5
+          }
+        },
+        {
+          "oid": "c",
+          "text": "정말 필요한 게 뭔지 알려줘요",
+          "weights": {
+            "star": 5
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "fa_bored",
+      "type": "choice",
+      "emoji": "😑",
+      "required": true,
+      "text": "너무 심심할 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "밖에 나가서 뭐라도 찾아요",
+          "weights": {
+            "wind": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "하고 싶던 걸 바로 시작해요",
+          "weights": {
+            "flame": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "가만히 있으면서 생각해요",
+          "weights": {
+            "forest": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "fa_moving",
+      "type": "choice",
+      "emoji": "📦",
+      "required": true,
+      "text": "이사를 가게 되면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "새 방을 어떻게 꾸밀지 생각해요",
+          "weights": {
+            "flower": 7
+          }
+        },
+        {
+          "oid": "b",
+          "text": "새 동네를 다 돌아보고 싶어요",
+          "weights": {
+            "wind": 7
+          }
+        },
+        {
+          "oid": "c",
+          "text": "살던 곳이 오래 생각나요",
+          "weights": {
+            "forest": 7
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "fa_team",
+      "type": "choice",
+      "emoji": "🧩",
+      "required": true,
+      "text": "모둠에서 내가 맡는 자리는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "빠진 자리를 메워요",
+          "weights": {
+            "water": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "무엇부터 할지 알려줘요",
+          "weights": {
+            "star": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "다들 힘내게 밀어줘요",
+          "weights": {
+            "flame": 3
+          }
+        }
+      ]
+    }
+  ],
+  "resultTypes": [
+    {
+      "code": "flower",
+      "name": "꽃 요정",
+      "subtitle": "곁을 환하게 하는 요정",
+      "emoji": "🌸",
+      "color": "#d94f8a",
+      "content": {
+        "summary": "있는 자리를 밝게 만들어요. 크게 무언가 하지 않아도, 꽃 요정이 있으면 그 자리가 좋아져요.",
+        "strengths": [
+          "사람 기분을 좋게 만들어요",
+          "작은 것도 예쁘게 챙겨요",
+          "고맙다는 말을 잘 해요"
+        ],
+        "cautions": [
+          "미움받는 걸 무서워해요",
+          "혼자 있으면 시들해져요"
+        ],
+        "tips": [
+          "오늘은 나를 위한 것 하나를 골라봐요."
+        ],
+        "funFact": "꽃이 피는 시각은 꽃마다 달라요. 나팔꽃은 해가 뜨기 전에 펴요.",
+        "goodWith": [
+          "water",
+          "forest"
+        ]
+      }
+    },
+    {
+      "code": "water",
+      "name": "물 요정",
+      "subtitle": "어디든 맞춰 흐르는 요정",
+      "emoji": "💧",
+      "color": "#3a7bd5",
+      "content": {
+        "summary": "어떤 자리에 놓아도 잘 지내요. 고집을 세우지 않고 흘러가면서, 결국 가고 싶은 데까지 가요.",
+        "strengths": [
+          "새로운 자리에 금방 익숙해져요",
+          "다투지 않고 방법을 찾아요",
+          "포기하지 않고 계속 흘러요"
+        ],
+        "cautions": [
+          "내 모양이 뭔지 헷갈려요",
+          "싫다고 말하기 어려워요"
+        ],
+        "tips": [
+          "오늘 하나는 내가 정한 대로 해봐요."
+        ],
+        "funFact": "물은 아주 좁은 틈으로도 스며들어요. 바위를 쪼개기도 해요.",
+        "goodWith": [
+          "flower",
+          "wind"
+        ]
+      }
+    },
+    {
+      "code": "wind",
+      "name": "바람 요정",
+      "subtitle": "한자리에 머물지 않는 요정",
+      "emoji": "🍃",
+      "color": "#2f9e74",
+      "content": {
+        "summary": "가만히 있는 걸 못 해요. 여기저기 다니면서 새로운 걸 물어다 주는 게 바람 요정이 하는 일이에요.",
+        "strengths": [
+          "새로운 걸 먼저 찾아내요",
+          "여러 곳에 친구가 있어요",
+          "지루한 자리를 바꿔놓아요"
+        ],
+        "cautions": [
+          "한 가지를 오래 하기 어려워요",
+          "약속을 잊을 수 있어요"
+        ],
+        "tips": [
+          "오늘은 한 가지를 끝까지만 해봐요."
+        ],
+        "funFact": "바람은 뜨거운 곳과 찬 곳의 차이 때문에 불어요. 차이가 클수록 세게 불어요.",
+        "goodWith": [
+          "star",
+          "water"
+        ]
+      }
+    },
+    {
+      "code": "star",
+      "name": "별 요정",
+      "subtitle": "멀리서도 길을 알려주는 요정",
+      "emoji": "⭐",
+      "color": "#c9a84c",
+      "content": {
+        "summary": "가까이 있지 않아도 힘이 돼요. 어두울 때 어디로 갈지 알려주는 쪽이라, 사람들이 별 요정을 보고 방향을 잡아요.",
+        "strengths": [
+          "어려울 때 방향을 알려줘요",
+          "흔들리지 않고 같은 자리에 있어요",
+          "먼 일을 미리 봐요"
+        ],
+        "cautions": [
+          "가까이 다가가는 게 어려워요",
+          "혼자 오래 버텨요"
+        ],
+        "tips": [
+          "오늘은 누군가에게 한 걸음 더 다가가봐요."
+        ],
+        "funFact": "지금 보이는 별빛은 아주 오래 전에 떠난 빛이에요.",
+        "goodWith": [
+          "wind",
+          "flame"
+        ]
+      }
+    },
+    {
+      "code": "flame",
+      "name": "불꽃 요정",
+      "subtitle": "먼저 뛰어드는 요정",
+      "emoji": "🔥",
+      "color": "#e0455f",
+      "content": {
+        "summary": "하고 싶은 게 생기면 바로 타올라요. 옆에 있으면 같이 뜨거워져서, 시작해야 할 때 불꽃 요정을 찾게 돼요.",
+        "strengths": [
+          "시작이 빨라요",
+          "지치지 않고 밀고 가요",
+          "다른 사람에게도 힘을 옮겨요"
+        ],
+        "cautions": [
+          "너무 세게 타서 금방 지쳐요",
+          "화가 나면 말이 세져요"
+        ],
+        "tips": [
+          "오늘은 한 번 쉬어봐요. 쉬는 것도 준비예요."
+        ],
+        "funFact": "불꽃의 색은 온도에 따라 달라요. 파란 불꽃이 가장 뜨거워요.",
+        "goodWith": [
+          "star",
+          "forest"
+        ]
+      }
+    },
+    {
+      "code": "forest",
+      "name": "숲 요정",
+      "subtitle": "오래 자라는 요정",
+      "emoji": "🌲",
+      "color": "#7c6f9c",
+      "content": {
+        "summary": "빠르지 않지만 멈추지 않아요. 매일 조금씩 자라서, 어느새 아무도 못 따라올 만큼 커져 있어요.",
+        "strengths": [
+          "오래 걸리는 일을 이어가요",
+          "여러 사람이 쉴 자리를 만들어요",
+          "조급해하지 않아요"
+        ],
+        "cautions": [
+          "시작이 늦어요",
+          "변화를 반갑지 않게 봐요"
+        ],
+        "tips": [
+          "오늘은 안 해본 것 하나를 해봐요."
+        ],
+        "funFact": "나무는 뿌리로 서로 신호를 주고받아요. 숲은 이어져 있어요.",
+        "goodWith": [
+          "flower",
+          "flame"
+        ]
+      }
+    }
+  ]
+}

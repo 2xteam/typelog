@@ -28,6 +28,14 @@ export type Report = {
   distribution?: { code: string; count: number; pct: number }[];
   /** 1등과 2등의 평균 격차 — 작으면 tiebreak 가 결과를 지배한다 */
   meanConfidence?: number | null;
+  /**
+   * 1등과 2등이 **정확히 동점**이던 비율(%).
+   *
+   * `meanConfidence` 로는 못 잡는다 — `nearest` 의 점수는 거리라서 눈금이 크고,
+   * 축 하나가 정확히 중간값이면 그 축은 판별력이 0인데도 평균 격차는 커 보인다.
+   * 동점이면 `tiebreak`(없으면 **배열 순서**)가 결과를 정한다.
+   */
+  tieRate?: number | null;
   summary?: { itemCount: number; scoringItems: number; estimatedMinutes: number };
 };
 
@@ -339,11 +347,13 @@ export function validateImport(payload: unknown): Report {
   // ── 몬테카를로 분포 점검 ──
   let distribution: Report["distribution"];
   let meanConfidence: number | null = null;
+  let tieRate: number | null = null;
   if (!errors.length) {
     const rnd = seeded(20260904);
     const counts = new Map<string, number>();
     let confSum = 0;
     let confN = 0;
+    let ties = 0;
     for (let i = 0; i < MONTE_CARLO_RUNS; i += 1) {
       const answers = randomAnswers(items as Item[], rnd);
       const out = score({ outcomes: outs, items: items as Item[], resolver: res, resultTypes: types, answers });
@@ -352,6 +362,7 @@ export function validateImport(payload: unknown): Report {
       if (out.confidence !== null) {
         confSum += out.confidence;
         confN += 1;
+        if (out.confidence === 0) ties += 1;
       }
     }
     distribution = [...counts.entries()]
@@ -359,20 +370,51 @@ export function validateImport(payload: unknown): Report {
       .sort((a, b) => b.count - a.count);
     meanConfidence = confN ? Math.round((confSum / confN) * 10) / 10 : null;
 
+    tieRate = confN ? Math.round((ties / confN) * 1000) / 10 : null;
+
+    /**
+     * 치우침은 **타입 개수에 견주어** 본다.
+     *
+     * 절대값 40% 만 보면 8타입 질문지에서 22.6% 가 조용히 통과한다 — 고른
+     * 분포라면 12.5% 여야 하니 1.8배인데도 걸리지 않았다. 타입이 16개면
+     * 6.25% 가 기준이므로 같은 22.6% 는 3.6배로 훨씬 심각하다.
+     * (2026-09-04 english-name 이 배열 순서로 결정되고 있던 것을 이 게이트가
+     *  없어서 놓쳤다)
+     */
+    const even = types.length ? 100 / types.length : 0;
     for (const d of distribution) {
       if (d.code === "(결과 없음)") {
         err("resolver", `무작위 응답 ${d.pct}% 가 어떤 결과에도 걸리지 않아요.`);
       } else if (d.pct > 40) {
         warn("distribution", `"${d.code}" 가 ${d.pct}% 로 치우쳤어요.`);
+      } else if (even && d.pct > even * 2.5) {
+        warn(
+          "distribution",
+          `"${d.code}" 가 ${d.pct}% 예요 — 고르면 ${Math.round(even * 10) / 10}% 인데 2.5배가 넘어요.`,
+        );
       }
     }
     for (const t of types) {
       const found = distribution.find((d) => d.code === t.code);
       if (!found) warn("distribution", `"${t.code}" 는 한 번도 나오지 않았어요 — 도달 불가일 수 있어요.`);
       else if (found.pct < 2) warn("distribution", `"${t.code}" 가 ${found.pct}% 로 거의 안 나와요.`);
+      else if (even && found.pct < even * 0.4) {
+        warn(
+          "distribution",
+          `"${t.code}" 가 ${found.pct}% 예요 — 고르면 ${Math.round(even * 10) / 10}% 인데 절반도 안 돼요.`,
+        );
+      }
     }
     if (meanConfidence !== null && meanConfidence < 3) {
       warn("distribution", `1등과 2등의 평균 격차가 ${meanConfidence} 로 작아요 — tiebreak 가 결과를 지배해요.`);
+    }
+    if (tieRate !== null && tieRate > 5) {
+      warn(
+        "distribution",
+        `무작위 응답 ${tieRate}% 에서 1·2등이 정확히 동점이에요 — ${
+          res.tiebreak?.length ? "tiebreak 순서" : "resultTypes 배열 순서"
+        }가 결과를 정해요.`,
+      );
     }
   }
 
@@ -382,6 +424,7 @@ export function validateImport(payload: unknown): Report {
     warnings,
     distribution,
     meanConfidence,
+    tieRate,
     summary: {
       itemCount,
       scoringItems,

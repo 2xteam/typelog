@@ -6,10 +6,30 @@ export const metadata: Metadata = {
   description:
     "질문에 답하면 나의 타입이 나오고, 다시 할 때마다 그 변화가 쌓이는 성향 놀이",
   icons: {
-    icon: "/favicon.png",
+    /**
+     * 16px 은 단순화한 별도 그림이다. 브라우저가 크기별로 골라 쓴다 —
+     * 목록에 sizes 를 안 적으면 큰 쪽을 줄여 쓰면서 회색 덩어리가 된다.
+     * → public/app-icon-16.svg
+     */
+    icon: [
+      { url: "/favicon-16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon.png", sizes: "32x32", type: "image/png" },
+    ],
     apple: "/icon.png",
   },
   manifest: "/manifest.webmanifest",
+  /**
+   * 링크를 붙였을 때 보이는 미리보기.
+   *
+   * 공유 링크(`/r/[token]`)는 여기 값을 쓰지 않고 자기 `opengraph-image` 로
+   * 친구의 타입까지 그린다 → app/r/[token]/opengraph-image.tsx
+   */
+  openGraph: {
+    type: "website",
+    siteName: "TypeLog",
+    title: "TypeLog — 나의 타입을 기록해요",
+    description: "질문에 답하면 나의 타입이 나오고, 다시 할 때마다 그 변화가 쌓여요.",
+  },
   other: {
     "mobile-web-app-capable": "yes",
     "apple-mobile-web-app-capable": "yes",
