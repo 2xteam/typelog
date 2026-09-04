@@ -1,0 +1,536 @@
+{
+  "$schema": "typelog/quiz/v1",
+  "mode": "upsert",
+  "_note": [
+    "나라의 **환경·생활 방식**만 근거로 쓴다 — 기후·자연·도시 밀도·이동 수단·식문화.",
+    "\"어느 나라 사람은 어떻다\" 는 쓰지 않는다. 사실이 아니고, 아이가 읽는 글이다.",
+    "문장은 전부 '나'에 대한 이야기다. 나라를 평가하지 않는다.",
+    "실제로 있는 나라 이름이므로 disclaimer 를 붙인다."
+  ],
+  "quiz": {
+    "slug": "my-country",
+    "title": "나에게 살면 좋을 나라는?",
+    "tagline": "열 가지 질문으로 찾는 나의 나라",
+    "category": "country",
+    "ageRange": {
+      "min": 10,
+      "max": 16
+    },
+    "cover": {
+      "emoji": "🌍",
+      "imageUrl": null
+    },
+    "disclaimer": "생활 방식이 잘 맞을 곳을 재미로 골라본 거예요. 나라를 견주거나 평가하는 뜻은 없어요.",
+    "order": 110,
+    "shuffle": false
+  },
+  "outcomes": [
+    {
+      "id": "nz",
+      "kind": "tally",
+      "label": "뉴질랜드"
+    },
+    {
+      "id": "jp",
+      "kind": "tally",
+      "label": "일본"
+    },
+    {
+      "id": "it",
+      "kind": "tally",
+      "label": "이탈리아"
+    },
+    {
+      "id": "ca",
+      "kind": "tally",
+      "label": "캐나다"
+    },
+    {
+      "id": "ch",
+      "kind": "tally",
+      "label": "스위스"
+    },
+    {
+      "id": "es",
+      "kind": "tally",
+      "label": "스페인"
+    }
+  ],
+  "resolver": {
+    "strategy": "argmax",
+    "tiebreak": [
+      "nz",
+      "jp",
+      "it",
+      "ca",
+      "ch",
+      "es"
+    ]
+  },
+  "items": [
+    {
+      "linkId": "co_weekend",
+      "type": "choice",
+      "emoji": "🗓️",
+      "required": true,
+      "text": "쉬는 날에 가장 하고 싶은 건?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "산이나 바다에 가요",
+          "weights": {
+            "nz": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "가던 곳에서 가던 대로 지내요",
+          "weights": {
+            "jp": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "사람 많은 데서 먹고 이야기해요",
+          "weights": {
+            "it": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "co_city",
+      "type": "choice",
+      "emoji": "🏙️",
+      "required": true,
+      "text": "살고 싶은 동네는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "조용하고 넓은 동네",
+          "weights": {
+            "ca": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "정리가 잘 된 깔끔한 동네",
+          "weights": {
+            "ch": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "늦게까지 불이 켜진 동네",
+          "weights": {
+            "es": 3
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "co_dinner",
+      "type": "choice",
+      "emoji": "🍽️",
+      "required": true,
+      "text": "저녁 한 끼를 고른다면?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "간단히 먹고 밖에 나가요",
+          "weights": {
+            "nz": 5
+          }
+        },
+        {
+          "oid": "b",
+          "text": "여러 사람과 길게 먹어요",
+          "weights": {
+            "it": 5
+          }
+        },
+        {
+          "oid": "c",
+          "text": "정해진 시간에 딱 먹어요",
+          "weights": {
+            "ch": 5
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "co_plan",
+      "type": "choice",
+      "emoji": "🧭",
+      "required": true,
+      "text": "여행을 갈 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "시간표를 미리 정해요",
+          "weights": {
+            "jp": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "가서 정해도 된다고 생각해요",
+          "weights": {
+            "ca": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "가고 싶은 데만 정해둬요",
+          "weights": {
+            "es": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "co_weather",
+      "type": "choice",
+      "emoji": "🌦️",
+      "required": true,
+      "text": "견딜 수 있는 날씨는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "비가 자주 와도 초록이면 좋아요",
+          "weights": {
+            "nz": 7
+          }
+        },
+        {
+          "oid": "b",
+          "text": "겨울이 길어도 눈이 예쁘면 좋아요",
+          "weights": {
+            "ca": 7
+          }
+        },
+        {
+          "oid": "c",
+          "text": "추워도 공기가 맑으면 좋아요",
+          "weights": {
+            "ch": 7
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "co_new_people",
+      "type": "choice",
+      "emoji": "🫱",
+      "required": true,
+      "text": "처음 보는 사람들 사이에서 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "예의를 먼저 지켜요",
+          "weights": {
+            "jp": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "먼저 말을 걸어요",
+          "weights": {
+            "it": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "웃으면서 분위기를 봐요",
+          "weights": {
+            "es": 3
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "co_move",
+      "type": "choice",
+      "emoji": "🚃",
+      "required": true,
+      "text": "매일 다니는 길은 어떤 게 좋아요?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "차 없이 걷거나 자전거로",
+          "weights": {
+            "nz": 5
+          }
+        },
+        {
+          "oid": "b",
+          "text": "정확하게 오는 전철로",
+          "weights": {
+            "jp": 5
+          }
+        },
+        {
+          "oid": "c",
+          "text": "멀어도 편한 차로",
+          "weights": {
+            "ca": 5
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "co_noise",
+      "type": "choice",
+      "emoji": "🔔",
+      "required": true,
+      "text": "하루 중 소리가 어떠면 좋아요?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "사람 소리가 늘 있으면 좋아요",
+          "weights": {
+            "it": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "조용하다가 종소리만 들리면 좋아요",
+          "weights": {
+            "ch": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "저녁에 음악이 들리면 좋아요",
+          "weights": {
+            "es": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "co_holiday",
+      "type": "choice",
+      "emoji": "🎊",
+      "required": true,
+      "text": "가장 기대되는 날은?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "긴 연휴에 자연으로 떠나는 날",
+          "weights": {
+            "nz": 7
+          }
+        },
+        {
+          "oid": "b",
+          "text": "동네 축제가 열리는 날",
+          "weights": {
+            "it": 7
+          }
+        },
+        {
+          "oid": "c",
+          "text": "밤늦게까지 노는 여름밤",
+          "weights": {
+            "es": 7
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "co_rule",
+      "type": "choice",
+      "emoji": "📋",
+      "required": true,
+      "text": "규칙에 대해 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "있으면 지키는 게 편해요",
+          "weights": {
+            "jp": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "왜 있는지 알면 지켜요",
+          "weights": {
+            "ca": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "정확하게 정해져 있으면 좋아요",
+          "weights": {
+            "ch": 3
+          }
+        }
+      ]
+    }
+  ],
+  "resultTypes": [
+    {
+      "code": "nz",
+      "name": "뉴질랜드",
+      "subtitle": "자연 옆에서 느긋하게",
+      "emoji": "🐑",
+      "color": "#2f9e74",
+      "content": {
+        "summary": "사람보다 양이 많은 나라예요. 도시를 조금만 벗어나면 산과 바다가 바로 나와요. 서두르지 않고 자기 속도로 지내고 싶은 사람에게 잘 맞아요.",
+        "strengths": [
+          "혼자 있는 시간을 잘 써요",
+          "자연에서 힘을 얻어요",
+          "남의 속도에 흔들리지 않아요"
+        ],
+        "cautions": [
+          "사람이 많은 자리에서 지쳐요",
+          "시작이 늦어질 수 있어요"
+        ],
+        "tips": [
+          "오늘은 밖에서 30분만 걸어봐요."
+        ],
+        "funFact": "뉴질랜드에는 사람보다 양이 다섯 배쯤 많아요.",
+        "goodWith": [
+          "ca",
+          "ch"
+        ]
+      }
+    },
+    {
+      "code": "jp",
+      "name": "일본",
+      "subtitle": "정갈하고 촘촘한 하루",
+      "emoji": "🍡",
+      "color": "#d94f8a",
+      "content": {
+        "summary": "전철이 분 단위로 오고, 작은 가게가 한 가지를 오래 해요. 정해진 것이 지켜지는 곳에서 마음이 편해지는 사람에게 잘 맞아요.",
+        "strengths": [
+          "약속한 걸 지켜요",
+          "한 가지를 오래 해요",
+          "작은 차이를 알아차려요"
+        ],
+        "cautions": [
+          "갑자기 바뀌면 마음이 복잡해요",
+          "하고 싶은 걸 말하지 않아요"
+        ],
+        "tips": [
+          "오늘 하고 싶은 것 하나를 소리 내어 말해봐요."
+        ],
+        "funFact": "일본에는 100년 넘게 이어온 가게가 수만 곳 있어요.",
+        "goodWith": [
+          "ch",
+          "nz"
+        ]
+      }
+    },
+    {
+      "code": "it",
+      "name": "이탈리아",
+      "subtitle": "사람과 음식 사이에서",
+      "emoji": "🍝",
+      "color": "#e0455f",
+      "content": {
+        "summary": "밥 한 끼에 두 시간이 걸리고, 광장에 사람이 모여요. 이야기하고 먹고 웃는 게 하루의 중심인 사람에게 잘 맞아요.",
+        "strengths": [
+          "사람들과 있는 걸 좋아해요",
+          "마음을 그대로 표현해요",
+          "먹고 나누는 걸 잘해요"
+        ],
+        "cautions": [
+          "혼자 있으면 심심해요",
+          "정해진 순서를 답답해해요"
+        ],
+        "tips": [
+          "오늘은 혼자 하는 것 하나를 해봐요."
+        ],
+        "funFact": "이탈리아에는 지역마다 다른 파스타 모양이 300가지 넘게 있어요.",
+        "goodWith": [
+          "es",
+          "ca"
+        ]
+      }
+    },
+    {
+      "code": "ca",
+      "name": "캐나다",
+      "subtitle": "넓고 조용하고 여러 색",
+      "emoji": "🍁",
+      "color": "#3a7bd5",
+      "content": {
+        "summary": "땅이 아주 넓고 사람은 흩어져 살아요. 여러 나라에서 온 사람들이 섞여 있어서, 다른 것을 편하게 받아들이는 사람에게 잘 맞아요.",
+        "strengths": [
+          "다른 것을 편하게 받아들여요",
+          "넓게 생각해요",
+          "차분하게 지내요"
+        ],
+        "cautions": [
+          "결정을 오래 미뤄요",
+          "너무 조용히 있어요"
+        ],
+        "tips": [
+          "오늘은 먼저 의견을 말해봐요."
+        ],
+        "funFact": "캐나다에는 세계 호수의 절반 가까이가 있어요.",
+        "goodWith": [
+          "nz",
+          "it"
+        ]
+      }
+    },
+    {
+      "code": "ch",
+      "name": "스위스",
+      "subtitle": "산과 정확함 사이에서",
+      "emoji": "🏔️",
+      "color": "#7c6f9c",
+      "content": {
+        "summary": "산이 나라의 절반이고, 기차가 정확하게 다녀요. 미리 정해두고 그대로 움직이는 게 편한 사람에게 잘 맞아요.",
+        "strengths": [
+          "미리 준비해요",
+          "정확하게 해내요",
+          "급한 상황에서 침착해요"
+        ],
+        "cautions": [
+          "준비가 안 되면 시작을 못 해요",
+          "걱정이 앞서요"
+        ],
+        "tips": [
+          "준비가 반만 됐어도 한 걸음 나가봐요."
+        ],
+        "funFact": "스위스는 나라 면적의 60% 가 알프스 산이에요.",
+        "goodWith": [
+          "jp",
+          "nz"
+        ]
+      }
+    },
+    {
+      "code": "es",
+      "name": "스페인",
+      "subtitle": "늦게까지 밝은 거리",
+      "emoji": "🌞",
+      "color": "#e0b845",
+      "content": {
+        "summary": "해가 늦게 지고 저녁이 길어요. 낮에 한숨 쉬고 밤에 다시 나오는 하루를 사는 곳이라, 에너지가 늦게 오르는 사람에게 잘 맞아요.",
+        "strengths": [
+          "분위기를 밝게 만들어요",
+          "사람을 잘 모아요",
+          "지금을 즐겨요"
+        ],
+        "cautions": [
+          "해야 할 일을 뒤로 밀어요",
+          "쉬어야 할 때 계속 놀아요"
+        ],
+        "tips": [
+          "오늘 미룬 것 하나를 놀기 전에 해봐요."
+        ],
+        "funFact": "스페인은 여름에 밤 10시가 되어도 하늘이 밝아요.",
+        "goodWith": [
+          "it",
+          "ca"
+        ]
+      }
+    }
+  ]
+}

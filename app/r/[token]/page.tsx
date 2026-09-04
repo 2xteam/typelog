@@ -25,6 +25,8 @@ type Shared = {
     emoji: string | null;
     itemCount: number | null;
     estimatedMinutes: number | null;
+    ageLabel: string | null;
+    disclaimer: string | null;
   };
   open: boolean;
   notice: string | null;
@@ -133,6 +135,9 @@ export default function SharedLanding({ params }: { params: Promise<{ token: str
         <div
           style={{ display: "flex", gap: 6, marginTop: 14, flexWrap: "wrap", justifyContent: "center" }}
         >
+          {data.quiz.ageLabel ? (
+            <span className="pill pill--age">{data.quiz.ageLabel} 추천</span>
+          ) : null}
           {data.quiz.itemCount ? <span className="pill">질문 {data.quiz.itemCount}개</span> : null}
           {data.quiz.estimatedMinutes ? (
             <span className="pill">약 {data.quiz.estimatedMinutes}분</span>
@@ -158,6 +163,9 @@ export default function SharedLanding({ params }: { params: Promise<{ token: str
         )}
 
         {msg ? <p className="quiz-msg">{msg}</p> : null}
+        {data.quiz.disclaimer ? (
+          <p className="result-fineprint">{data.quiz.disclaimer}</p>
+        ) : null}
       </Sheet>
     </>
   );

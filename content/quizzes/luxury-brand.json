@@ -1,0 +1,536 @@
+{
+  "$schema": "typelog/quiz/v1",
+  "mode": "upsert",
+  "_note": [
+    "실제 상표를 결과로 쓴다. 로고·서체·제품 사진은 쓰지 않고 이름과 이모지만 쓴다.",
+    "근거는 사실로 확인되는 것만 — 창업 배경 · 대표적인 디자인 요소 · 만들어진 목적.",
+    "브랜드의 좋고 나쁨을 말하지 않고, 사라고도 하지 않는다. 문장은 나에 대한 이야기다.",
+    "disclaimer 를 붙여 그 브랜드와 관련된 것처럼 읽히지 않게 한다."
+  ],
+  "quiz": {
+    "slug": "luxury-brand",
+    "title": "나에게 어울리는 명품 브랜드는?",
+    "tagline": "열 가지 질문으로 찾는 나의 취향",
+    "category": "brand",
+    "ageRange": {
+      "min": 13,
+      "max": 19
+    },
+    "cover": {
+      "emoji": "💎",
+      "imageUrl": null
+    },
+    "disclaimer": "실제로 있는 브랜드 이름을 재미로 빌려 왔어요. 각 브랜드와는 아무 관련이 없고, 사라고 권하는 것도 아니에요.",
+    "order": 130,
+    "shuffle": false
+  },
+  "outcomes": [
+    {
+      "id": "chanel",
+      "kind": "tally",
+      "label": "샤넬"
+    },
+    {
+      "id": "louisvuitton",
+      "kind": "tally",
+      "label": "루이비통"
+    },
+    {
+      "id": "coach",
+      "kind": "tally",
+      "label": "코치"
+    },
+    {
+      "id": "ysl",
+      "kind": "tally",
+      "label": "입생로랑"
+    },
+    {
+      "id": "balenciaga",
+      "kind": "tally",
+      "label": "발렌시아가"
+    },
+    {
+      "id": "moncler",
+      "kind": "tally",
+      "label": "몽클레르"
+    }
+  ],
+  "resolver": {
+    "strategy": "argmax",
+    "tiebreak": [
+      "chanel",
+      "louisvuitton",
+      "coach",
+      "ysl",
+      "balenciaga",
+      "moncler"
+    ]
+  },
+  "items": [
+    {
+      "linkId": "lb_closet",
+      "type": "choice",
+      "emoji": "🚪",
+      "required": true,
+      "text": "내 옷장은 어떤 상태가 좋아요?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "색이 정리되어 단정한 상태",
+          "weights": {
+            "chanel": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "언제든 떠날 짐이 준비된 상태",
+          "weights": {
+            "louisvuitton": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "오래 입은 것들이 남아 있는 상태",
+          "weights": {
+            "coach": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "lb_style",
+      "type": "choice",
+      "emoji": "🪞",
+      "required": true,
+      "text": "옷을 고를 때 가장 먼저 보는 건?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "선이 분명한지",
+          "weights": {
+            "ysl": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "남들과 다른지",
+          "weights": {
+            "balenciaga": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "추울 때도 괜찮은지",
+          "weights": {
+            "moncler": 3
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "lb_new",
+      "type": "choice",
+      "emoji": "✨",
+      "required": true,
+      "text": "새로 나온 게 있으면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "오래 봐도 괜찮을지 따져봐요",
+          "weights": {
+            "chanel": 5
+          }
+        },
+        {
+          "oid": "b",
+          "text": "지금 쓰는 게 아직 괜찮으면 안 봐요",
+          "weights": {
+            "coach": 5
+          }
+        },
+        {
+          "oid": "c",
+          "text": "낯설어도 한번 봐요",
+          "weights": {
+            "balenciaga": 5
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "lb_trip",
+      "type": "choice",
+      "emoji": "🧭",
+      "required": true,
+      "text": "여행 짐을 쌀 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "가방부터 정하고 채워요",
+          "weights": {
+            "louisvuitton": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "꼭 필요한 것만 줄여요",
+          "weights": {
+            "ysl": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "날씨에 맞춰 단단히 챙겨요",
+          "weights": {
+            "moncler": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "lb_photo",
+      "type": "choice",
+      "emoji": "📸",
+      "required": true,
+      "text": "사진에 찍힐 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "옷이 흐트러지지 않았는지 봐요",
+          "weights": {
+            "chanel": 7
+          }
+        },
+        {
+          "oid": "b",
+          "text": "표정이 분명한 쪽이 좋아요",
+          "weights": {
+            "ysl": 7
+          }
+        },
+        {
+          "oid": "c",
+          "text": "남들과 다른 자세가 좋아요",
+          "weights": {
+            "balenciaga": 7
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "lb_gift",
+      "type": "choice",
+      "emoji": "🎁",
+      "required": true,
+      "text": "오래 두고 쓸 선물을 받는다면?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "여행에 들고 갈 수 있는 것",
+          "weights": {
+            "louisvuitton": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "쓸수록 손에 익는 것",
+          "weights": {
+            "coach": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "추운 날 든든한 것",
+          "weights": {
+            "moncler": 3
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "lb_money",
+      "type": "choice",
+      "emoji": "💳",
+      "required": true,
+      "text": "큰돈을 쓸 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "오래 쓸 수 있는지 봐요",
+          "weights": {
+            "chanel": 5
+          }
+        },
+        {
+          "oid": "b",
+          "text": "지금 마음이 가는지 봐요",
+          "weights": {
+            "louisvuitton": 5
+          }
+        },
+        {
+          "oid": "c",
+          "text": "실제로 쓸 데가 있는지 봐요",
+          "weights": {
+            "ysl": 5
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "lb_rule",
+      "type": "choice",
+      "emoji": "📐",
+      "required": true,
+      "text": "정해진 방식에 대해 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "지켜야 편해요",
+          "weights": {
+            "coach": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "왜 그런지 물어봐요",
+          "weights": {
+            "balenciaga": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "필요하면 그대로 따라요",
+          "weights": {
+            "moncler": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "lb_weekend",
+      "type": "choice",
+      "emoji": "🗓️",
+      "required": true,
+      "text": "주말에 하고 싶은 건?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "차분히 정리하고 쉬어요",
+          "weights": {
+            "chanel": 7
+          }
+        },
+        {
+          "oid": "b",
+          "text": "쓰던 걸 손보고 아껴둬요",
+          "weights": {
+            "coach": 7
+          }
+        },
+        {
+          "oid": "c",
+          "text": "밖에 나가 걷거나 올라요",
+          "weights": {
+            "moncler": 7
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "lb_opinion",
+      "type": "choice",
+      "emoji": "💬",
+      "required": true,
+      "text": "생각이 다를 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "새로운 데로 화제를 옮겨요",
+          "weights": {
+            "louisvuitton": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "내 생각을 분명히 말해요",
+          "weights": {
+            "ysl": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "다른 방법을 꺼내봐요",
+          "weights": {
+            "balenciaga": 3
+          }
+        }
+      ]
+    }
+  ],
+  "resultTypes": [
+    {
+      "code": "chanel",
+      "name": "샤넬",
+      "subtitle": "흐트러지지 않는 사람",
+      "emoji": "🖤",
+      "color": "#25093f",
+      "content": {
+        "summary": "정돈된 것이 편해요. 유행을 따라가기보다 오래 봐도 괜찮은 쪽을 고르는 사람에게 어울려요. 흑백처럼 분명한 게 좋은 쪽이에요.",
+        "strengths": [
+          "오래 봐도 괜찮은 걸 골라요",
+          "정리된 상태를 지켜요",
+          "유행에 흔들리지 않아요"
+        ],
+        "cautions": [
+          "새로운 걸 늦게 받아들여요",
+          "규칙을 스스로에게 세게 매겨요"
+        ],
+        "tips": [
+          "오늘은 계획에 없던 것 하나를 해봐요."
+        ],
+        "funFact": "창업자 가브리엘 샤넬은 코르셋을 벗고 편하게 움직이는 옷을 만들려고 시작했어요.",
+        "goodWith": [
+          "ysl",
+          "coach"
+        ]
+      }
+    },
+    {
+      "code": "louisvuitton",
+      "name": "루이비통",
+      "subtitle": "떠날 준비가 되어 있는 사람",
+      "emoji": "🧳",
+      "color": "#7c6f9c",
+      "content": {
+        "summary": "새로운 곳으로 가는 게 설레요. 짐을 챙겨 떠나는 사람에게 어울려요 — 이 브랜드는 원래 여행 가방을 만드는 곳에서 시작했어요.",
+        "strengths": [
+          "낯선 곳으로 먼저 가봐요",
+          "짐을 잘 챙겨요",
+          "새로운 걸 겁내지 않아요"
+        ],
+        "cautions": [
+          "한자리에 오래 못 있어요",
+          "가까이 있는 걸 지나쳐요"
+        ],
+        "tips": [
+          "오늘은 바로 옆 사람에게 한 가지를 물어봐요."
+        ],
+        "funFact": "처음에는 배와 기차에 싣기 좋게 뚜껑이 납작한 여행 가방을 만드는 공방이었어요.",
+        "goodWith": [
+          "moncler",
+          "chanel"
+        ]
+      }
+    },
+    {
+      "code": "coach",
+      "name": "코치",
+      "subtitle": "쓰면서 길들이는 사람",
+      "emoji": "🤎",
+      "color": "#c96f8c",
+      "content": {
+        "summary": "새것보다 손에 익은 것이 좋아요. 오래 쓸수록 나아지는 것을 아는 사람에게 어울려요. 가죽처럼 시간이 지나서 더 좋아지는 쪽이에요.",
+        "strengths": [
+          "오래 쓸 것을 골라요",
+          "손에 익은 것을 아껴요",
+          "요란하지 않아요"
+        ],
+        "cautions": [
+          "바꿔야 할 때도 계속 써요",
+          "새 걸 시작하기가 어려워요"
+        ],
+        "tips": [
+          "오늘은 새로 해보고 싶던 것 하나를 시작해봐요."
+        ],
+        "funFact": "야구 글러브를 만들던 가죽 공방에서 시작했어요. 그 부드러운 가죽이 특징이 됐어요.",
+        "goodWith": [
+          "chanel",
+          "moncler"
+        ]
+      }
+    },
+    {
+      "code": "ysl",
+      "name": "입생로랑",
+      "subtitle": "선이 분명한 사람",
+      "emoji": "🔺",
+      "color": "#e0455f",
+      "content": {
+        "summary": "애매한 걸 안 좋아해요. 할지 말지, 좋은지 아닌지 분명한 게 편한 사람에게 어울려요. 검정과 곧은 선이 잘 맞는 쪽이에요.",
+        "strengths": [
+          "할지 말지 빨리 정해요",
+          "생각을 분명하게 말해요",
+          "군더더기를 덜어내요"
+        ],
+        "cautions": [
+          "말이 세게 나가요",
+          "애매한 상황을 못 견뎌요"
+        ],
+        "tips": [
+          "말하기 전에 한 번 숨을 쉬어봐요."
+        ],
+        "funFact": "여성용 턱시도 '르 스모킹'을 내놓아, 여성이 바지 정장을 입는 걸 흔한 일로 만들었어요.",
+        "goodWith": [
+          "balenciaga",
+          "chanel"
+        ]
+      }
+    },
+    {
+      "code": "balenciaga",
+      "name": "발렌시아가",
+      "subtitle": "규칙을 한 번 흔드는 사람",
+      "emoji": "🌀",
+      "color": "#3a7bd5",
+      "content": {
+        "summary": "다들 하는 방식이 답답해요. 왜 꼭 그래야 하는지 묻고 다르게 해보는 사람에게 어울려요. 낯설다는 말을 겁내지 않는 쪽이에요.",
+        "strengths": [
+          "남들이 안 한 방법을 떠올려요",
+          "낯설다는 말을 겁내지 않아요",
+          "정해진 틀을 다시 봐요"
+        ],
+        "cautions": [
+          "일부러 반대로 갈 때가 있어요",
+          "설명을 건너뛰어요"
+        ],
+        "tips": [
+          "오늘은 왜 그렇게 했는지 한 번 설명해봐요."
+        ],
+        "funFact": "창업자 크리스토발 발렌시아가는 몸에 딱 붙지 않고 떨어지는 실루엣으로 옷의 기준을 바꿨어요.",
+        "goodWith": [
+          "ysl",
+          "louisvuitton"
+        ]
+      }
+    },
+    {
+      "code": "moncler",
+      "name": "몽클레르",
+      "subtitle": "추운 데서도 가는 사람",
+      "emoji": "🏔️",
+      "color": "#2f9e74",
+      "content": {
+        "summary": "힘든 조건이어도 하려던 걸 해요. 준비를 단단히 해서 밀고 가는 사람에게 어울려요 — 이 브랜드는 원래 산에 오르는 사람을 위해 만들어졌어요.",
+        "strengths": [
+          "힘든 조건에서도 해내요",
+          "미리 단단히 준비해요",
+          "포기하지 않아요"
+        ],
+        "cautions": [
+          "혼자 다 들다 지쳐요",
+          "쉬어야 할 때 계속 해요"
+        ],
+        "tips": [
+          "오늘은 무거운 것 하나를 같이 들자고 말해봐요."
+        ],
+        "funFact": "알프스 산악 등반대의 방한복을 만들면서 시작했어요. 이름도 프랑스의 마을 이름이에요.",
+        "goodWith": [
+          "louisvuitton",
+          "coach"
+        ]
+      }
+    }
+  ]
+}

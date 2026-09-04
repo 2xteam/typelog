@@ -136,6 +136,7 @@ export async function POST(req: Request) {
       category: q.category ?? "etc",
       ageRange: q.ageRange ?? { min: null, max: null },
       cover: { emoji: q.cover?.emoji ?? null, imageUrl: q.cover?.imageUrl ?? null },
+      disclaimer: q.disclaimer ?? null,
       status: "draft" as const,
       schedule: {
         startAt: sc.startAt ? new Date(sc.startAt) : null,

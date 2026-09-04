@@ -743,6 +743,24 @@ a {
   line-height: 1;
 }
 
+/**
+ * 좁은 화면에서는 **버튼을 아래 줄로 내린다.**
+ *
+ * 이모지 · 글 · 버튼을 한 줄에 두면 가운데 글 칸이 눌려서 제목이 한두 글자씩
+ * 줄바꿈된다("나는 / 어떤 / 성향 / 일까?"). 추천 연령 알약이 하나 더 붙으면서
+ * 더 심해졌다. 글이 이 카드의 주인이므로 글에 폭을 준다.
+ */
+@media (max-width: 420px) {
+  .quiz-card {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .quiz-card > .btn {
+    width: 100%;
+    margin-top: 4px;
+  }
+}
+
 .quiz-card-title {
   margin: 0;
   font-size: 15px;
@@ -1098,4 +1116,78 @@ a {
   font-weight: 600;
   color: var(--text-primary);
   letter-spacing: -0.01em;
+}
+
+/* ── 나이대 거르기 · 추천 연령 ──────────────────────────────────
+   질문지가 다섯 살부터 열아홉 살까지로 갈렸다. 카드에서 가장 먼저 보고
+   걸러야 하는 값이라 알약 중 추천 연령만 색을 준다.
+   근거: my-obsidian-vault → 10-Projects/TypeLog.md
+   ──────────────────────────────────────────────────────────── */
+
+.filter-label {
+  margin: 20px 0 8px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.filter-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  padding: 7px 13px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.chip:hover:not(:disabled) {
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+.chip[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+/* 아무것도 안 남는 나이대는 누를 수 없다. 눌러서 빈 화면을 보는 것보다 낫다 */
+.chip:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.pill--age {
+  border-color: rgba(139, 92, 246, 0.28);
+  background: var(--accent-subtle);
+  color: var(--accent);
+}
+
+/* 브랜드·나라 이름을 결과로 쓰는 질문지에 붙는 한 줄 */
+.quiz-card-fineprint {
+  margin: 10px 0 0;
+  font-size: 0.68rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+  word-break: keep-all;
+}
+
+.result-fineprint {
+  margin: 20px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 0.68rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+  word-break: keep-all;
 }

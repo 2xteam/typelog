@@ -1,4 +1,5 @@
 import mongoose, { Schema, type Model, type Types } from "mongoose";
+import { defineModel } from "@/lib/model";
 import type { ResultTypeContent, Weights } from "@/lib/quizTypes";
 
 /**
@@ -60,6 +61,5 @@ export type ResultTypeDoc = {
 };
 
 export function getResultTypeModel(): Model<ResultTypeDoc> {
-  return (mongoose.models.ResultType ??
-    mongoose.model("ResultType", ResultTypeSchema, "resulttypes")) as unknown as Model<ResultTypeDoc>;
+  return defineModel<ResultTypeDoc>("ResultType", ResultTypeSchema, "resulttypes");
 }

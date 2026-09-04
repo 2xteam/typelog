@@ -116,6 +116,33 @@ export function validateImport(payload: unknown): Report {
     warn("quiz.tagline", `40자를 넘어요 (${meta.tagline.length}자).`);
   }
 
+  /**
+   * 추천 연령은 **필수다.** 목록이 이걸로 대상을 알려주고 거르기도 한다.
+   * 없으면 화면에 아무것도 안 뜨는데 아무도 알려주지 않는다.
+   */
+  const age = isPlainObject(meta.ageRange) ? meta.ageRange : null;
+  const aMin = typeof age?.min === "number" ? age.min : null;
+  const aMax = typeof age?.max === "number" ? age.max : null;
+  if (aMin === null || aMax === null) {
+    err("quiz.ageRange", "추천 연령(min·max)이 필요해요. 목록에서 대상을 알려줘요.");
+  } else {
+    if (aMin > aMax) err("quiz.ageRange", `min(${aMin}) 이 max(${aMax}) 보다 커요.`);
+    if (aMin < 3 || aMax > 19) {
+      err("quiz.ageRange", "3세부터 19세 사이로 적어요. 그 밖이면 대상을 다시 생각해요.");
+    } else if (aMax - aMin > 10) {
+      // 너무 넓으면 알려주는 값이 없다. "6~19세" 는 아무 말도 하지 않는 것과 같다
+      warn("quiz.ageRange", `범위가 ${aMax - aMin}살이에요 — 넓으면 알려주는 값이 없어요.`);
+    }
+  }
+
+  if (meta.disclaimer !== null && meta.disclaimer !== undefined) {
+    if (typeof meta.disclaimer !== "string" || !meta.disclaimer.trim()) {
+      err("quiz.disclaimer", "빈 값이면 아예 넣지 않아요.");
+    } else if (meta.disclaimer.length > 90) {
+      warn("quiz.disclaimer", `90자를 넘어요 (${meta.disclaimer.length}자). 작게 붙는 한 줄이에요.`);
+    }
+  }
+
   // ── 일정 ──
   if (isPlainObject(meta.schedule)) {
     const sc = meta.schedule;
@@ -343,6 +370,40 @@ export function validateImport(payload: unknown): Report {
   }
 
   validateResultTypes(types, res, err, warn);
+
+  /**
+   * 화면에 보이는 문장에 **마크다운을 쓰지 않는다.**
+   *
+   * 화면은 평문으로 그리므로 `**굵게**` 는 별표가 그대로 보인다. JSON 을 쓰는
+   * 쪽(사람이든 AI든)은 마크다운 습관이 있어서 자꾸 들어간다. 오류가 아니라
+   * 그냥 이상한 글자로 남기 때문에 아무도 알려주지 않는다.
+   * (2026-09-04 `superpower` 의 funFact 가 공개된 뒤에야 발견됐다)
+   */
+  const MARKUP = /(\*\*|__|\[[^\]]*\]\(|`)/;
+  const scanText = (path: string, v: unknown) => {
+    if (typeof v === "string" && MARKUP.test(v)) {
+      warn(path, "마크다운으로 보이는 기호가 있어요. 화면은 평문으로 그려요.");
+    }
+  };
+  for (const [i, t] of types.entries()) {
+    const c = (t as { content?: Record<string, unknown> }).content ?? {};
+    scanText(`resultTypes[${i}].name`, (t as { name?: unknown }).name);
+    scanText(`resultTypes[${i}].subtitle`, (t as { subtitle?: unknown }).subtitle);
+    for (const key of ["summary", "funFact"]) scanText(`resultTypes[${i}].content.${key}`, c[key]);
+    for (const key of ["strengths", "cautions", "tips"]) {
+      const list = c[key];
+      if (Array.isArray(list)) {
+        list.forEach((x, j) => scanText(`resultTypes[${i}].content.${key}[${j}]`, x));
+      }
+    }
+  }
+  for (const [i, it] of flat.entries()) {
+    scanText(`items[${i}].text`, it.text);
+    (it.options ?? []).forEach((o, j) => scanText(`items[${i}].options[${j}].text`, o.text));
+  }
+  scanText("quiz.title", meta.title);
+  scanText("quiz.tagline", meta.tagline);
+  scanText("quiz.disclaimer", meta.disclaimer);
 
   // ── 몬테카를로 분포 점검 ──
   let distribution: Report["distribution"];

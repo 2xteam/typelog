@@ -1,4 +1,5 @@
 import mongoose, { Schema, type Model, type Types } from "mongoose";
+import { defineModel } from "@/lib/model";
 import type { Answer, OutcomeScore } from "@/lib/scoring";
 
 /**
@@ -135,6 +136,5 @@ export type AttemptDoc = {
 };
 
 export function getAttemptModel(): Model<AttemptDoc> {
-  return (mongoose.models.Attempt ??
-    mongoose.model("Attempt", AttemptSchema, "attempts")) as unknown as Model<AttemptDoc>;
+  return defineModel<AttemptDoc>("Attempt", AttemptSchema, "attempts");
 }

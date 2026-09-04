@@ -3,6 +3,7 @@ import { connectDB } from "@/lib/db";
 import { serverError } from "@/lib/auth";
 import { getQuizModel } from "@/models/Quiz";
 import { isComingSoon } from "@/lib/schedule";
+import { ageLabel } from "@/lib/ageRange";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -21,8 +22,8 @@ export async function GET() {
     const rows = await getQuizModel()
       .find({ status: "published" })
       .select({
-        slug: 1, title: 1, tagline: 1, category: 1, cover: 1,
-        estimatedMinutes: 1, items: 1, schedule: 1, order: 1,
+        slug: 1, title: 1, tagline: 1, category: 1, cover: 1, ageRange: 1,
+        disclaimer: 1, estimatedMinutes: 1, items: 1, schedule: 1, order: 1,
       })
       .sort({ order: 1, title: 1 })
       .lean();
@@ -34,6 +35,10 @@ export async function GET() {
       tagline: q.tagline,
       category: q.category,
       emoji: q.cover?.emoji ?? null,
+      /** 화면이 문자열을 만들지 않는다 — 형식을 한 곳에 둔다 → lib/ageRange.ts */
+      ageRange: { min: q.ageRange?.min ?? null, max: q.ageRange?.max ?? null },
+      ageLabel: ageLabel(q.ageRange),
+      disclaimer: q.disclaimer ?? null,
       itemCount: Array.isArray(q.items) ? q.items.length : 0,
       estimatedMinutes: q.estimatedMinutes ?? null,
       comingSoon: isComingSoon(q.schedule, now),

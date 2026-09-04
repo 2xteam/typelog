@@ -47,7 +47,7 @@ type Result = {
   outcomes: OutcomeView[];
 };
 type Payload = {
-  quiz: { slug: string; title: string; emoji: string | null };
+  quiz: { slug: string; title: string; emoji: string | null; disclaimer: string | null };
   attemptNo: number;
   result: Result;
   /** 게스트 본인이 볼 때만 온다 → lib/claimToken.ts */
@@ -290,6 +290,8 @@ export function ResultView({
           ) : null}
         </div>
         {shareMsg ? <p className="quiz-msg">{shareMsg}</p> : null}
+        {/* 그 브랜드가 만들었거나 관련된 것처럼 읽히면 안 된다 */}
+        {quiz.disclaimer ? <p className="result-fineprint">{quiz.disclaimer}</p> : null}
       </Sheet>
     </>
   );

@@ -1,0 +1,536 @@
+{
+  "$schema": "typelog/quiz/v1",
+  "mode": "upsert",
+  "_note": [
+    "실제 상표를 결과로 쓴다. 로고·서체·제품 사진은 쓰지 않고 이름과 이모지만 쓴다.",
+    "근거는 사실로 확인되는 것만 — 창업 배경 · 대표적인 디자인 요소 · 만들어진 목적.",
+    "브랜드의 좋고 나쁨을 말하지 않고, 사라고도 하지 않는다. 문장은 나에 대한 이야기다.",
+    "disclaimer 를 붙여 그 브랜드와 관련된 것처럼 읽히지 않게 한다."
+  ],
+  "quiz": {
+    "slug": "sport-brand",
+    "title": "나에게 어울리는 스포츠 브랜드는?",
+    "tagline": "열 가지 질문으로 찾는 나의 운동 스타일",
+    "category": "brand",
+    "ageRange": {
+      "min": 10,
+      "max": 18
+    },
+    "cover": {
+      "emoji": "🥇",
+      "imageUrl": null
+    },
+    "disclaimer": "실제로 있는 브랜드 이름을 재미로 빌려 왔어요. 각 브랜드와는 아무 관련이 없고, 사라고 권하는 것도 아니에요.",
+    "order": 120,
+    "shuffle": false
+  },
+  "outcomes": [
+    {
+      "id": "nike",
+      "kind": "tally",
+      "label": "나이키"
+    },
+    {
+      "id": "adidas",
+      "kind": "tally",
+      "label": "아디다스"
+    },
+    {
+      "id": "newbalance",
+      "kind": "tally",
+      "label": "뉴발란스"
+    },
+    {
+      "id": "asics",
+      "kind": "tally",
+      "label": "아식스"
+    },
+    {
+      "id": "puma",
+      "kind": "tally",
+      "label": "푸마"
+    },
+    {
+      "id": "ua",
+      "kind": "tally",
+      "label": "언더아머"
+    }
+  ],
+  "resolver": {
+    "strategy": "argmax",
+    "tiebreak": [
+      "nike",
+      "adidas",
+      "newbalance",
+      "asics",
+      "puma",
+      "ua"
+    ]
+  },
+  "items": [
+    {
+      "linkId": "sb_pe",
+      "type": "choice",
+      "emoji": "🤸",
+      "required": true,
+      "text": "체육 시간이 되면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "이기는 편에 들고 싶어요",
+          "weights": {
+            "nike": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "누구랑 같은 편인지 먼저 봐요",
+          "weights": {
+            "adidas": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "편한 신발인지 먼저 봐요",
+          "weights": {
+            "newbalance": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "sb_run",
+      "type": "choice",
+      "emoji": "🏁",
+      "required": true,
+      "text": "오래 달리기를 한다면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "내 기록만 보면서 뛰어요",
+          "weights": {
+            "asics": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "처음부터 앞으로 나가요",
+          "weights": {
+            "puma": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "끝까지 갈 수 있게 아껴 뛰어요",
+          "weights": {
+            "ua": 3
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "sb_shoes",
+      "type": "choice",
+      "emoji": "🛒",
+      "required": true,
+      "text": "운동화를 고를 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "성능이 좋다는 걸 골라요",
+          "weights": {
+            "nike": 5
+          }
+        },
+        {
+          "oid": "b",
+          "text": "오래 신어도 편한 걸 골라요",
+          "weights": {
+            "newbalance": 5
+          }
+        },
+        {
+          "oid": "c",
+          "text": "눈에 띄는 색을 골라요",
+          "weights": {
+            "puma": 5
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "sb_team",
+      "type": "choice",
+      "emoji": "🧑‍🤝‍🧑",
+      "required": true,
+      "text": "팀에서 내가 맡고 싶은 자리는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "사람들을 맞물리게 하는 자리",
+          "weights": {
+            "adidas": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "정해진 몫을 정확히 하는 자리",
+          "weights": {
+            "asics": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "아무도 안 하는 준비를 하는 자리",
+          "weights": {
+            "ua": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "sb_lose",
+      "type": "choice",
+      "emoji": "😤",
+      "required": true,
+      "text": "졌을 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "다음엔 꼭 이기고 싶어요",
+          "weights": {
+            "nike": 7
+          }
+        },
+        {
+          "oid": "b",
+          "text": "뭐가 부족했는지 적어둬요",
+          "weights": {
+            "asics": 7
+          }
+        },
+        {
+          "oid": "c",
+          "text": "털어버리고 다음 걸 해요",
+          "weights": {
+            "puma": 7
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "sb_practice",
+      "type": "choice",
+      "emoji": "📆",
+      "required": true,
+      "text": "연습을 한다면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "친구랑 약속을 잡아서 해요",
+          "weights": {
+            "adidas": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "무리 안 되는 만큼만 해요",
+          "weights": {
+            "newbalance": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "남들 안 볼 때 더 해요",
+          "weights": {
+            "ua": 3
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "sb_goal",
+      "type": "choice",
+      "emoji": "🎯",
+      "required": true,
+      "text": "목표를 정할 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "제일 높은 걸로 정해요",
+          "weights": {
+            "nike": 5
+          }
+        },
+        {
+          "oid": "b",
+          "text": "같이 할 사람과 같이 정해요",
+          "weights": {
+            "adidas": 5
+          }
+        },
+        {
+          "oid": "c",
+          "text": "매일 할 수 있는 만큼으로 정해요",
+          "weights": {
+            "asics": 5
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "sb_outfit",
+      "type": "choice",
+      "emoji": "🧥",
+      "required": true,
+      "text": "운동할 때 옷은?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "매일 입어도 편한 옷",
+          "weights": {
+            "newbalance": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "사진 찍어도 멋있는 옷",
+          "weights": {
+            "puma": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "땀 관리가 잘 되는 옷",
+          "weights": {
+            "ua": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "sb_injury",
+      "type": "choice",
+      "emoji": "🩹",
+      "required": true,
+      "text": "조금 아플 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "아파도 하려던 걸 해요",
+          "weights": {
+            "nike": 7
+          }
+        },
+        {
+          "oid": "b",
+          "text": "쉬고 나서 다시 해요",
+          "weights": {
+            "newbalance": 7
+          }
+        },
+        {
+          "oid": "c",
+          "text": "안 아프게 미리 챙겨요",
+          "weights": {
+            "ua": 7
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "sb_watch",
+      "type": "choice",
+      "emoji": "📺",
+      "required": true,
+      "text": "경기를 볼 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "누가 이기는지 봐요",
+          "weights": {
+            "adidas": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "선수 기록을 봐요",
+          "weights": {
+            "asics": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "멋있는 장면을 봐요",
+          "weights": {
+            "puma": 3
+          }
+        }
+      ]
+    }
+  ],
+  "resultTypes": [
+    {
+      "code": "nike",
+      "name": "나이키",
+      "subtitle": "이기고 싶은 마음이 큰 사람",
+      "emoji": "🏆",
+      "color": "#e0455f",
+      "content": {
+        "summary": "목표가 생기면 곧장 가요. 어제보다 나아진 기록으로 스스로를 확인하는 사람에게 어울려요. 지는 게 싫은 마음이 힘이 되는 쪽이에요.",
+        "strengths": [
+          "목표를 분명하게 정해요",
+          "지고 나면 더 열심히 해요",
+          "어려운 일에 먼저 나서요"
+        ],
+        "cautions": [
+          "쉬어야 할 때도 계속 해요",
+          "결과에 마음이 크게 흔들려요"
+        ],
+        "tips": [
+          "오늘은 한 번 쉬어봐요. 쉬는 것도 훈련이에요."
+        ],
+        "funFact": "이름은 그리스 신화의 승리의 여신 니케(Nike)에서 왔어요.",
+        "goodWith": [
+          "adidas",
+          "ua"
+        ]
+      }
+    },
+    {
+      "code": "adidas",
+      "name": "아디다스",
+      "subtitle": "같이 뛰는 게 좋은 사람",
+      "emoji": "⚽",
+      "color": "#3a7bd5",
+      "content": {
+        "summary": "혼자보다 팀으로 할 때 훨씬 세져요. 축구처럼 여럿이 맞물려 돌아가는 걸 좋아하는 사람에게 어울려요.",
+        "strengths": [
+          "친구와 손발이 맞아요",
+          "맡은 자리를 지켜요",
+          "함께 하면 더 잘해요"
+        ],
+        "cautions": [
+          "혼자 있으면 힘이 안 나요",
+          "내 몫을 말하기 어려워요"
+        ],
+        "tips": [
+          "오늘은 혼자 하는 것 하나를 해봐요."
+        ],
+        "funFact": "창업자 아돌프 다슬러의 별명 '아디'와 성 '다슬러'를 붙인 이름이에요.",
+        "goodWith": [
+          "nike",
+          "puma"
+        ]
+      }
+    },
+    {
+      "code": "newbalance",
+      "name": "뉴발란스",
+      "subtitle": "편한 게 먼저인 사람",
+      "emoji": "👟",
+      "color": "#7c6f9c",
+      "content": {
+        "summary": "멋보다 편한 걸 먼저 봐요. 오래 걸어도 발이 안 아픈 쪽을 고르는 사람에게 어울려요. 요란하지 않아도 매일 신는 것이 되는 쪽이에요.",
+        "strengths": [
+          "오래 가는 걸 골라요",
+          "요란하지 않게 꾸준해요",
+          "무리하지 않아요"
+        ],
+        "cautions": [
+          "새로운 걸 늦게 시작해요",
+          "눈에 띄는 자리를 피해요"
+        ],
+        "tips": [
+          "오늘은 안 해본 것 하나를 해봐요."
+        ],
+        "funFact": "처음에는 신발이 아니라 발 아치를 받쳐주는 교정용 깔창을 만드는 회사였어요.",
+        "goodWith": [
+          "asics",
+          "adidas"
+        ]
+      }
+    },
+    {
+      "code": "asics",
+      "name": "아식스",
+      "subtitle": "자기 기록만 보는 사람",
+      "emoji": "🏃",
+      "color": "#2f9e74",
+      "content": {
+        "summary": "남과 겨루기보다 어제의 나와 겨뤄요. 매일 정한 만큼 달리고 조금씩 늘리는 사람에게 어울려요.",
+        "strengths": [
+          "정한 만큼 매일 해내요",
+          "남과 비교하지 않아요",
+          "오래 걸리는 일을 이어가요"
+        ],
+        "cautions": [
+          "하던 방식이 안 통할 때 바꾸기 어려워요",
+          "혼자 참다 지쳐요"
+        ],
+        "tips": [
+          "오늘은 누군가에게 한 가지만 부탁해봐요."
+        ],
+        "funFact": "이름은 '건강한 몸에 건강한 정신'이라는 라틴어 문장의 첫 글자를 모은 거예요.",
+        "goodWith": [
+          "newbalance",
+          "nike"
+        ]
+      }
+    },
+    {
+      "code": "puma",
+      "name": "푸마",
+      "subtitle": "빠르고 눈에 띄는 사람",
+      "emoji": "⚡",
+      "color": "#e0b845",
+      "content": {
+        "summary": "시작이 빠르고 티가 나요. 오래 버티기보다 짧고 세게 터뜨리는 걸 잘하는 사람에게 어울려요.",
+        "strengths": [
+          "시작이 빨라요",
+          "눈에 띄는 걸 겁내지 않아요",
+          "분위기를 바꿔놓아요"
+        ],
+        "cautions": [
+          "끝내기 전에 다음 걸 시작해요",
+          "오래 이어가는 일이 지루해요"
+        ],
+        "tips": [
+          "시작한 것 중 하나만 골라 오늘 끝내봐요."
+        ],
+        "funFact": "아디다스 창업자의 형 루돌프 다슬러가 만든 회사예요. 두 형제가 갈라섰어요.",
+        "goodWith": [
+          "adidas",
+          "ua"
+        ]
+      }
+    },
+    {
+      "code": "ua",
+      "name": "언더아머",
+      "subtitle": "안 보이는 데서 준비하는 사람",
+      "emoji": "🛡️",
+      "color": "#25093f",
+      "content": {
+        "summary": "겉옷보다 안에 입는 것부터 챙겨요. 남들이 안 보는 준비를 해두는 사람에게 어울려요. 티 안 나는 데서 차이가 생기는 쪽이에요.",
+        "strengths": [
+          "미리 준비해요",
+          "티 내지 않고 해내요",
+          "힘든 걸 오래 견뎌요"
+        ],
+        "cautions": [
+          "힘들다는 말을 너무 늦게 해요",
+          "혼자 다 하려고 해요"
+        ],
+        "tips": [
+          "오늘 힘든 일 하나를 누군가에게 말해봐요."
+        ],
+        "funFact": "땀에 젖어도 무거워지지 않는 운동용 속옷을 만들려고 시작한 회사예요.",
+        "goodWith": [
+          "nike",
+          "asics"
+        ]
+      }
+    }
+  ]
+}

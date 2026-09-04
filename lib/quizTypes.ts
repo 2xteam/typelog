@@ -130,6 +130,11 @@ export type QuizMeta = {
   category: string;
   ageRange: { min: number; max: number };
   cover: { emoji: string; imageUrl?: string | null };
+  /**
+   * 화면 아래에 작게 붙는 한 줄. 실제로 있는 브랜드·나라 이름을 결과로 쓰는
+   * 질문지에 필요하다 — 그 브랜드가 만들었거나 관련된 것처럼 읽히면 안 된다.
+   */
+  disclaimer?: string | null;
   schedule?: Schedule | null;
   estimatedMinutes?: number | null;
   shuffle?: boolean;

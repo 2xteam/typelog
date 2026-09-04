@@ -5,6 +5,7 @@ import { getQuizModel } from "@/models/Quiz";
 import { getResultTypeModel } from "@/models/ResultType";
 import { getAttemptModel } from "@/models/Attempt";
 import { canStart } from "@/lib/schedule";
+import { ageLabel } from "@/lib/ageRange";
 import { flattenItems } from "@/lib/scoring";
 import type { Item } from "@/lib/quizTypes";
 
@@ -57,6 +58,8 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
         itemCount: flattenItems((quiz.items ?? []) as Item[]).filter((i) => i.type !== "display")
           .length,
         estimatedMinutes: quiz.estimatedMinutes ?? null,
+        ageLabel: ageLabel(quiz.ageRange),
+        disclaimer: quiz.disclaimer ?? null,
       },
       open,
       notice: check.ok ? null : check.reason === "before_start" ? check.notice : "지금은 할 수 없어요.",

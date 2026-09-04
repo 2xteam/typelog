@@ -65,6 +65,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
         title: quiz.title,
         tagline: quiz.tagline,
         emoji: quiz.cover?.emoji ?? null,
+        /** 브랜드·나라 이름을 결과로 쓰는 질문지에 붙는 한 줄 */
+        disclaimer: quiz.disclaimer ?? null,
       },
       answers: (attempt.answers ?? []).map((a) => ({
         linkId: a.linkId,

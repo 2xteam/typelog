@@ -1,0 +1,535 @@
+{
+  "$schema": "typelog/quiz/v1",
+  "mode": "upsert",
+  "_note": [
+    "향수 계열(향조)을 그대로 쓴다 — 시트러스·플로럴·우디·파우더·그린·아쿠아.",
+    "실제 조향에서 쓰는 분류라 결과를 받은 뒤 향수를 고를 때 바로 쓸 수 있다.",
+    "브랜드나 제품 이름은 쓰지 않는다. 계열은 누구의 것도 아니다.",
+    "'좋은 향·안 좋은 향'으로 나누지 않는다. 여섯 계열 모두 강점이 먼저 온다."
+  ],
+  "quiz": {
+    "slug": "my-scent",
+    "title": "나에게 어울리는 향기는?",
+    "tagline": "열 가지 질문으로 찾는 나의 향",
+    "category": "scent",
+    "ageRange": {
+      "min": 9,
+      "max": 15
+    },
+    "cover": {
+      "emoji": "🫧",
+      "imageUrl": null
+    },
+    "order": 100,
+    "shuffle": false
+  },
+  "outcomes": [
+    {
+      "id": "citrus",
+      "kind": "tally",
+      "label": "시트러스"
+    },
+    {
+      "id": "floral",
+      "kind": "tally",
+      "label": "플로럴"
+    },
+    {
+      "id": "woody",
+      "kind": "tally",
+      "label": "우디"
+    },
+    {
+      "id": "powder",
+      "kind": "tally",
+      "label": "파우더"
+    },
+    {
+      "id": "green",
+      "kind": "tally",
+      "label": "그린"
+    },
+    {
+      "id": "aqua",
+      "kind": "tally",
+      "label": "아쿠아"
+    }
+  ],
+  "resolver": {
+    "strategy": "argmax",
+    "tiebreak": [
+      "citrus",
+      "floral",
+      "woody",
+      "powder",
+      "green",
+      "aqua"
+    ]
+  },
+  "items": [
+    {
+      "linkId": "sc_room",
+      "type": "choice",
+      "emoji": "🪟",
+      "required": true,
+      "text": "내 방에서 가장 좋은 순간은?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "창문을 활짝 열어 환기했을 때",
+          "weights": {
+            "citrus": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "좋아하는 걸 잘 놓아뒀을 때",
+          "weights": {
+            "floral": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "불을 낮추고 조용할 때",
+          "weights": {
+            "woody": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "sc_weather",
+      "type": "choice",
+      "emoji": "🌤️",
+      "required": true,
+      "text": "가장 좋아하는 날씨는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "구름 없이 맑고 선선한 날",
+          "weights": {
+            "powder": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "비 갠 뒤 촉촉한 아침",
+          "weights": {
+            "green": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "바람이 시원하게 부는 날",
+          "weights": {
+            "aqua": 3
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "sc_snack",
+      "type": "choice",
+      "emoji": "🍰",
+      "required": true,
+      "text": "간식을 고른다면?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "새콤한 과일",
+          "weights": {
+            "citrus": 5
+          }
+        },
+        {
+          "oid": "b",
+          "text": "고소한 견과나 빵",
+          "weights": {
+            "woody": 5
+          }
+        },
+        {
+          "oid": "c",
+          "text": "톡 쏘는 민트 사탕",
+          "weights": {
+            "green": 5
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "sc_gift",
+      "type": "choice",
+      "emoji": "🎁",
+      "required": true,
+      "text": "선물을 받는다면?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "정성껏 포장된 작은 것",
+          "weights": {
+            "floral": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "오래 쓸 수 있는 편한 것",
+          "weights": {
+            "powder": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "여행 가서 쓸 수 있는 것",
+          "weights": {
+            "aqua": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "sc_place",
+      "type": "choice",
+      "emoji": "🗺️",
+      "required": true,
+      "text": "쉬러 가고 싶은 곳은?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "사람 많은 밝은 시장",
+          "weights": {
+            "citrus": 7
+          }
+        },
+        {
+          "oid": "b",
+          "text": "익숙한 우리 집 소파",
+          "weights": {
+            "powder": 7
+          }
+        },
+        {
+          "oid": "c",
+          "text": "숲길이나 공원",
+          "weights": {
+            "green": 7
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "sc_music",
+      "type": "choice",
+      "emoji": "🎧",
+      "required": true,
+      "text": "지금 듣고 싶은 소리는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "친구들 웃는 소리",
+          "weights": {
+            "floral": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "장작 타는 소리",
+          "weights": {
+            "woody": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "파도 소리",
+          "weights": {
+            "aqua": 3
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "sc_clothes",
+      "type": "choice",
+      "emoji": "👕",
+      "required": true,
+      "text": "옷을 고를 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "밝은 색을 먼저 봐요",
+          "weights": {
+            "citrus": 5
+          }
+        },
+        {
+          "oid": "b",
+          "text": "예쁜 모양을 먼저 봐요",
+          "weights": {
+            "floral": 5
+          }
+        },
+        {
+          "oid": "c",
+          "text": "편한 걸 먼저 봐요",
+          "weights": {
+            "powder": 5
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "sc_book",
+      "type": "choice",
+      "emoji": "📚",
+      "required": true,
+      "text": "읽고 싶은 이야기는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "오래된 도서관이 나오는 이야기",
+          "weights": {
+            "woody": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "산이나 숲을 걷는 이야기",
+          "weights": {
+            "green": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "배를 타고 떠나는 이야기",
+          "weights": {
+            "aqua": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "sc_morning",
+      "type": "choice",
+      "emoji": "☀️",
+      "required": true,
+      "text": "아침에 가장 먼저 하고 싶은 건?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "차가운 물 한 잔",
+          "weights": {
+            "citrus": 7
+          }
+        },
+        {
+          "oid": "b",
+          "text": "창밖을 한참 보기",
+          "weights": {
+            "woody": 7
+          }
+        },
+        {
+          "oid": "c",
+          "text": "세수하고 시원하게 씻기",
+          "weights": {
+            "aqua": 7
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "sc_friend",
+      "type": "choice",
+      "emoji": "🫂",
+      "required": true,
+      "text": "친구가 나를 어떻게 기억하면 좋을까요?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "다정했던 사람",
+          "weights": {
+            "floral": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "편했던 사람",
+          "weights": {
+            "powder": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "솔직했던 사람",
+          "weights": {
+            "green": 3
+          }
+        }
+      ]
+    }
+  ],
+  "resultTypes": [
+    {
+      "code": "citrus",
+      "name": "시트러스",
+      "subtitle": "첫인상이 환한 향",
+      "emoji": "🍋",
+      "color": "#e0b845",
+      "content": {
+        "summary": "레몬·자몽처럼 톡 트이는 향이에요. 처음 만난 자리를 가볍게 만드는 사람에게 어울려요. 오래 남지 않아도 처음이 기억되는 향이에요.",
+        "strengths": [
+          "처음 만난 사람과도 금방 편해져요",
+          "무거운 자리를 가볍게 만들어요",
+          "기분을 빨리 바꿔요"
+        ],
+        "cautions": [
+          "오래 이어가는 일이 지루해요",
+          "가벼워 보일까 걱정할 수 있어요"
+        ],
+        "tips": [
+          "오늘은 한 가지를 끝까지만 해봐요."
+        ],
+        "funFact": "시트러스 향은 가장 먼저 날아가요. 그래서 향수의 '탑 노트'에 써요.",
+        "goodWith": [
+          "aqua",
+          "green"
+        ]
+      }
+    },
+    {
+      "code": "floral",
+      "name": "플로럴",
+      "subtitle": "가까이서 좋은 향",
+      "emoji": "🌷",
+      "color": "#d94f8a",
+      "content": {
+        "summary": "장미·자스민처럼 부드럽게 퍼지는 향이에요. 가까이 있는 사람을 먼저 챙기는 사람에게 어울려요. 멀리서보다 옆에서 더 좋은 향이에요.",
+        "strengths": [
+          "가까운 사람의 마음을 잘 알아요",
+          "따뜻한 말을 찾아내요",
+          "함께 있는 자리를 편하게 만들어요"
+        ],
+        "cautions": [
+          "남의 기분에 내 기분이 흔들려요",
+          "싫다는 말을 하기 어려워요"
+        ],
+        "tips": [
+          "오늘은 하고 싶지 않은 것 하나에 '지금은 어려워요' 라고 말해봐요."
+        ],
+        "funFact": "장미 향 1그램을 얻으려면 꽃잎이 수천 장 필요해요.",
+        "goodWith": [
+          "powder",
+          "citrus"
+        ]
+      }
+    },
+    {
+      "code": "woody",
+      "name": "우디",
+      "subtitle": "오래 남는 향",
+      "emoji": "🌰",
+      "color": "#7c6f9c",
+      "content": {
+        "summary": "샌달우드·시더처럼 깊고 마른 향이에요. 요란하지 않지만 오래 남는 사람에게 어울려요. 처음보다 시간이 지나서 더 좋아지는 향이에요.",
+        "strengths": [
+          "오래 걸리는 일을 이어가요",
+          "쉽게 흔들리지 않아요",
+          "말보다 남는 것으로 보여줘요"
+        ],
+        "cautions": [
+          "첫인상이 무겁게 읽힐 수 있어요",
+          "마음을 겉으로 잘 안 보여줘요"
+        ],
+        "tips": [
+          "오늘은 생각한 것 하나를 소리 내어 말해봐요."
+        ],
+        "funFact": "우디 향은 가장 늦게까지 남아요. 그래서 '베이스 노트'에 써요.",
+        "goodWith": [
+          "powder",
+          "green"
+        ]
+      }
+    },
+    {
+      "code": "powder",
+      "name": "파우더",
+      "subtitle": "편안한 향",
+      "emoji": "🧸",
+      "color": "#c96f8c",
+      "content": {
+        "summary": "갓 마른 수건이나 아기 파우더 같은 향이에요. 있으면 마음이 놓이는 사람에게 어울려요. 튀지 않지만 없으면 아쉬운 향이에요.",
+        "strengths": [
+          "옆에 있으면 마음이 편해져요",
+          "약속한 걸 지켜요",
+          "조급해하지 않아요"
+        ],
+        "cautions": [
+          "변화를 반갑지 않게 봐요",
+          "하고 싶은 걸 뒤로 미뤄요"
+        ],
+        "tips": [
+          "오늘은 내가 하고 싶은 걸 먼저 정해봐요."
+        ],
+        "funFact": "파우더 향은 실제 가루 냄새가 아니라 여러 향을 섞어 만든 느낌이에요.",
+        "goodWith": [
+          "floral",
+          "woody"
+        ]
+      }
+    },
+    {
+      "code": "green",
+      "name": "그린",
+      "subtitle": "막 자른 풀 향",
+      "emoji": "🌿",
+      "color": "#2f9e74",
+      "content": {
+        "summary": "풀·잎사귀·허브처럼 싱싱한 향이에요. 꾸미지 않고 있는 그대로가 편한 사람에게 어울려요. 비 온 뒤 아침 같은 향이에요.",
+        "strengths": [
+          "솔직하게 말해요",
+          "꾸미지 않아도 편해요",
+          "몸으로 익히는 게 빨라요"
+        ],
+        "cautions": [
+          "말이 곧아서 놀라게 해요",
+          "가만히 있는 걸 못 해요"
+        ],
+        "tips": [
+          "말하기 전에 한 번 숨을 쉬어봐요."
+        ],
+        "funFact": "풀을 자를 때 나는 향은 풀이 상처를 감싸려고 내보내는 물질이에요.",
+        "goodWith": [
+          "citrus",
+          "woody"
+        ]
+      }
+    },
+    {
+      "code": "aqua",
+      "name": "아쿠아",
+      "subtitle": "시원하고 맑은 향",
+      "emoji": "🌊",
+      "color": "#3a7bd5",
+      "content": {
+        "summary": "바다 바람이나 갓 씻은 물 같은 향이에요. 어디에 놓아도 잘 지내는 사람에게 어울려요. 누구에게 물어도 좋다고 하는 향이에요.",
+        "strengths": [
+          "새로운 자리에 금방 익숙해져요",
+          "다투지 않고 방법을 찾아요",
+          "누구와도 잘 지내요"
+        ],
+        "cautions": [
+          "내가 원하는 게 뭔지 헷갈려요",
+          "튀지 않으려다 묻혀요"
+        ],
+        "tips": [
+          "오늘 하나는 내가 정한 대로 해봐요."
+        ],
+        "funFact": "바다 향의 시원한 느낌은 1966년에 만들어진 '칼론'이라는 향 물질에서 왔어요.",
+        "goodWith": [
+          "citrus",
+          "powder"
+        ]
+      }
+    }
+  ]
+}

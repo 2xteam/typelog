@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Sheet } from "@/components/Sheet";
 import { getGuestKey } from "@/lib/guestKey";
+import { AGE_BANDS, inBand, type AgeBandId, type AgeRange } from "@/lib/ageRange";
 
 /**
  * 질문지 목록 — 탭 두 개로 나눈다.
@@ -11,6 +12,10 @@ import { getGuestKey } from "@/lib/guestKey";
  * 아직 열리지 않은 질문지를 잠긴 카드로 섞어 두지 않는다. 섞어 두면 목록을
  * 훑다 잠긴 카드를 계속 만나 김이 샌다. `오픈 예정` 이 비어 있으면 **탭 자체를
  * 감춘다** — 빈 탭을 눌러 보게 하지 않는다.
+ *
+ * 질문지가 늘면서 대상이 갈렸다(다섯 살부터 열아홉 살까지). 그래서 카드마다
+ * **추천 연령**을 보여주고 나이대로 거를 수 있게 한다 — 안 보여주면 아이가
+ * 자기와 안 맞는 질문지를 붙잡고 있다가 무슨 말인지 몰라 그만둔다.
  * → my-obsidian-vault / 10-Projects/TypeLog.md
  */
 
@@ -19,6 +24,9 @@ type Quiz = {
   title: string;
   tagline: string;
   emoji: string | null;
+  ageRange: AgeRange;
+  ageLabel: string | null;
+  disclaimer: string | null;
   itemCount: number;
   estimatedMinutes: number | null;
   comingSoon: boolean;
@@ -36,6 +44,7 @@ export default function TypesPage() {
   const router = useRouter();
   const [quizzes, setQuizzes] = useState<Quiz[] | null>(null);
   const [tab, setTab] = useState<"open" | "soon">("open");
+  const [band, setBand] = useState<AgeBandId>("all");
   const [starting, setStarting] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
 
@@ -77,10 +86,20 @@ export default function TypesPage() {
     [router],
   );
 
-  const open = (quizzes ?? []).filter((q) => !q.comingSoon);
-  const soon = (quizzes ?? []).filter((q) => q.comingSoon);
+  const open = useMemo(() => (quizzes ?? []).filter((q) => !q.comingSoon), [quizzes]);
+  const soon = useMemo(() => (quizzes ?? []).filter((q) => q.comingSoon), [quizzes]);
   const showTabs = soon.length > 0;
-  const shown = tab === "open" ? open : soon;
+  const inTab = tab === "open" ? open : soon;
+  const shown = useMemo(() => inTab.filter((q) => inBand(q.ageRange, band)), [inTab, band]);
+
+  /**
+   * 아무것도 안 남는 나이대는 **누를 수 없게** 한다. 눌러서 빈 화면을 보는 것보다
+   * 처음부터 없는 편이 낫다
+   */
+  const countIn = useCallback(
+    (id: AgeBandId) => inTab.filter((q) => inBand(q.ageRange, id)).length,
+    [inTab],
+  );
 
   return (
     <Sheet
@@ -98,6 +117,30 @@ export default function TypesPage() {
         </div>
       ) : null}
 
+      {quizzes === null ? null : (
+        <>
+          <p className="filter-label">몇 살인가요?</p>
+          <div className="filter-row">
+            {AGE_BANDS.map((b) => {
+              const n = countIn(b.id);
+              return (
+                <button
+                  key={b.id}
+                  type="button"
+                  className="chip"
+                  aria-pressed={band === b.id}
+                  disabled={n === 0}
+                  onClick={() => setBand(b.id)}
+                >
+                  {b.label}
+                  {b.id === "all" ? "" : ` ${n}`}
+                </button>
+              );
+            })}
+          </div>
+        </>
+      )}
+
       {quizzes === null ? null : shown.length === 0 ? (
         <p className="lead">
           {tab === "open" ? "아직 열린 질문지가 없어요." : "예정된 질문지가 없어요."}
@@ -113,6 +156,8 @@ export default function TypesPage() {
                 <p className="quiz-card-title">{q.title}</p>
                 <p className="quiz-card-sub">{q.tagline}</p>
                 <div style={{ display: "flex", gap: 6, marginTop: 10, flexWrap: "wrap" }}>
+                  {/* 추천 연령을 맨 앞에 둔다 — 카드에서 가장 먼저 보고 걸러야 하는 값이다 */}
+                  {q.ageLabel ? <span className="pill pill--age">{q.ageLabel} 추천</span> : null}
                   <span className="pill">질문 {q.itemCount}개</span>
                   {q.estimatedMinutes ? <span className="pill">약 {q.estimatedMinutes}분</span> : null}
                   {q.comingSoon ? (
@@ -124,6 +169,7 @@ export default function TypesPage() {
                     {q.openingNoticeText ?? "곧 만나요. 조금만 기다려 주세요 ✨"}
                   </p>
                 ) : null}
+                {q.disclaimer ? <p className="quiz-card-fineprint">{q.disclaimer}</p> : null}
               </div>
               {q.comingSoon ? null : (
                 <button

@@ -4,6 +4,7 @@ import mongoose, {
   type InferSchemaType,
   type Model,
 } from "mongoose";
+import { defineModelOn } from "@/lib/model";
 
 /**
  * myjane 통합 회원(`user` DB의 `users` 컬렉션) 스키마.
@@ -102,10 +103,8 @@ export type UserDocument = HydratedDocument<User>;
  */
 export function getUserModel(): Model<User> {
   const userDb = mongoose.connection.useDb("user", { useCache: true });
-  return (
-    (userDb.models.User as Model<User> | undefined) ??
-    userDb.model<User>("User", UserSchema, "users")
-  );
+  // 개발 중 스키마가 바뀌면 다시 컴파일한다 → lib/model.ts
+  return defineModelOn<User>(userDb, "User", UserSchema, "users");
 }
 
 /** 화면·API 응답에 실어 보내는 공개 회원 정보 */
