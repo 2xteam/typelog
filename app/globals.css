@@ -722,3 +722,217 @@ a {
   font-size: 12.5px;
   border-radius: 9px;
 }
+
+/* ────────────────────────────────────────────────────────────
+ * 질문지 목록 · 응시 · 결과
+ * ──────────────────────────────────────────────────────────── */
+
+.quiz-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+}
+
+.quiz-card-emoji {
+  flex-shrink: 0;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.quiz-card-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  color: var(--text-primary);
+}
+
+.quiz-card-sub {
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  word-break: keep-all;
+}
+
+.quiz-card-notice {
+  margin: 10px 0 0;
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--point);
+  word-break: keep-all;
+}
+
+.quiz-msg {
+  margin: 16px 0 0;
+  font-size: 13px;
+  color: var(--danger);
+}
+
+/* 응시 — 진행 바와 선택지 */
+.play-progress {
+  height: 6px;
+  margin-top: 22px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  overflow: hidden;
+}
+
+.play-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: #e8d18a;
+  transition: width 240ms cubic-bezier(0.2, 0.72, 0.2, 1);
+}
+
+.play-count {
+  margin: 8px 0 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: rgba(232, 222, 250, 0.6);
+}
+
+/**
+ * 선택지 — 아이가 누른다. 손가락이 닿는 크기여야 하므로 최소 높이 56px.
+ * 근거: 목업의 hit target 은 44px 아래로 내려가지 않는다
+ */
+.play-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 56px;
+  padding: 14px 18px;
+  border: 1px solid rgba(200, 184, 255, 0.28);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: left;
+  word-break: keep-all;
+  cursor: pointer;
+  transition: background 160ms, border-color 160ms;
+}
+
+.play-option:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.play-option[data-chosen="true"] {
+  background: rgba(232, 209, 138, 0.16);
+  border-color: #e8d18a;
+}
+
+.play-option:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* 결과 */
+.result-summary {
+  margin: 20px 0 0;
+  font-size: 0.95rem;
+  line-height: 1.85;
+  color: rgba(232, 222, 250, 0.9);
+  word-break: keep-all;
+}
+
+.result-list {
+  margin: 18px 0 0;
+  padding: 0 0 0 2px;
+  list-style: none;
+  display: grid;
+  gap: 9px;
+}
+
+.result-list li {
+  position: relative;
+  padding-left: 18px;
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: var(--text-primary);
+  word-break: keep-all;
+}
+
+.result-list li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 0.65em;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+.result-list--muted li {
+  color: var(--text-secondary);
+}
+
+.result-list--muted li::before {
+  background: var(--point);
+}
+
+.result-sub-label {
+  margin: 22px 0 0;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  color: var(--text-muted);
+}
+
+.result-fact {
+  margin: 18px 0 0;
+  font-size: 12.5px;
+  line-height: 1.8;
+  color: var(--text-muted);
+  word-break: keep-all;
+}
+
+/**
+ * 어느 쪽에 가까운가 — **막대나 그래프를 쓰지 않는다.**
+ * 성향에는 늘었다·줄었다로 읽을 수치가 없고, 숫자로 증명하지 않는 것이 이 앱의 톤이다.
+ */
+.lean-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.lean-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+}
+
+.lean-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  color: var(--text-muted);
+  min-width: 82px;
+}
+
+.lean-value {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.lean-other {
+  font-size: 12px;
+  color: var(--text-secondary);
+}

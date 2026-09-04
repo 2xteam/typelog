@@ -1,0 +1,424 @@
+{
+  "$schema": "typelog/quiz/v1",
+  "mode": "upsert",
+  "quiz": {
+    "slug": "kids-16type",
+    "title": "나는 어떤 성향일까?",
+    "tagline": "열두 가지 질문으로 만나는 16가지 성향",
+    "category": "personality",
+    "ageRange": { "min": 7, "max": 13 },
+    "cover": { "emoji": "🧭", "imageUrl": null },
+    "order": 10
+  },
+  "outcomes": [
+    {
+      "id": "EI",
+      "kind": "axis",
+      "label": "힘이 나는 곳",
+      "left": { "code": "E", "label": "바깥으로" },
+      "right": { "code": "I", "label": "안으로" }
+    },
+    {
+      "id": "SN",
+      "kind": "axis",
+      "label": "눈이 가는 곳",
+      "left": { "code": "S", "label": "지금 여기" },
+      "right": { "code": "N", "label": "상상 속" }
+    },
+    {
+      "id": "TF",
+      "kind": "axis",
+      "label": "정하는 방법",
+      "left": { "code": "T", "label": "머리로" },
+      "right": { "code": "F", "label": "마음으로" }
+    },
+    {
+      "id": "JP",
+      "kind": "axis",
+      "label": "움직이는 방법",
+      "left": { "code": "J", "label": "계획대로" },
+      "right": { "code": "P", "label": "그때그때" }
+    }
+  ],
+  "items": [
+    {
+      "linkId": "type16_party",
+      "type": "choice",
+      "emoji": "🎈",
+      "required": true,
+      "text": "생일 파티에 갔어요. 나는?",
+      "options": [
+        { "oid": "a", "text": "처음 보는 친구에게도 말을 걸어요", "weights": { "EI": -2 } },
+        { "oid": "b", "text": "아는 친구 옆에 먼저 앉아요", "weights": { "EI": 2 } }
+      ]
+    },
+    {
+      "linkId": "type16_break_time",
+      "type": "choice",
+      "emoji": "🏫",
+      "required": true,
+      "text": "쉬는 시간이 되면 나는?",
+      "options": [
+        { "oid": "a", "text": "친구들이랑 밖으로 나가요", "weights": { "EI": -2 } },
+        { "oid": "b", "text": "교실에서 조용히 있어요", "weights": { "EI": 2 } }
+      ]
+    },
+    {
+      "linkId": "type16_good_news",
+      "type": "choice",
+      "emoji": "🍀",
+      "required": true,
+      "text": "신나는 일이 생겼어요.",
+      "options": [
+        { "oid": "a", "text": "얼른 누군가에게 알려주고 싶어요", "weights": { "EI": -2 } },
+        { "oid": "b", "text": "마음속에 오래 담아둬요", "weights": { "EI": 2 } }
+      ]
+    },
+    {
+      "linkId": "type16_gift_box",
+      "type": "choice",
+      "emoji": "🎁",
+      "required": true,
+      "text": "선물 상자를 받았어요.",
+      "options": [
+        { "oid": "a", "text": "무엇인지 만져보고 확인해요", "weights": { "SN": -2 } },
+        { "oid": "b", "text": "무엇일지 먼저 상상해요", "weights": { "SN": 2 } }
+      ]
+    },
+    {
+      "linkId": "type16_story",
+      "type": "choice",
+      "emoji": "🧃",
+      "required": true,
+      "text": "이야기를 들을 때 나는?",
+      "options": [
+        { "oid": "a", "text": "진짜 있었던 일이 더 좋아요", "weights": { "SN": -2 } },
+        { "oid": "b", "text": "마법이 나오는 이야기가 더 좋아요", "weights": { "SN": 2 } }
+      ]
+    },
+    {
+      "linkId": "type16_on_the_way",
+      "type": "choice",
+      "emoji": "🚗",
+      "required": true,
+      "text": "차를 타고 어딘가로 가는 길이에요.",
+      "options": [
+        { "oid": "a", "text": "창밖 간판이랑 가게를 봐요", "weights": { "SN": -2 } },
+        { "oid": "b", "text": "딴 생각을 하며 멍하니 있어요", "weights": { "SN": 2 } }
+      ]
+    },
+    {
+      "linkId": "type16_crying_friend",
+      "type": "choice",
+      "emoji": "🐾",
+      "required": true,
+      "text": "친구가 울고 있어요.",
+      "options": [
+        { "oid": "a", "text": "왜 우는지 먼저 물어봐요", "weights": { "TF": -2 } },
+        { "oid": "b", "text": "말없이 옆에 앉아 있어요", "weights": { "TF": 2 } }
+      ]
+    },
+    {
+      "linkId": "type16_broken_rule",
+      "type": "choice",
+      "emoji": "🎬",
+      "required": true,
+      "text": "규칙을 어긴 친구가 있어요.",
+      "options": [
+        { "oid": "a", "text": "규칙은 규칙이라고 말해요", "weights": { "TF": -2 } },
+        { "oid": "b", "text": "왜 그랬는지 들어봐요", "weights": { "TF": 2 } }
+      ]
+    },
+    {
+      "linkId": "type16_praise",
+      "type": "choice",
+      "emoji": "🥁",
+      "required": true,
+      "text": "칭찬을 들었어요.",
+      "options": [
+        { "oid": "a", "text": "무엇을 잘했는지 알고 싶어요", "weights": { "TF": -2 } },
+        { "oid": "b", "text": "그냥 기분이 좋아서 웃어요", "weights": { "TF": 2 } }
+      ]
+    },
+    {
+      "linkId": "type16_weekend",
+      "type": "choice",
+      "emoji": "🪁",
+      "required": true,
+      "text": "주말이 왔어요.",
+      "options": [
+        { "oid": "a", "text": "무엇을 할지 미리 정해요", "weights": { "JP": -2 } },
+        { "oid": "b", "text": "그날 기분대로 놀아요", "weights": { "JP": 2 } }
+      ]
+    },
+    {
+      "linkId": "type16_tidy_room",
+      "type": "choice",
+      "emoji": "🍪",
+      "required": true,
+      "text": "방을 정리할 때 나는?",
+      "options": [
+        { "oid": "a", "text": "물건마다 자리를 정해 두고 넣어요", "weights": { "JP": -2 } },
+        { "oid": "b", "text": "필요할 때 몰아서 치워요", "weights": { "JP": 2 } }
+      ]
+    },
+    {
+      "linkId": "type16_trip",
+      "type": "choice",
+      "emoji": "🌈",
+      "required": true,
+      "text": "가족과 여행을 가요.",
+      "options": [
+        { "oid": "a", "text": "갈 곳을 순서대로 적어둬요", "weights": { "JP": -2 } },
+        { "oid": "b", "text": "도착해서 그때 정해요", "weights": { "JP": 2 } }
+      ]
+    }
+  ],
+  "resolver": {
+    "strategy": "letters",
+    "order": ["EI", "SN", "TF", "JP"],
+    "threshold": 50
+  },
+  "resultTypes": [
+    {
+      "code": "ENFP",
+      "name": "반짝반짝 요정",
+      "subtitle": "아이디어가 계속 떠오르는 아이",
+      "emoji": "✨",
+      "color": "#7c3aed",
+      "content": {
+        "summary": "하고 싶은 게 계속 떠오르는 편이에요. 친구들 사이에서 재미난 일을 먼저 꺼내요.",
+        "strengths": ["새로운 놀이를 잘 만들어요", "친구들을 신나게 해줘요"],
+        "cautions": ["시작한 걸 끝까지 하는 게 어려울 때가 있어요"],
+        "tips": ["오늘 시작한 것 하나만 끝까지 해볼까요?"],
+        "goodWith": ["INFJ", "ISFJ"],
+        "funFact": "떠오른 생각을 적어두면 나중에 보물이 돼요."
+      }
+    },
+    {
+      "code": "ENFJ",
+      "name": "다 챙기는 반장",
+      "subtitle": "친구들을 잘 모으는 아이",
+      "emoji": "🌻",
+      "color": "#c9a84c",
+      "content": {
+        "summary": "친구들이 잘 지내는지 먼저 살피는 편이에요. 다 같이 하는 일을 즐겁게 이끌어요.",
+        "strengths": ["함께 하는 일을 잘 이끌어요", "친구의 기분을 잘 알아채요"],
+        "cautions": ["남을 챙기다 내 마음을 늦게 챙길 때가 있어요"],
+        "tips": ["오늘은 내가 하고 싶은 걸 하나 골라 볼까요?"],
+        "goodWith": ["INFP", "ISFP"],
+        "funFact": "고맙다는 말을 들으면 하루가 길게 기분 좋아요."
+      }
+    },
+    {
+      "code": "ENTP",
+      "name": "왜냐고 묻는 발명가",
+      "subtitle": "궁금한 게 끝없는 아이",
+      "emoji": "💡",
+      "color": "#e0455f",
+      "content": {
+        "summary": "왜 그런지 묻고 다른 방법을 찾아보는 편이에요. 늘 하던 대로는 조금 심심해요.",
+        "strengths": ["막혔을 때 다른 길을 잘 봐요", "질문을 겁내지 않아요"],
+        "cautions": ["재미가 식으면 금방 다른 걸 하고 싶어져요"],
+        "tips": ["오늘 궁금했던 것 하나를 끝까지 알아볼까요?"],
+        "goodWith": ["INFJ", "ISTJ"],
+        "funFact": "좋은 발명은 대부분 '왜?' 에서 시작했어요."
+      }
+    },
+    {
+      "code": "ENTJ",
+      "name": "앞장서는 대장",
+      "subtitle": "먼저 정하고 움직이는 아이",
+      "emoji": "🚩",
+      "color": "#6830c8",
+      "content": {
+        "summary": "무엇을 할지 먼저 정하고 앞장서는 편이에요. 목표가 있으면 힘이 나요.",
+        "strengths": ["할 일을 잘 정리해요", "망설이지 않고 시작해요"],
+        "cautions": ["친구가 천천히 오는 걸 기다리기 어려울 때가 있어요"],
+        "tips": ["오늘은 친구의 생각을 먼저 들어볼까요?"],
+        "goodWith": ["INFP", "ISFP"],
+        "funFact": "좋은 대장은 잘 듣는 사람이기도 해요."
+      }
+    },
+    {
+      "code": "ESFP",
+      "name": "무대가 좋은 개구쟁이",
+      "subtitle": "지금 이 순간이 즐거운 아이",
+      "emoji": "🎤",
+      "color": "#e8c96a",
+      "content": {
+        "summary": "지금 하는 일에 푹 빠지는 편이에요. 함께 웃는 시간을 가장 좋아해요.",
+        "strengths": ["분위기를 밝게 만들어요", "몸으로 배우는 게 빨라요"],
+        "cautions": ["앞일을 미리 챙기는 건 조금 귀찮아요"],
+        "tips": ["내일 필요한 것 하나만 미리 챙겨 볼까요?"],
+        "goodWith": ["ISTJ", "INTJ"],
+        "funFact": "웃음은 옆 사람에게 잘 옮겨가요."
+      }
+    },
+    {
+      "code": "ESFJ",
+      "name": "마음을 살피는 친구",
+      "subtitle": "먼저 챙겨주는 아이",
+      "emoji": "🤝",
+      "color": "#2f9e74",
+      "content": {
+        "summary": "누가 빠졌는지, 누가 서운한지 잘 알아채는 편이에요. 챙겨주는 걸 좋아해요.",
+        "strengths": ["약속과 예의를 잘 지켜요", "친구를 잘 도와줘요"],
+        "cautions": ["거절하는 게 어려울 때가 있어요"],
+        "tips": ["하기 싫은 건 싫다고 말해도 괜찮아요."],
+        "goodWith": ["INTP", "ISTP"],
+        "funFact": "작은 챙김이 오래 기억에 남아요."
+      }
+    },
+    {
+      "code": "ESTP",
+      "name": "일단 해보는 모험가",
+      "subtitle": "몸이 먼저 움직이는 아이",
+      "emoji": "🛹",
+      "color": "#c9a84c",
+      "content": {
+        "summary": "생각보다 몸이 먼저 움직이는 편이에요. 해보면서 배우는 게 빨라요.",
+        "strengths": ["겁내지 않고 도전해요", "급한 상황에서 침착해요"],
+        "cautions": ["서두르다 빠뜨리는 게 생길 수 있어요"],
+        "tips": ["시작하기 전에 한 번만 숨을 고르고 볼까요?"],
+        "goodWith": ["INFJ", "ISFJ"],
+        "funFact": "해봐야 아는 것들이 세상에 아주 많아요."
+      }
+    },
+    {
+      "code": "ESTJ",
+      "name": "척척 해내는 살림꾼",
+      "subtitle": "정해진 대로 해내는 아이",
+      "emoji": "📋",
+      "color": "#786b9c",
+      "content": {
+        "summary": "할 일을 순서대로 해내는 편이에요. 약속한 것은 잊지 않고 지켜요.",
+        "strengths": ["맡은 일을 끝까지 해내요", "정리를 잘해요"],
+        "cautions": ["갑자기 바뀌면 조금 답답할 수 있어요"],
+        "tips": ["계획이 바뀌어도 괜찮은 날을 하나 만들어 볼까요?"],
+        "goodWith": ["INFP", "ENFP"],
+        "funFact": "지킨 약속이 쌓이면 믿음이 돼요."
+      }
+    },
+    {
+      "code": "INFP",
+      "name": "마음이 깊은 몽상가",
+      "subtitle": "조용히 오래 생각하는 아이",
+      "emoji": "🌙",
+      "color": "#a78bfa",
+      "content": {
+        "summary": "마음속에 이야기가 많은 편이에요. 좋아하는 것에는 마음을 아주 깊게 써요.",
+        "strengths": ["남의 마음을 잘 헤아려요", "좋아하는 일에 오래 몰입해요"],
+        "cautions": ["속상한 걸 혼자 담아둘 때가 있어요"],
+        "tips": ["오늘 마음에 걸린 일을 한 사람에게 말해 볼까요?"],
+        "goodWith": ["ENFJ", "ENTJ"],
+        "funFact": "조용한 사람의 이야기가 가장 오래 남기도 해요."
+      }
+    },
+    {
+      "code": "INFJ",
+      "name": "조용히 이끄는 등대",
+      "subtitle": "멀리 보는 아이",
+      "emoji": "🕯️",
+      "color": "#8b5cf6",
+      "content": {
+        "summary": "말이 많지 않아도 무엇이 중요한지 잘 아는 편이에요. 친구의 마음을 오래 기억해요.",
+        "strengths": ["앞일을 잘 그려봐요", "한 친구를 깊게 아껴요"],
+        "cautions": ["기대가 커서 혼자 실망할 때가 있어요"],
+        "tips": ["기대한 걸 말로 알려주면 서로 편해져요."],
+        "goodWith": ["ENFP", "ENTP"],
+        "funFact": "등대는 소리치지 않아도 길을 알려줘요."
+      }
+    },
+    {
+      "code": "INTP",
+      "name": "혼자 파고드는 탐험가",
+      "subtitle": "끝까지 알아보는 아이",
+      "emoji": "🔭",
+      "color": "#6b5f8a",
+      "content": {
+        "summary": "궁금한 게 생기면 혼자 오래 파고드는 편이에요. 알아내는 순간이 제일 즐거워요.",
+        "strengths": ["원리를 잘 이해해요", "혼자서도 잘 몰입해요"],
+        "cautions": ["설명을 건너뛰어 친구가 못 따라올 수 있어요"],
+        "tips": ["알게 된 걸 친구에게 쉽게 설명해 볼까요?"],
+        "goodWith": ["ESFJ", "ENFJ"],
+        "funFact": "질문 하나가 며칠씩 머릿속에 남기도 해요."
+      }
+    },
+    {
+      "code": "INTJ",
+      "name": "계획을 세우는 설계자",
+      "subtitle": "먼저 그려보고 움직이는 아이",
+      "emoji": "📐",
+      "color": "#401961",
+      "content": {
+        "summary": "머릿속에 순서를 먼저 그리는 편이에요. 한번 정하면 흔들리지 않아요.",
+        "strengths": ["긴 계획을 잘 세워요", "혼자서도 끝까지 해내요"],
+        "cautions": ["계획이 틀어지면 마음이 불편할 수 있어요"],
+        "tips": ["계획에 빈칸 하나를 남겨두면 편해져요."],
+        "goodWith": ["ESFP", "ENFP"],
+        "funFact": "좋은 설계에는 고칠 여유가 들어 있어요."
+      }
+    },
+    {
+      "code": "ISFP",
+      "name": "손끝이 다정한 예술가",
+      "subtitle": "예쁜 걸 잘 알아보는 아이",
+      "emoji": "🎨",
+      "color": "#cdbcf5",
+      "content": {
+        "summary": "색과 소리, 손에 닿는 느낌을 잘 알아채는 편이에요. 조용히 다정해요.",
+        "strengths": ["보는 눈이 좋아요", "다투기보다 맞춰줘요"],
+        "cautions": ["하고 싶은 말을 삼킬 때가 있어요"],
+        "tips": ["오늘 하고 싶었던 말을 하나 꺼내 볼까요?"],
+        "goodWith": ["ENFJ", "ENTJ"],
+        "funFact": "잘 보는 사람이 잘 만드는 사람이 돼요."
+      }
+    },
+    {
+      "code": "ISFJ",
+      "name": "곁을 지키는 지킴이",
+      "subtitle": "조용히 챙겨주는 아이",
+      "emoji": "🧸",
+      "color": "#2f9e74",
+      "content": {
+        "summary": "티내지 않고 챙겨주는 편이에요. 한번 맡은 일은 조용히 끝까지 해요.",
+        "strengths": ["약속을 잘 지켜요", "작은 것까지 기억해요"],
+        "cautions": ["힘들다고 말하기를 미룰 때가 있어요"],
+        "tips": ["도와달라고 말하는 것도 잘하는 거예요."],
+        "goodWith": ["ESTP", "ENFP"],
+        "funFact": "곁에 있어 주는 것만으로 큰 힘이 돼요."
+      }
+    },
+    {
+      "code": "ISTP",
+      "name": "뚝딱 고치는 해결사",
+      "subtitle": "손으로 알아내는 아이",
+      "emoji": "🔧",
+      "color": "#786b9c",
+      "content": {
+        "summary": "말보다 손으로 알아내는 편이에요. 어떻게 움직이는지 뜯어보고 싶어요.",
+        "strengths": ["고장난 걸 잘 고쳐요", "당황하지 않고 차분해요"],
+        "cautions": ["설명을 짧게 해서 오해를 살 수 있어요"],
+        "tips": ["한 마디만 더 붙이면 마음이 잘 전해져요."],
+        "goodWith": ["ESFJ", "ENFJ"],
+        "funFact": "뜯어본 사람만 아는 것들이 있어요."
+      }
+    },
+    {
+      "code": "ISTJ",
+      "name": "약속을 지키는 기록가",
+      "subtitle": "빠뜨리지 않는 아이",
+      "emoji": "📔",
+      "color": "#1a0f2e",
+      "content": {
+        "summary": "해야 할 일을 빠뜨리지 않는 편이에요. 차근차근 하는 게 마음이 편해요.",
+        "strengths": ["꼼꼼해서 실수가 적어요", "한 일을 잘 기억해요"],
+        "cautions": ["갑작스러운 변화가 부담스러울 수 있어요"],
+        "tips": ["오늘은 하나만 즉흥으로 정해 볼까요?"],
+        "goodWith": ["ESFP", "ENTP"],
+        "funFact": "적어둔 기록이 나중에 나를 도와줘요."
+      }
+    }
+  ]
+}
