@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap">
+  <style>
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+    a { color: #7c3aed; } a:hover { color: #6830c8; }
+    .ttl { font-family: "Gowun Batang", serif; }
+  </style>
+</helmet>
+
+<div style="display: flex; flex-direction: column; gap: 26px; padding: 34px 36px; background: #fdfbff; min-height: 100%; box-sizing: border-box">
+
+  <div style="display: flex; flex-direction: column; gap: 7px">
+    <div style="font-size: 10px; font-weight: 900; letter-spacing: 2px; color: #7c3aed">TYPELOG · APP ICON</div>
+    <div class="ttl" style="font-size: 27px; font-weight: 700; letter-spacing: -0.8px; color: #1a0f2e">한쪽 귀 접힘 — 둥근 귀 · 작은 입</div>
+    <div style="font-size: 13px; line-height: 1.75; color: #6b5f8a; max-width: 500px">
+      오른쪽 귀만 접은 비대칭이에요. 왼쪽 귀는 뾰족한 끝을 둥글게 굴려 접힌 귀와 결을 맞췄고,
+      입은 20% 줄여 선글라스와의 간격을 벌렸어요.
+    </div>
+  </div>
+
+  <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+    <defs>
+      <linearGradient id="tileM" x1="0" y1="0" x2="1" y2="1" gradientTransform="rotate(15)">
+        <stop offset="0" stop-color="#3a1266"></stop>
+        <stop offset="1" stop-color="#1c0733"></stop>
+      </linearGradient>
+    </defs>
+    <symbol id="icM" viewBox="0 0 192 192">
+      <rect width="192" height="192" rx="44" fill="url(#tileM)"></rect>
+      <g transform="rotate(158.96 96 106.46)">
+        <circle cx="96" cy="106.46" r="60" fill="none" stroke="#6b4a9e" stroke-width="11" stroke-linecap="round" stroke-dasharray="232.6 144.4"></circle>
+        <circle cx="96" cy="106.46" r="60" fill="none" stroke="#e8d18a" stroke-width="11" stroke-linecap="round" stroke-dasharray="128 249"></circle>
+      </g>
+
+      <!-- 귀: 왼쪽은 끝이 둥근 세운 귀, 오른쪽은 접힌 귀 -->
+      <g fill="#ffffff">
+        <path transform="rotate(-6 84 80)" d="M84,58 C88.5,58 90.5,62 90.5,68 C90.5,80 90,92 89,100 C87.5,108 80.5,108 79,100 C78,92 77.5,80 77.5,68 C77.5,62 79.5,58 84,58 Z"></path>
+        <path d="M103,101 C100,86 103,71 113,66 C123,61 133,66 130,75 C127,84 116,85 111,92 C108,96 108,99 108,102 Z"></path>
+      </g>
+      <g fill="#cdbcf5">
+        <path transform="rotate(-6 84 80)" d="M84,69 C86.8,69 88,71.5 88,75.5 C88,84 87.6,92 87,97 C86,102 82,102 81,97 C80.4,92 80,84 80,75.5 C80,71.5 81.2,69 84,69 Z"></path>
+        <path d="M107,98 C105,86 107,76 114,72 C120,69 125,71 124,76 C122,82 114,84 111,90 Z"></path>
+      </g>
+
+      <!-- 머리 -->
+      <path fill="#ffffff" d="M96,99 C77,99 66,110 66,126 C66,142 77,153 96,153 C115,153 126,142 126,126 C126,110 115,99 96,99 Z"></path>
+
+      <!-- 선글라스: 흰 실루엣을 타일색으로 뚫는다 -->
+      <g fill="#25093f">
+        <rect x="67" y="111" width="26" height="18" rx="6" transform="rotate(-3 80 120)"></rect>
+        <rect x="99" y="111" width="26" height="18" rx="6" transform="rotate(3 112 120)"></rect>
+        <rect x="92" y="117" width="8" height="5" rx="2"></rect>
+      </g>
+
+      <!-- 입: 왼쪽 끝만 올라간 미소 -->
+      <path d="M107,138 C104,145 95,147.5 88,143.5 C85,141 84,138 85.5,134" fill="none" stroke="#25093f" stroke-width="5" stroke-linecap="round"></path>
+
+      <!-- 반짝임 -->
+      <path d="M136,86 L138.6,91.4 L144,94 L138.6,96.6 L136,102 L133.4,96.6 L128,94 L133.4,91.4 Z" fill="#e8d18a"></path>
+    </symbol>
+  </svg>
+
+  <div style="display: flex; align-items: flex-end; gap: 26px">
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+      <svg viewBox="0 0 192 192" width="176" height="176"><use href="#icM"></use></svg>
+      <div style="font-size: 11px; color: #786b9c">192 · 앱 아이콘</div>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+      <svg viewBox="0 0 192 192" width="64" height="64"><use href="#icM"></use></svg>
+      <div style="font-size: 11px; color: #786b9c">64 · 로고</div>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+      <svg viewBox="0 0 192 192" width="56" height="56"><use href="#icM"></use></svg>
+      <div style="font-size: 11px; color: #786b9c">56 · 앱 스위처</div>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+      <svg viewBox="0 0 192 192" width="32" height="32"><use href="#icM"></use></svg>
+      <div style="font-size: 11px; color: #786b9c">32 · 탭</div>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+      <svg viewBox="0 0 192 192" width="16" height="16"><use href="#icM"></use></svg>
+      <div style="font-size: 11px; color: #786b9c">16</div>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 8px; flex-wrap: wrap">
+    <span style="display: inline-flex; padding: 5px 11px; border-radius: 999px; font-size: 11px; font-weight: 700; background: rgba(139,92,246,0.08); color: #7c3aed">왼쪽 귀 끝 반경 6.5</span>
+    <span style="display: inline-flex; padding: 5px 11px; border-radius: 999px; font-size: 11px; font-weight: 700; background: rgba(139,92,246,0.08); color: #7c3aed">입 폭 21.5 · 선폭 5</span>
+    <span style="display: inline-flex; padding: 5px 11px; border-radius: 999px; font-size: 11px; font-weight: 700; background: rgba(201,168,76,0.12); color: #c9a84c">코 없음</span>
+    <span style="display: inline-flex; padding: 5px 11px; border-radius: 999px; font-size: 11px; font-weight: 700; background: rgba(201,168,76,0.12); color: #c9a84c">호 안쪽 반경 54.5 준수</span>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 7px; font-size: 12px; line-height: 1.7; color: #6b5f8a; padding-top: 12px; border-top: 1px solid rgba(139,92,246,0.14)">
+    <div><strong style="color: #1a0f2e">고친 것</strong> — 왼쪽 귀의 뾰족한 끝을 어깨 두 개로 굴려 접힌 오른쪽 귀와 형태가 맞아요.
+      입은 폭 27 → 21.5, 선폭 5.5 → 5로 줄여 선글라스와 붙어 보이던 것을 떼었어요.</div>
+    <div><strong style="color: #1a0f2e">남은 것</strong> — 32px 아래에서는 접힌 귀와 반짝임이 뭉개져요.
+      파비콘(32 · 16)만 단순한 형태로 따로 뽑을지 정하면 돼요.</div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

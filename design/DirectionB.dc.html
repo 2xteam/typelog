@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap">
+  <style>
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+    a { color: #7c3aed; } a:hover { color: #6830c8; }
+    .ttl { font-family: "Gowun Batang", serif; }
+  </style>
+</helmet>
+
+<div style="display: flex; flex-direction: column; gap: 24px; padding: 34px 34px; background: #fdfbff; min-height: 100%; box-sizing: border-box">
+
+  <div style="display: flex; flex-direction: column; gap: 7px">
+    <div style="font-size: 10px; font-weight: 900; letter-spacing: 2px; color: #7c3aed">OPTION B</div>
+    <div class="ttl" style="font-size: 25px; font-weight: 700; letter-spacing: -0.8px; color: #1a0f2e">단순 — 32px에서 이기는 안</div>
+    <div style="font-size: 13px; line-height: 1.75; color: #6b5f8a">
+      요소를 줄이고 남은 것을 키웠어요. 안쪽 귀를 없애고, 머리를 넓히고,
+      선글라스를 크게 키워 작은 크기에서 형태가 살아남게 했어요.
+    </div>
+  </div>
+
+  <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+    <defs>
+      <linearGradient id="tileB" x1="0" y1="0" x2="1" y2="1" gradientTransform="rotate(15)">
+        <stop offset="0" stop-color="#3a1266"></stop>
+        <stop offset="1" stop-color="#1c0733"></stop>
+      </linearGradient>
+    </defs>
+    <symbol id="icB" viewBox="0 0 192 192">
+      <rect width="192" height="192" rx="44" fill="url(#tileB)"></rect>
+      <g transform="rotate(158.96 96 106.46)">
+        <circle cx="96" cy="106.46" r="60" fill="none" stroke="#6b4a9e" stroke-width="11" stroke-linecap="round" stroke-dasharray="232.6 144.4"></circle>
+        <circle cx="96" cy="106.46" r="60" fill="none" stroke="#e8d18a" stroke-width="11" stroke-linecap="round" stroke-dasharray="128 249"></circle>
+      </g>
+      <g fill="#ffffff">
+        <path transform="rotate(-4 83 84)" d="M83,64 C90,73 92,88 90,102 C88,110 78,110 76,102 C74,88 76,73 83,64 Z"></path>
+        <path transform="rotate(4 109 84)" d="M109,64 C116,73 118,88 116,102 C114,110 104,110 102,102 C100,88 102,73 109,64 Z"></path>
+      </g>
+      <path fill="#ffffff" d="M96,94 C74,94 62,107 62,124 C62,141 74,154 96,154 C118,154 130,141 130,124 C130,107 118,94 96,94 Z"></path>
+      <g fill="#25093f">
+        <rect x="64" y="110" width="30" height="22" rx="8" transform="rotate(-3 79 121)"></rect>
+        <rect x="98" y="110" width="30" height="22" rx="8" transform="rotate(3 113 121)"></rect>
+        <rect x="93" y="117" width="6" height="6" rx="2"></rect>
+      </g>
+      <path d="M112,140 C107,149 93,152 85,146 C81,143 80,139 82,134" fill="none" stroke="#25093f" stroke-width="7" stroke-linecap="round"></path>
+      <path d="M132,66 L135,72.5 L141.5,75.5 L135,78.5 L132,85 L129,78.5 L122.5,75.5 L129,72.5 Z" fill="#e8d18a"></path>
+    </symbol>
+  </svg>
+
+  <div style="display: flex; align-items: flex-end; gap: 24px">
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+      <svg viewBox="0 0 192 192" width="150" height="150"><use href="#icB"></use></svg>
+      <div style="font-size: 11px; color: #786b9c">192</div>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+      <svg viewBox="0 0 192 192" width="64" height="64"><use href="#icB"></use></svg>
+      <div style="font-size: 11px; color: #786b9c">64</div>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+      <svg viewBox="0 0 192 192" width="32" height="32"><use href="#icB"></use></svg>
+      <div style="font-size: 11px; color: #786b9c">32</div>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+      <svg viewBox="0 0 192 192" width="16" height="16"><use href="#icB"></use></svg>
+      <div style="font-size: 11px; color: #786b9c">16</div>
+    </div>
+  </div>
+
+  <div style="font-size: 12px; line-height: 1.8; color: #6b5f8a; padding-top: 4px; border-top: 1px solid rgba(139,92,246,0.14)">
+    <strong style="color: #1a0f2e">감수할 점</strong> — 귀가 짧아 A안보다 토끼다움이 덜해요.
+    큰 크기에서는 A안이 낫고, 이 안은 파비콘 전용으로 쓸 만해요.
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

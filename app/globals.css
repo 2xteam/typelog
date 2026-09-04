@@ -1,0 +1,274 @@
+/* ── 테마 변수 ──
+ * 색을 직접 쓰지 않고 항상 이 변수를 참조한다.
+ * 팔레트는 결쩜사(kyulzzumsa.co.kr)를 따르고 **라이트 전용**이다.
+ * 테마 선택 UI를 두지 않으므로 [data-theme] 블록도 두지 않는다.
+ * 근거: my-obsidian-vault → 20-Design/앱 공통 UI와 아이콘.md
+ * ── */
+
+/* 구조 값 */
+:root {
+  --radius-sm: 10px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-full: 9999px;
+  --nav-height: 56px;
+
+  /* 폭 — 글 읽는 폭과 카드 그리드 폭 두 가지만 쓴다 */
+  --content-reading: 760px;
+  --content-wide: 1180px;
+  --page-gutter: clamp(20px, 4.2vw, 64px);
+}
+
+/* 색 — 네 앱과 같은 값을 쓴다. 순수 검정·회색을 쓰지 않는다 */
+:root {
+  --bg-primary: #fdfbff;
+  --bg-secondary: #f5f0fc;
+  --bg-card: #ffffff;
+  --bg-elevated: #ffffff;
+  --border: rgba(139, 92, 246, 0.14);
+  --border-subtle: rgba(139, 92, 246, 0.08);
+  --text-primary: #1a0f2e;
+  --text-secondary: #6b5f8a;
+  --text-muted: #786b9c;
+  --accent: #7c3aed;
+  --accent-hover: #6830c8;
+  --accent-subtle: rgba(139, 92, 246, 0.08);
+  --point: #c9a84c;
+  --point-subtle: rgba(201, 168, 76, 0.12);
+  --gold: #c9a84c;
+  --danger: #e0455f;
+  --danger-subtle: rgba(224, 69, 95, 0.1);
+  --success: #2f9e74;
+  --success-subtle: rgba(47, 158, 116, 0.12);
+  --warning: #c9a84c;
+  --input-bg: #ffffff;
+  --input-border: rgba(72, 42, 97, 0.14);
+
+  /* 액센트 위 글자색. 팔레트가 바뀌어도 이 변수를 쓰면 따라간다 */
+  --on-accent: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Noto Sans KR", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+}
+
+/* ────────────────────────────────────────────────────────────
+ * 시트 구조 — 결쩜사 패턴
+ *   옅은 배경 위에 둥근 시트를 쌓고, 시트마다 eyebrow → 헤드라인 → 콘텐츠.
+ * 근거: my-obsidian-vault → 20-Design/결쩜사 페이지 패턴.md
+ * ──────────────────────────────────────────────────────────── */
+
+.page {
+  max-width: var(--content-wide);
+  margin: 0 auto;
+  padding: clamp(18px, 4vw, 34px) var(--page-gutter) 64px;
+}
+
+.page--reading {
+  max-width: var(--content-reading);
+}
+
+.sheet {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(22px, 5vw, 32px);
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 18px 44px rgba(37, 13, 62, 0.08);
+}
+
+.sheet + .sheet {
+  margin-top: 18px;
+}
+
+.sheet--tint {
+  background: var(--bg-secondary);
+  box-shadow: none;
+  border: 1px solid var(--border);
+}
+
+.sheet--dark {
+  background:
+    radial-gradient(circle at 78% 16%, rgba(188, 167, 251, 0.14), transparent 36%),
+    linear-gradient(150deg, #190527, #32104f 65%, #401961);
+  color: #fff;
+  border: none;
+}
+
+.sheet--gold {
+  background: color-mix(in srgb, var(--point) 8%, var(--bg-card));
+  border: 1px solid color-mix(in srgb, var(--point) 34%, transparent);
+  box-shadow: none;
+}
+
+/* 시트 머리 — eyebrow는 영문 명사형, 헤드라인은 국문 */
+.eyebrow {
+  margin: 0 0 10px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: var(--accent);
+}
+
+/* 어두운 배경의 eyebrow는 금색 */
+.sheet--dark .eyebrow {
+  color: #ead58c;
+}
+
+.headline {
+  margin: 0;
+  /* 결쩜사의 큰 헤드라인은 명조(Gowun Batang) 700이다 */
+  font-family: "Gowun Batang", serif;
+  font-size: clamp(21px, 4.4vw, 28px);
+  font-weight: 700;
+  line-height: 1.42;
+  letter-spacing: -0.8px;
+  color: var(--text-primary);
+  word-break: keep-all;
+}
+
+.sheet--dark .headline {
+  color: #fff;
+}
+
+.lead {
+  margin: 10px 0 0;
+  font-size: 0.88rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  word-break: keep-all;
+}
+
+.sheet--dark .lead {
+  color: rgba(232, 222, 250, 0.72);
+}
+
+/* 실(結) 장식 — 여백에만 놓는다 */
+.sheet-ornament {
+  position: absolute;
+  top: -26px;
+  right: -34px;
+  width: 210px;
+  height: 120px;
+  pointer-events: none;
+}
+
+/* 상태 알약 배지 */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--accent-subtle);
+  color: var(--accent);
+}
+
+.pill--gold {
+  background: var(--point-subtle);
+  color: var(--point);
+}
+
+.sheet--dark .pill {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ead58c;
+}
+
+/* 버튼 — 네 종류로 고정한다. 새 스타일을 만들기 전에 이걸로 되는지 먼저 본다 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 13px 20px;
+  border: none;
+  border-radius: 11px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn--primary {
+  background: linear-gradient(135deg, #8150e8, #6830c8);
+  box-shadow: 0 10px 24px rgba(104, 48, 200, 0.18);
+  color: var(--on-accent);
+}
+
+.btn--gold {
+  background: linear-gradient(135deg, #e8c96a, #c9a84c);
+  color: #2a1c00;
+}
+
+.btn--ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.sheet--dark .btn--ghost {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(200, 184, 255, 0.3);
+  color: #fff;
+}
+
+.btn--muted {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+
+.btn--block {
+  width: 100%;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+/* 알약 탭 — /types 의 "지금 해보기 / 오픈 예정" */
+.tabs {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: #f6f1f9;
+}
+
+.tab {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.tab[aria-selected="true"] {
+  background: #fff;
+  color: var(--text-primary);
+  box-shadow: 0 4px 15px rgba(38, 13, 63, 0.08);
+}
