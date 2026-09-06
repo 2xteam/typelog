@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
   <!--
     TypeLog 앱 아이콘 — 선글라스 낀 토끼.
-    네 앱과 같은 기하학(짙은 보라 타일 + 게이지 호)을 쓰고 안쪽 심볼만 다르다.
+    네 앱과 같은 기하학(따뜻한 짙은 타일 + 게이지 호)을 쓰고 안쪽 심볼만 다르다.
     두 호는 같은 <circle>을 stroke-dasharray 만 바꿔 그린다 — 따로 <path>로 그리면 끝점이 어긋난다.
     심볼은 게이지 호 안쪽(중심에서 반경 54.5) 안에 들어간다.
     → my-obsidian-vault / 20-Design/앱 공통 UI와 아이콘.md · 10-Projects/TypeLog.md
   -->
   <defs>
     <linearGradient id="tile" x1="0" y1="0" x2="1" y2="1" gradientTransform="rotate(15)">
-      <stop offset="0" stop-color="#3a1266"/>
-      <stop offset="1" stop-color="#1c0733"/>
+      <stop offset="0" stop-color="#4b2a1c"/>
+      <stop offset="1" stop-color="#241310"/>
     </linearGradient>
   </defs>
 
@@ -17,14 +17,14 @@
 
   <!-- 게이지 호 -->
   <g transform="rotate(158.96 96 106.46)">
-    <circle cx="96" cy="106.46" r="60" fill="none" stroke="#6b4a9e"
+    <circle cx="96" cy="106.46" r="60" fill="none" stroke="#c2704c"
             stroke-width="11" stroke-linecap="round" stroke-dasharray="232.6 144.4"/>
     <circle cx="96" cy="106.46" r="60" fill="none" stroke="#e8d18a"
             stroke-width="11" stroke-linecap="round" stroke-dasharray="128 249"/>
   </g>
 
   <!-- 귀 — 왼쪽은 끝이 둥근 세운 귀, 오른쪽은 접힌 귀 (비대칭) -->
-  <g fill="#ffffff">
+  <g fill="#fff5ef">
     <path transform="rotate(-6 84 80)"
           d="M84,58 C88.5,58 90.5,62 90.5,68 C90.5,80 90,92 89,100
              C87.5,108 80.5,108 79,100 C78,92 77.5,80 77.5,68
@@ -32,7 +32,7 @@
     <path d="M103,101 C100,86 103,71 113,66 C123,61 133,66 130,75
              C127,84 116,85 111,92 C108,96 108,99 108,102 Z"/>
   </g>
-  <g fill="#cdbcf5">
+  <g fill="#f0c4b0">
     <path transform="rotate(-6 84 80)"
           d="M84,69 C86.8,69 88,71.5 88,75.5 C88,84 87.6,92 87,97
              C86,102 82,102 81,97 C80.4,92 80,84 80,75.5
@@ -42,12 +42,12 @@
   </g>
 
   <!-- 머리 -->
-  <path fill="#ffffff"
+  <path fill="#fff5ef"
         d="M96,99 C77,99 66,110 66,126 C66,142 77,153 96,153
            C115,153 126,142 126,126 C126,110 115,99 96,99 Z"/>
 
   <!-- 선글라스 — 흰 실루엣을 타일색으로 뚫는다. 검은 렌즈를 얹으면 작은 크기에서 얼굴이 어두워진다 -->
-  <g fill="#25093f">
+  <g fill="#2e1a12">
     <rect x="67" y="111" width="26" height="18" rx="6" transform="rotate(-3 80 120)"/>
     <rect x="99" y="111" width="26" height="18" rx="6" transform="rotate(3 112 120)"/>
     <rect x="92" y="117" width="8" height="5" rx="2"/>
@@ -55,7 +55,7 @@
 
   <!-- 입 — 왼쪽 끝만 올라간 미소. 대칭으로 그리면 표정이 사라진다 -->
   <path d="M107,138 C104,145 95,147.5 88,143.5 C85,141 84,138 85.5,134"
-        fill="none" stroke="#25093f" stroke-width="5" stroke-linecap="round"/>
+        fill="none" stroke="#2e1a12" stroke-width="5" stroke-linecap="round"/>
 
   <!-- 반짝임 — 게이지 호와 같은 골드. 흰색이면 얼굴에 묻힌다 -->
   <path d="M136,86 L138.6,91.4 L144,94 L138.6,96.6 L136,102 L133.4,96.6 L128,94 L133.4,91.4 Z"
