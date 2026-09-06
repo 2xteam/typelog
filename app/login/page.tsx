@@ -71,7 +71,7 @@ function LoginForm() {
           background: "var(--bg-card)",
           borderRadius: "var(--radius-xl)",
           padding: "2rem",
-          boxShadow: "0 24px 65px rgba(37, 13, 62, 0.09)",
+          boxShadow: "0 24px 65px rgba(6, 34, 40, 0.09)",
         }}
       >
         <h1
@@ -119,7 +119,7 @@ function LoginForm() {
             borderRadius: "var(--radius-md)",
             border: "none",
             background: busy ? "var(--text-muted)" : "var(--accent)",
-            /* 진한 보라 위에서 검정은 거의 보이지 않는다. 팔레트가 바뀌어도
+            /* 진한 먹청 위에서 검정은 거의 보이지 않는다. 팔레트가 바뀌어도
                따라가도록 --on-accent 를 쓴다.
                → my-obsidian-vault / 20-Design/앱 공통 UI와 아이콘.md */
             color: "var(--on-accent)",

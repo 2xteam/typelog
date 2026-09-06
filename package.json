@@ -9,7 +9,8 @@
     "start": "next start -p 3005",
     "lint": "next lint",
     "icons": "node scripts/make-icons.mjs",
-    "db:check": "node scripts/check-db.mjs"
+    "db:check": "node scripts/check-db.mjs",
+    "dev:verify": "node scripts/dev-verify.mjs"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",

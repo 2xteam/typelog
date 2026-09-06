@@ -8,8 +8,8 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: "/home",
     display: "standalone",
     /* 라이트 전용이므로 첫 페인트 색을 globals.css 의 :root 와 같게 둔다 */
-    background_color: "#fdfbff",
-    theme_color: "#7c3aed",
+    background_color: "#f7fbfb",
+    theme_color: "#116271",
     orientation: "portrait",
     icons: [{ src: "/icon.png", sizes: "192x192", type: "image/png" }],
   };
