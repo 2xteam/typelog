@@ -16,8 +16,8 @@
   -->
   <defs>
     <linearGradient id="tile16" x1="0" y1="0" x2="1" y2="1" gradientTransform="rotate(15)">
-      <stop offset="0" stop-color="#4b2a1c"/>
-      <stop offset="1" stop-color="#241310"/>
+      <stop offset="0" stop-color="#134450"/>
+      <stop offset="1" stop-color="#071c22"/>
     </linearGradient>
   </defs>
 
@@ -26,7 +26,7 @@
   <!-- 원본 기하를 중심에서 1.55배로 키운다 -->
   <g transform="translate(96 96) scale(1.55) translate(-96 -110)">
     <!-- 귀 — 왼쪽 세운 귀, 오른쪽 접힌 귀. 두 귀 모두 굵게 -->
-    <g fill="#fff5ef">
+    <g fill="#eef7f8">
       <path transform="rotate(-6 84 80)"
             d="M84,54 C90,54 92.5,59 92.5,67 C92.5,80 92,92 91,100
                C89,109 79,109 77,100 C76,92 75.5,80 75.5,67
@@ -36,7 +36,7 @@
     </g>
 
     <!-- 머리 -->
-    <path fill="#fff5ef"
+    <path fill="#eef7f8"
           d="M96,97 C75,97 63,109 63,126 C63,143 75,155 96,155
              C117,155 129,143 129,126 C129,109 117,97 96,97 Z"/>
 
@@ -45,6 +45,6 @@
       띠가 얇으면(높이 19) 아래 남는 흰 면적이 커서 머리가 **컵처럼** 보인다.
       아래로 내리고 두껍게(118/31) 해서 흰 면은 턱만큼만 남긴다.
     -->
-    <rect x="68" y="118" width="56" height="31" rx="14" fill="#2e1a12"/>
+    <rect x="68" y="118" width="56" height="31" rx="14" fill="#0b262e"/>
   </g>
 </svg>
