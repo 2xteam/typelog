@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import Link from "next/link";
 import { AppIcon } from "@/components/AppIcon";
 import { LandingHeaderAuth } from "@/components/LandingAuth";
+import { ScrollProgress } from "@/components/ScrollProgress";
 import { Sheet } from "@/components/Sheet";
 
 /**
@@ -10,6 +11,13 @@ import { Sheet } from "@/components/Sheet";
  * 로그인은 /login, 앱 화면은 /home 부터다.
  * → my-obsidian-vault / 20-Design/앱 공통 UI와 아이콘.md
  */
+
+/** 시작하는 순서 — 다른 네 앱은 STEPS 를 파일 위에 둔다. 모양을 맞춘다 */
+const STEPS: [string, string, string][] = [
+  ["01", "질문에 답해요", "한 번에 한 질문씩 나와요. 마음이 바뀌면 되돌아가도 괜찮아요."],
+  ["02", "나의 타입을 봐요", "어울리는 순간과 잘 맞는 타입까지 함께 알려드려요."],
+  ["03", "기록으로 모아요", "다시 해볼 수 있어요. 나온 타입은 도감에 모여요."],
+];
 
 export default function LandingPage() {
   return (
@@ -22,11 +30,14 @@ export default function LandingPage() {
           </span>
           <LandingHeaderAuth />
         </div>
+        {/* 헤더가 sticky 라서 띠가 스크롤을 따라온다 */}
+        <ScrollProgress />
       </header>
 
       <main className="page">
       <Sheet
         tone="dark"
+        point
         eyebrow="TYPE PLAY"
         headline={
           <>
@@ -56,39 +67,20 @@ export default function LandingPage() {
       <Sheet
         tone="tint"
         eyebrow="HOW IT WORKS"
-        headline="세 걸음이면 끝나요"
+        headline={<><span className="mark">세 걸음</span>이면 끝나요</>}
       >
-        <ol
-          style={{
-            margin: "18px 0 0",
-            paddingLeft: 0,
-            listStyle: "none",
-            display: "grid",
-            gap: 14,
-          }}
-        >
-          {[
-            ["01", "질문에 답해요", "한 번에 한 질문씩 나와요. 마음이 바뀌면 되돌아가도 괜찮아요."],
-            ["02", "나의 타입을 봐요", "어울리는 순간과 잘 맞는 타입까지 함께 알려드려요."],
-            ["03", "기록으로 모아요", "다시 해볼 수 있어요. 나온 타입은 도감에 모여요."],
-          ].map(([no, title, desc]) => (
-            <li key={no} style={{ display: "flex", gap: 14 }}>
-              <span className="pill pill--gold" style={{ height: 24 }}>
+        {/* 번호 원과 연결선은 app/elements.css 의 .flow 가 그린다.
+            예전에는 번호를 pill--gold 로 그려 다른 네 앱과 모양이 달랐다 */}
+        <ol className="flow">
+          {STEPS.map(([no, title, desc]) => (
+            <li key={no} className="flow-step">
+              <span className="flow-num" aria-hidden="true">
                 {no}
               </span>
-              <span>
-                <strong style={{ display: "block", fontSize: 15 }}>{title}</strong>
-                <span
-                  style={{
-                    fontSize: 13,
-                    lineHeight: 1.75,
-                    color: "var(--text-secondary)",
-                    wordBreak: "keep-all",
-                  }}
-                >
-                  {desc}
-                </span>
-              </span>
+              <div>
+                <h3>{title}</h3>
+                <p>{desc}</p>
+              </div>
             </li>
           ))}
         </ol>
@@ -102,7 +94,7 @@ export default function LandingPage() {
         </p>
       </Sheet>
 
-      <Sheet center eyebrow="START" headline="지금 해볼까요?">
+      <Sheet center point eyebrow="START" headline="지금 해볼까요?">
         <div style={{ marginTop: 20 }}>
           <Link className="btn btn--primary" href="/types">
             타입 찾아보기 →
@@ -123,6 +115,24 @@ export default function LandingPage() {
               style={{ color: "var(--on-dark)" }}
             >
               my<span>jane</span>
+            </a>
+          </p>
+          {/*
+            법적 고지 — 세 페이지는 포털(myjane)에 한 벌만 둔다.
+            여섯 앱이 회원과 세션을 공유하므로 방침도 한 곳이어야 한다.
+            → my-obsidian-vault / 50-Plans/C 법적 페이지.md
+          */}
+          <p style={footerLegalStyle}>
+            <a href="https://www.myjane.co.kr/legal/privacy" style={footerLegalLinkStyle}>
+              개인정보처리방침
+            </a>
+            <span style={footerLegalSepStyle}>·</span>
+            <a href="https://www.myjane.co.kr/legal/terms" style={footerLegalLinkStyle}>
+              이용약관
+            </a>
+            <span style={footerLegalSepStyle}>·</span>
+            <a href="https://www.myjane.co.kr/legal/cookies" style={footerLegalLinkStyle}>
+              쿠키 안내
             </a>
           </p>
           <p style={footerLineStyle}>@2026 myjane All rights reserved</p>
@@ -160,4 +170,26 @@ const footerLineStyle: CSSProperties = {
   lineHeight: 1.8,
   color: "var(--on-dark-faint)",
   wordBreak: "keep-all",
+};
+
+/*
+ * 어두운 푸터의 법적 고지 링크. 짙은 면 위이므로 --on-dark 계열을 쓴다
+ * (밝은 면용 토큰을 쓰면 2~3:1 로 떨어진다).
+ * 다섯 앱이 같은 모양이다 — 고칠 때 함께 고친다.
+ */
+const footerLegalStyle: CSSProperties = {
+  margin: "12px 0 0",
+  fontSize: "0.78rem",
+  lineHeight: 1.9,
+};
+
+const footerLegalLinkStyle: CSSProperties = {
+  color: "var(--on-dark-dim)",
+  textDecoration: "none",
+  fontWeight: 600,
+};
+
+const footerLegalSepStyle: CSSProperties = {
+  margin: "0 8px",
+  color: "var(--on-dark-faint)",
 };
