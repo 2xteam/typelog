@@ -97,7 +97,6 @@ export default function SharedLanding({ params }: { params: Promise<{ token: str
 
       <Sheet
         tone="dark"
-        ornament
         center
         eyebrow="A FRIEND SHARED"
         /**

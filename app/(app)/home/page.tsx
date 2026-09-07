@@ -7,7 +7,6 @@ export default function HomePage() {
     <>
       <Sheet
         tone="dark"
-        ornament
         eyebrow="TYPE PLAY"
         headline={
           <>

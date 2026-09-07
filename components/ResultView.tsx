@@ -179,7 +179,6 @@ export function ResultView({
 
       <Sheet
         tone="dark"
-        ornament
         eyebrow="YOUR TYPE"
         headline={
           <>

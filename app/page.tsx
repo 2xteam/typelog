@@ -13,7 +13,6 @@ export default function LandingPage() {
     <main className="page">
       <Sheet
         tone="dark"
-        ornament
         eyebrow="TYPE PLAY"
         headline={
           <>
