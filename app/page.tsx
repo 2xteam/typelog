@@ -1,4 +1,7 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
+import { AppIcon } from "@/components/AppIcon";
+import { LandingHeaderAuth } from "@/components/LandingAuth";
 import { Sheet } from "@/components/Sheet";
 
 /**
@@ -10,7 +13,18 @@ import { Sheet } from "@/components/Sheet";
 
 export default function LandingPage() {
   return (
-    <main className="page">
+    <div style={{ minHeight: "100vh", background: "var(--bg-primary)" }}>
+      <header style={headerStyle}>
+        <div className="page" style={{ ...headerInner, paddingTop: 14, paddingBottom: 14 }}>
+          <span className="row" style={{ gap: 9 }}>
+            <AppIcon size={30} priority />
+            <span style={{ fontWeight: 900, letterSpacing: "-0.02em" }}>TypeLog</span>
+          </span>
+          <LandingHeaderAuth />
+        </div>
+      </header>
+
+      <main className="page">
       <Sheet
         tone="dark"
         eyebrow="TYPE PLAY"
@@ -95,6 +109,55 @@ export default function LandingPage() {
           </Link>
         </div>
       </Sheet>
-    </main>
+      </main>
+
+      <footer style={footerStyle}>
+        <div className="page" style={{ textAlign: "center", paddingBottom: 28 }}>
+          <p style={{ margin: "0 0 14px", fontWeight: 800, letterSpacing: "-0.02em" }}>
+            TypeLog
+          </p>
+          <p style={{ margin: 0 }}>
+            <a
+              href="https://www.myjane.co.kr"
+              className="myjane-mark"
+              style={{ color: "var(--on-dark)" }}
+            >
+              my<span>jane</span>
+            </a>
+          </p>
+          <p style={footerLineStyle}>@2026 myjane All rights reserved</p>
+        </div>
+      </footer>
+    </div>
   );
 }
+
+const headerStyle: CSSProperties = {
+  position: "sticky",
+  top: 0,
+  zIndex: 40,
+  background: "var(--bg-primary)",
+  borderBottom: "1px solid var(--border-subtle)",
+};
+
+const headerInner: CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  gap: 12,
+};
+
+const footerStyle: CSSProperties = {
+  marginTop: 40,
+  paddingTop: 30,
+  background: "var(--footer-bg)",
+  color: "var(--on-dark)",
+};
+
+const footerLineStyle: CSSProperties = {
+  margin: "8px 0 0",
+  fontSize: "0.78rem",
+  lineHeight: 1.8,
+  color: "var(--on-dark-faint)",
+  wordBreak: "keep-all",
+};
