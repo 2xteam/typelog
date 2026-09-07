@@ -44,6 +44,37 @@ a {
   color: inherit;
 }
 
+/* ── Scrollbar ──
+ * 이 규칙이 없으면 **브라우저 기본 스크롤바**(넓은 회색)가 나온다.
+ * 다른 네 앱은 4px 로 얇게 쓰고 있어서 typelog 만 스크롤이 달라 보였다.
+ * (2026-09-07 발견 — 사용자가 "스크롤이 조금 다르다"고 했다)
+ * ── */
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ── Selection highlight ── */
+
+::selection {
+  background: var(--accent-subtle);
+  color: var(--text-primary);
+}
+
 /* ────────────────────────────────────────────────────────────
  * 시트 구조 — 결쩜사 패턴
  *   옅은 배경 위에 둥근 시트를 쌓고, 시트마다 eyebrow → 헤드라인 → 콘텐츠.
