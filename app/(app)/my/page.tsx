@@ -1,5 +1,6 @@
 "use client";
 
+import { AccountWithdrawLink } from "@/components/AccountWithdrawLink";
 import { Sheet } from "@/components/Sheet";
 import { useSession } from "@/lib/useSession";
 
@@ -26,6 +27,8 @@ export default function MyPage() {
       <p className="lead">
         이름과 연락처는 myjane 계정 정보예요. 바꾸려면 포털에서 고쳐요.
       </p>
+
+      <AccountWithdrawLink />
     </Sheet>
   );
 }
