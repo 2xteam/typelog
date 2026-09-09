@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import { getUserModel, type UserDocument } from "@/models/User";
 import { verifySessionToken } from "@/lib/sessionToken";
-import { SESSION_KEY } from "@/lib/session";
+import { readSessionTokenFromRequest } from "@/lib/sessionCookie";
 
 /**
  * 서버에서 요청자를 확인한다.
@@ -14,35 +14,6 @@ import { SESSION_KEY } from "@/lib/session";
  * → my-obsidian-vault / 30-Patterns/인증과 세션 공유.md
  */
 
-function readCookie(req: Request, name: string): string | null {
-  const header = req.headers.get("cookie");
-  if (!header) return null;
-  const prefix = name + "=";
-  /**
-   * 같은 이름의 쿠키가 **둘일 수 있다** — `.myjane.co.kr` 도메인 쿠키와
-   * `typelog.myjane.co.kr` host-only 쿠키. 브라우저가 둘 다 보내고 순서는
-   * 기대할 수 없으므로 **전부 모아 토큰이 있는 쪽을 고른다.**
-   */
-  const candidates: string[] = [];
-  for (const part of header.split(";")) {
-    const trimmed = part.trim();
-    if (!trimmed.startsWith(prefix)) continue;
-    try {
-      candidates.push(decodeURIComponent(trimmed.slice(prefix.length)));
-    } catch {
-      /* 깨진 값은 버린다 */
-    }
-  }
-  for (const raw of candidates) {
-    try {
-      const parsed = JSON.parse(raw) as { token?: unknown };
-      if (typeof parsed.token === "string" && parsed.token) return raw;
-    } catch {
-      /* JSON 이 아니면 버린다 */
-    }
-  }
-  return candidates[0] ?? null;
-}
 
 /**
  * 세션 토큰은 **쿠키에서만** 읽는다.
@@ -51,16 +22,6 @@ function readCookie(req: Request, name: string): string | null {
  * 포털이 보내는 `ADMIN_API_SECRET` 이다. 둘을 같은 자리에서 읽으면 어느 쪽인지
  * 헷갈린다.
  */
-function readToken(req: Request): string | null {
-  const raw = readCookie(req, SESSION_KEY);
-  if (!raw) return null;
-  try {
-    const parsed = JSON.parse(raw) as { token?: unknown };
-    return typeof parsed.token === "string" ? parsed.token : null;
-  } catch {
-    return null;
-  }
-}
 
 export type Viewer = {
   doc: UserDocument;
@@ -70,7 +31,7 @@ export type Viewer = {
 };
 
 export async function getViewer(req: Request): Promise<Viewer | null> {
-  const claims = verifySessionToken(readToken(req));
+  const claims = verifySessionToken(readSessionTokenFromRequest(req));
   if (!claims) return null;
 
   await connectDB();
@@ -84,6 +45,12 @@ export async function getViewer(req: Request): Promise<Viewer | null> {
     → myjane/lib/accountLifecycle.ts · 50-Plans/C 법적 페이지.md
   */
   if (doc.withdrawnAt) return null;
+
+  /*
+    세션 버전이 다르면 폐기된 토큰이다 (비밀번호 변경·탈퇴·모든 기기 로그아웃).
+    `sv` 가 없는 옛 토큰은 아직 한 번도 올리지 않은 계정(0)에서만 통한다.
+  */
+  if ((claims.sv ?? 0) !== (doc.sessionVersion ?? 0)) return null;
 
 
   const role = doc.adminRole === "master" || doc.adminRole === "operator" ? doc.adminRole : null;
