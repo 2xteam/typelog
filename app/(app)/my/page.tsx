@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { AccountWithdrawLink } from "@/components/AccountWithdrawLink";
 import { Sheet } from "@/components/Sheet";
 import { useSession } from "@/lib/useSession";
@@ -10,6 +11,17 @@ import { useSession } from "@/lib/useSession";
  */
 export default function MyPage() {
   const session = useSession();
+  /* 전화번호는 세션 쿠키에 없다 — 서버에서 받는다 → app/api/me */
+  const [phone, setPhone] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (session.status !== "signed-in") return;
+    void fetch("/api/me")
+      .then((r) => r.json() as Promise<{ ok: boolean; me?: { phone?: string | null } }>)
+      .then((j) => { if (j.ok) setPhone(j.me?.phone ?? ""); })
+      .catch(() => {});
+  }, [session.status]);
+
   if (session.status !== "signed-in") return null;
 
   return (
@@ -21,7 +33,7 @@ export default function MyPage() {
         </div>
         <div>
           <dt style={labelStyle}>전화번호</dt>
-          <dd style={valueStyle}>{session.user.phone || "—"}</dd>
+          <dd style={valueStyle}>{phone === null ? "…" : phone || "—"}</dd>
         </div>
       </dl>
       <p className="lead">

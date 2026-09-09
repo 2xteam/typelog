@@ -65,7 +65,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       ok: true,
-      user: { id: String(user._id), name: user.name, phone: user.phone },
+      user: { id: String(user._id), name: user.name, hasEmail: Boolean(user.email) },
     });
   } catch (err) {
     const message =
