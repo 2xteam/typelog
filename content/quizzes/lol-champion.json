@@ -1,0 +1,537 @@
+{
+  "$schema": "typelog/quiz/v1",
+  "mode": "upsert",
+  "_note": [
+    "챔피언 이름만 쓴다. 초상·일러스트·대사·로고는 쓰지 않는다.",
+    "근거는 게임 안에서 확인되는 것만 — 역할(라인) · 기술이 하는 일 · 플레이 방식.",
+    "챔피언의 강약이나 티어를 말하지 않는다. 문장은 나에 대한 이야기다.",
+    "⚠️ 브랜드보다 위험이 크다. 챔피언은 이름이자 **저작물**이라, 상표를 가리키는",
+    "쓰임보다 넓게 볼 여지가 있다. 이름만 쓰고 disclaimer 를 붙여 위험을 줄인다."
+  ],
+  "quiz": {
+    "slug": "lol-champion",
+    "title": "나와 닮은 롤 챔피언은?",
+    "tagline": "열 가지 질문으로 찾는 나의 챔피언",
+    "category": "game",
+    "ageRange": {
+      "min": 13,
+      "max": null
+    },
+    "cover": {
+      "emoji": "🎮",
+      "imageUrl": null
+    },
+    "disclaimer": "리그 오브 레전드의 챔피언 이름을 재미로 빌려 왔어요. 라이엇 게임즈와는 아무 관련이 없어요.",
+    "order": 150,
+    "shuffle": false
+  },
+  "outcomes": [
+    {
+      "id": "garen",
+      "kind": "tally",
+      "label": "가렌"
+    },
+    {
+      "id": "yasuo",
+      "kind": "tally",
+      "label": "야스오"
+    },
+    {
+      "id": "teemo",
+      "kind": "tally",
+      "label": "티모"
+    },
+    {
+      "id": "amumu",
+      "kind": "tally",
+      "label": "아무무"
+    },
+    {
+      "id": "lux",
+      "kind": "tally",
+      "label": "럭스"
+    },
+    {
+      "id": "soraka",
+      "kind": "tally",
+      "label": "소라카"
+    }
+  ],
+  "resolver": {
+    "strategy": "argmax",
+    "tiebreak": [
+      "garen",
+      "yasuo",
+      "teemo",
+      "amumu",
+      "lux",
+      "soraka"
+    ]
+  },
+  "items": [
+    {
+      "linkId": "lol_start",
+      "type": "choice",
+      "emoji": "🚩",
+      "required": true,
+      "text": "한타가 시작되면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "제일 앞에서 들어가요",
+          "weights": {
+            "garen": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "기회 보이면 혼자 파고들어요",
+          "weights": {
+            "yasuo": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "미리 깔아둔 데로 유도해요",
+          "weights": {
+            "teemo": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "lol_pick",
+      "type": "choice",
+      "emoji": "🎮",
+      "required": true,
+      "text": "챔피언을 고를 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "팀에 없는 자리를 채워요",
+          "weights": {
+            "amumu": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "판을 여는 챔피언을 골라요",
+          "weights": {
+            "lux": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "팀을 살리는 챔피언을 골라요",
+          "weights": {
+            "soraka": 3
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "lol_lose",
+      "type": "choice",
+      "emoji": "📉",
+      "required": true,
+      "text": "지고 있을 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "그래도 앞으로 밀어요",
+          "weights": {
+            "garen": 5
+          }
+        },
+        {
+          "oid": "b",
+          "text": "상대가 지치게 만들어요",
+          "weights": {
+            "teemo": 5
+          }
+        },
+        {
+          "oid": "c",
+          "text": "한 번만 맞으면 된다고 기다려요",
+          "weights": {
+            "lux": 5
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "lol_mistake",
+      "type": "choice",
+      "emoji": "😵",
+      "required": true,
+      "text": "내가 죽어서 밀렸을 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "바로 다시 가서 갚아요",
+          "weights": {
+            "yasuo": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "다음 싸움을 위해 자리를 잡아요",
+          "weights": {
+            "amumu": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "팀 상태를 먼저 챙겨요",
+          "weights": {
+            "soraka": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "lol_map",
+      "type": "choice",
+      "emoji": "🗺️",
+      "required": true,
+      "text": "게임 중 화면에서 자주 보는 건?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "내 앞의 상대",
+          "weights": {
+            "garen": 7
+          }
+        },
+        {
+          "oid": "b",
+          "text": "우리 팀 체력",
+          "weights": {
+            "amumu": 7
+          }
+        },
+        {
+          "oid": "c",
+          "text": "상대가 안 보이는 곳",
+          "weights": {
+            "lux": 7
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "lol_solo",
+      "type": "choice",
+      "emoji": "🕹️",
+      "required": true,
+      "text": "혼자 하는 게임을 할 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "어려운 조작을 연습해요",
+          "weights": {
+            "yasuo": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "안 걸릴 자리를 찾아봐요",
+          "weights": {
+            "teemo": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "친구랑 같이 하는 게 좋아요",
+          "weights": {
+            "soraka": 3
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "lol_ping",
+      "type": "choice",
+      "emoji": "🔔",
+      "required": true,
+      "text": "팀이 위험할 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "가서 몸으로 막아요",
+          "weights": {
+            "garen": 5
+          }
+        },
+        {
+          "oid": "b",
+          "text": "내가 먼저 정리하러 가요",
+          "weights": {
+            "yasuo": 5
+          }
+        },
+        {
+          "oid": "c",
+          "text": "들어갈 길을 열어줘요",
+          "weights": {
+            "amumu": 5
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "lol_win",
+      "type": "choice",
+      "emoji": "🏅",
+      "required": true,
+      "text": "이겼을 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "다음에도 통할지 생각해요",
+          "weights": {
+            "teemo": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "결정적이었던 순간을 떠올려요",
+          "weights": {
+            "lux": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "같이한 사람들을 먼저 말해요",
+          "weights": {
+            "soraka": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "lol_role",
+      "type": "choice",
+      "emoji": "🧩",
+      "required": true,
+      "text": "팀에서 내 자리는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "앞에서 부딪히는 자리",
+          "weights": {
+            "garen": 7
+          }
+        },
+        {
+          "oid": "b",
+          "text": "상대를 귀찮게 하는 자리",
+          "weights": {
+            "teemo": 7
+          }
+        },
+        {
+          "oid": "c",
+          "text": "뒤에서 챙기는 자리",
+          "weights": {
+            "soraka": 7
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "lol_practice",
+      "type": "choice",
+      "emoji": "⏱️",
+      "required": true,
+      "text": "연습을 한다면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "어려운 콤보를 반복해요",
+          "weights": {
+            "yasuo": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "버티는 법을 익혀요",
+          "weights": {
+            "amumu": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "각도와 타이밍을 재봐요",
+          "weights": {
+            "lux": 3
+          }
+        }
+      ]
+    }
+  ],
+  "resultTypes": [
+    {
+      "code": "garen",
+      "name": "가렌",
+      "subtitle": "정직하게 밀고 들어가는 사람",
+      "emoji": "⚔️",
+      "color": "#3a7bd5",
+      "content": {
+        "summary": "복잡한 수를 안 써요. 앞으로 가서 정면으로 붙는 쪽이라, 무슨 생각인지 팀도 상대도 다 알아요. 그래도 통해요.",
+        "strengths": [
+          "망설이지 않고 들어가요",
+          "맡은 자리를 지켜요",
+          "복잡하게 만들지 않아요"
+        ],
+        "cautions": [
+          "예상되기 쉬워요",
+          "물러날 때를 놓쳐요"
+        ],
+        "tips": [
+          "이번 판에는 한 번 물러나 보고 다시 들어가봐요."
+        ],
+        "funFact": "기술 구성이 단순해서 처음 시작하는 사람에게 자주 권해지는 챔피언이에요.",
+        "goodWith": [
+          "soraka",
+          "lux"
+        ]
+      }
+    },
+    {
+      "code": "yasuo",
+      "name": "야스오",
+      "subtitle": "혼자 해내려는 사람",
+      "emoji": "🌪️",
+      "color": "#e0455f",
+      "content": {
+        "summary": "손이 빠르고 욕심도 있어요. 잘 되면 판을 혼자 뒤집는데, 그만큼 실수도 티가 나요. 그래도 다음 판에 또 잡아요.",
+        "strengths": [
+          "어려운 걸 해내고 싶어해요",
+          "실수해도 다시 시도해요",
+          "혼자서도 판을 만들어요"
+        ],
+        "cautions": [
+          "팀보다 앞서 나가요",
+          "안 되는 날 무리해요"
+        ],
+        "tips": [
+          "이번 판은 한 번 팀을 기다렸다 같이 들어가봐요."
+        ],
+        "funFact": "바람을 다루는 검사예요. 이동 기술을 연달아 쓰는 조작이 특징이에요.",
+        "goodWith": [
+          "amumu",
+          "teemo"
+        ]
+      }
+    },
+    {
+      "code": "teemo",
+      "name": "티모",
+      "subtitle": "얄밉게 흔드는 사람",
+      "emoji": "🍄",
+      "color": "#2f9e74",
+      "content": {
+        "summary": "정면으로 안 붙어요. 안 보이는 데 미리 깔아두고 상대를 지치게 만들어요. 작고 귀엽게 생겨서 더 얄미워요.",
+        "strengths": [
+          "미리 준비해 두는 걸 잘해요",
+          "상대가 싫어하는 걸 알아요",
+          "정면 아닌 길을 찾아요"
+        ],
+        "cautions": [
+          "정면 승부에서 약해요",
+          "얄밉다는 말을 들어요"
+        ],
+        "tips": [
+          "이번 판은 한 번 정면에서 붙어봐요."
+        ],
+        "funFact": "독버섯을 땅에 심어 두는 기술로 유명해요.",
+        "goodWith": [
+          "yasuo",
+          "amumu"
+        ]
+      }
+    },
+    {
+      "code": "amumu",
+      "name": "아무무",
+      "subtitle": "앞에서 다 받아내는 사람",
+      "emoji": "🫂",
+      "color": "#c9a84c",
+      "content": {
+        "summary": "제일 먼저 들어가서 제일 많이 맞아요. 그 덕에 뒤에 있는 사람들이 할 일을 해요. 티는 안 나지만 없으면 안 되는 자리예요.",
+        "strengths": [
+          "힘든 자리를 먼저 맡아요",
+          "팀이 들어갈 길을 열어요",
+          "혼자 견디는 걸 잘해요"
+        ],
+        "cautions": [
+          "혼자 다 받다 지쳐요",
+          "고맙다는 말을 못 들어요"
+        ],
+        "tips": [
+          "이번 판에는 도와달라고 먼저 말해봐요."
+        ],
+        "funFact": "'외로운 미라' 라는 설정이에요. 친구를 찾아다니는 이야기를 갖고 있어요.",
+        "goodWith": [
+          "soraka",
+          "garen"
+        ]
+      }
+    },
+    {
+      "code": "lux",
+      "name": "럭스",
+      "subtitle": "뒤에서 판을 여는 사람",
+      "emoji": "✨",
+      "color": "#7c6f9c",
+      "content": {
+        "summary": "앞에 안 나서지만 결정적인 한 번을 만들어요. 멀리서 길을 막고 열어서, 싸움이 시작되는 자리를 정해요.",
+        "strengths": [
+          "멀리 있는 걸 미리 봐요",
+          "결정적인 순간을 노려요",
+          "안전한 자리에서 해내요"
+        ],
+        "cautions": [
+          "한 번 빗나가면 할 게 없어요",
+          "가까이 붙으면 약해요"
+        ],
+        "tips": [
+          "이번 판은 조금 앞에 서 있어봐요."
+        ],
+        "funFact": "빛을 다루는 마법사예요. 긴 직선 기술로 상대를 묶어요.",
+        "goodWith": [
+          "garen",
+          "soraka"
+        ]
+      }
+    },
+    {
+      "code": "soraka",
+      "name": "소라카",
+      "subtitle": "남을 살리는 사람",
+      "emoji": "💫",
+      "color": "#d94f8a",
+      "content": {
+        "summary": "자기 것을 덜어서 남을 채워요. 화면에 점수는 안 남지만, 이 사람이 있으면 팀이 안 죽어요.",
+        "strengths": [
+          "남의 상태를 먼저 봐요",
+          "내 몫을 나눠줘요",
+          "티 안 나게 판을 지켜요"
+        ],
+        "cautions": [
+          "나를 챙기는 게 늦어요",
+          "혼자 남으면 위험해요"
+        ],
+        "tips": [
+          "이번 판은 내 체력을 먼저 챙겨봐요."
+        ],
+        "funFact": "자기 체력을 써서 아군을 회복시키는 기술을 갖고 있어요.",
+        "goodWith": [
+          "amumu",
+          "lux"
+        ]
+      }
+    }
+  ]
+}

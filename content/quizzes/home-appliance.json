@@ -1,0 +1,535 @@
+{
+  "$schema": "typelog/quiz/v1",
+  "mode": "upsert",
+  "_note": [
+    "창작한 유형이다. 브랜드나 제품 이름을 쓰지 않고 기기 종류만 쓴다.",
+    "기기의 **하는 일**에서 성향을 끌어온다 — 늘 켜져 있는지, 한번 시작하면",
+    "끝까지 도는지, 조용히 돌아가는지. 억지로 붙이지 않는다.",
+    "'좋은 기기·안 좋은 기기'로 나누지 않는다. 여섯 개 모두 강점이 먼저 온다."
+  ],
+  "quiz": {
+    "slug": "home-appliance",
+    "title": "내가 전자기기라면?",
+    "tagline": "열 가지 질문으로 찾는 나의 기기",
+    "category": "thing",
+    "ageRange": {
+      "min": 8,
+      "max": null
+    },
+    "cover": {
+      "emoji": "🔌",
+      "imageUrl": null
+    },
+    "order": 160,
+    "shuffle": false
+  },
+  "outcomes": [
+    {
+      "id": "fridge",
+      "kind": "tally",
+      "label": "냉장고"
+    },
+    {
+      "id": "aircon",
+      "kind": "tally",
+      "label": "에어컨"
+    },
+    {
+      "id": "washer",
+      "kind": "tally",
+      "label": "세탁기"
+    },
+    {
+      "id": "microwave",
+      "kind": "tally",
+      "label": "전자레인지"
+    },
+    {
+      "id": "purifier",
+      "kind": "tally",
+      "label": "공기청정기"
+    },
+    {
+      "id": "robot",
+      "kind": "tally",
+      "label": "로봇청소기"
+    }
+  ],
+  "resolver": {
+    "strategy": "argmax",
+    "tiebreak": [
+      "fridge",
+      "aircon",
+      "washer",
+      "microwave",
+      "purifier",
+      "robot"
+    ]
+  },
+  "items": [
+    {
+      "linkId": "dv_homework",
+      "type": "choice",
+      "emoji": "📚",
+      "required": true,
+      "text": "숙제를 할 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "매일 조금씩 꾸준히 해요",
+          "weights": {
+            "fridge": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "몰아서 한 번에 끝내요",
+          "weights": {
+            "aircon": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "정한 만큼 다 하고 쉬어요",
+          "weights": {
+            "washer": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "dv_room",
+      "type": "choice",
+      "emoji": "🧹",
+      "required": true,
+      "text": "방이 지저분하면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "지금 당장 치워요",
+          "weights": {
+            "microwave": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "조금씩 계속 정리해요",
+          "weights": {
+            "purifier": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "돌아다니면서 눈에 띄는 걸 치워요",
+          "weights": {
+            "robot": 3
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "dv_group",
+      "type": "choice",
+      "emoji": "🧑‍🤝‍🧑",
+      "required": true,
+      "text": "모둠에서 내가 맡는 자리는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "빠진 걸 다 챙기는 자리",
+          "weights": {
+            "fridge": 5
+          }
+        },
+        {
+          "oid": "b",
+          "text": "끝까지 마무리하는 자리",
+          "weights": {
+            "washer": 5
+          }
+        },
+        {
+          "oid": "c",
+          "text": "아무도 안 보는 걸 하는 자리",
+          "weights": {
+            "purifier": 5
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "dv_hot",
+      "type": "choice",
+      "emoji": "🥵",
+      "required": true,
+      "text": "너무 더운 날 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "당장 시원하게 만들어요",
+          "weights": {
+            "aircon": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "빨리 씻고 끝내요",
+          "weights": {
+            "microwave": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "가만히 있다가 알아서 해요",
+          "weights": {
+            "robot": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "dv_wait",
+      "type": "choice",
+      "emoji": "⏰",
+      "required": true,
+      "text": "기다려야 할 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "다른 할 일을 계속 해요",
+          "weights": {
+            "fridge": 7
+          }
+        },
+        {
+          "oid": "b",
+          "text": "빨리 끝나는 방법을 찾아요",
+          "weights": {
+            "microwave": 7
+          }
+        },
+        {
+          "oid": "c",
+          "text": "조용히 앉아서 기다려요",
+          "weights": {
+            "purifier": 7
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "dv_change",
+      "type": "choice",
+      "emoji": "🔀",
+      "required": true,
+      "text": "하려던 게 갑자기 바뀌면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "확 바꿔서 다시 시작해요",
+          "weights": {
+            "aircon": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "원래 하려던 걸 먼저 끝내요",
+          "weights": {
+            "washer": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "새 길을 찾아 그냥 가요",
+          "weights": {
+            "robot": 3
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "dv_energy",
+      "type": "choice",
+      "emoji": "🔋",
+      "required": true,
+      "text": "내 힘은 어떤 식이에요?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "하루 종일 고르게 있어요",
+          "weights": {
+            "fridge": 5
+          }
+        },
+        {
+          "oid": "b",
+          "text": "필요할 때 세게 몰아 써요",
+          "weights": {
+            "aircon": 5
+          }
+        },
+        {
+          "oid": "c",
+          "text": "짧게 빠르게 써요",
+          "weights": {
+            "microwave": 5
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "dv_praise",
+      "type": "choice",
+      "emoji": "🎖️",
+      "required": true,
+      "text": "칭찬을 받으면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "남은 것부터 마무리해요",
+          "weights": {
+            "washer": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "쑥스러워서 조용히 있어요",
+          "weights": {
+            "purifier": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "다음 걸 하러 가요",
+          "weights": {
+            "robot": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "dv_noise",
+      "type": "choice",
+      "emoji": "🔕",
+      "required": true,
+      "text": "일할 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "티 안 나게 계속 해요",
+          "weights": {
+            "fridge": 7
+          }
+        },
+        {
+          "oid": "b",
+          "text": "소리 내면서 확실히 해요",
+          "weights": {
+            "washer": 7
+          }
+        },
+        {
+          "oid": "c",
+          "text": "혼자 돌아다니며 해요",
+          "weights": {
+            "robot": 7
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "dv_friend",
+      "type": "choice",
+      "emoji": "🫶",
+      "required": true,
+      "text": "친구가 힘들어 보이면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "분위기를 바꿔줘요",
+          "weights": {
+            "aircon": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "필요한 걸 바로 해줘요",
+          "weights": {
+            "microwave": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "말 없이 옆을 지켜요",
+          "weights": {
+            "purifier": 3
+          }
+        }
+      ]
+    }
+  ],
+  "resultTypes": [
+    {
+      "code": "fridge",
+      "name": "냉장고",
+      "subtitle": "늘 켜져 있는 사람",
+      "emoji": "🧊",
+      "color": "#3a7bd5",
+      "content": {
+        "summary": "아무도 안 볼 때도 계속 일하고 있어요. 요란하지 않지만 하루도 안 쉬어서, 없으면 바로 티가 나는 쪽이에요.",
+        "strengths": [
+          "맡은 걸 계속 해내요",
+          "쉽게 흔들리지 않아요",
+          "여러 사람 것을 같이 챙겨요"
+        ],
+        "cautions": [
+          "힘들다고 말하지 않아요",
+          "쉬어야 할 때도 계속 해요"
+        ],
+        "tips": [
+          "오늘은 한 시간만 아무것도 안 해봐요."
+        ],
+        "funFact": "냉장고는 집에서 전기를 가장 오래 쓰는 기기예요. 한 번도 꺼지지 않아서요.",
+        "goodWith": [
+          "purifier",
+          "aircon"
+        ]
+      }
+    },
+    {
+      "code": "aircon",
+      "name": "에어컨",
+      "subtitle": "분위기를 바꾸는 사람",
+      "emoji": "❄️",
+      "color": "#2f9e74",
+      "content": {
+        "summary": "들어오면 방 공기가 달라져요. 힘을 세게 쓰는 쪽이라 짧게 켜도 확실히 바뀌어요.",
+        "strengths": [
+          "분위기를 빠르게 바꿔요",
+          "필요할 때 확실히 해내요",
+          "덥고 답답한 걸 못 참아요"
+        ],
+        "cautions": [
+          "힘을 몰아 써서 금방 지쳐요",
+          "쉴 때와 할 때 차이가 커요"
+        ],
+        "tips": [
+          "오늘은 세게 하지 않고 오래 해봐요."
+        ],
+        "funFact": "에어컨은 공기를 차게 만드는 게 아니라 열을 바깥으로 옮기는 기계예요.",
+        "goodWith": [
+          "microwave",
+          "fridge"
+        ]
+      }
+    },
+    {
+      "code": "washer",
+      "name": "세탁기",
+      "subtitle": "한번 시작하면 끝까지 도는 사람",
+      "emoji": "🌀",
+      "color": "#7c6f9c",
+      "content": {
+        "summary": "중간에 멈추는 걸 싫어해요. 시작했으면 정해진 만큼 다 돌려야 마음이 놓이는 쪽이에요.",
+        "strengths": [
+          "시작한 걸 끝까지 해요",
+          "정해진 순서를 지켜요",
+          "지저분한 걸 그냥 두지 않아요"
+        ],
+        "cautions": [
+          "중간에 바뀌면 답답해요",
+          "다 끝나기 전엔 못 쉬어요"
+        ],
+        "tips": [
+          "오늘은 절반만 하고 멈춰봐요."
+        ],
+        "funFact": "세탁기는 옷을 문지르는 게 아니라 물을 흔들어서 때를 떼어내요.",
+        "goodWith": [
+          "robot",
+          "purifier"
+        ]
+      }
+    },
+    {
+      "code": "microwave",
+      "name": "전자레인지",
+      "subtitle": "빠르게 해내는 사람",
+      "emoji": "⚡",
+      "color": "#e0b845",
+      "content": {
+        "summary": "오래 기다리는 걸 못 해요. 몇 분 안에 끝내는 쪽이라, 급할 때 제일 먼저 찾게 되는 사람이에요.",
+        "strengths": [
+          "시작이 빨라요",
+          "짧은 시간에 해내요",
+          "복잡하게 만들지 않아요"
+        ],
+        "cautions": [
+          "급해서 놓치는 게 있어요",
+          "오래 걸리는 일이 지루해요"
+        ],
+        "tips": [
+          "오늘은 한 가지를 천천히 해봐요."
+        ],
+        "funFact": "전자레인지는 음식 속 물 분자를 흔들어서 안쪽부터 데워요.",
+        "goodWith": [
+          "aircon",
+          "robot"
+        ]
+      }
+    },
+    {
+      "code": "purifier",
+      "name": "공기청정기",
+      "subtitle": "조용히 챙기는 사람",
+      "emoji": "🌬️",
+      "color": "#c96f8c",
+      "content": {
+        "summary": "소리 없이 계속 돌아요. 뭘 했는지 눈에 안 보이는데, 옆에 있으면 자리가 편해지는 쪽이에요.",
+        "strengths": [
+          "티 안 나게 챙겨요",
+          "작은 변화를 먼저 알아차려요",
+          "소란 없이 오래 해요"
+        ],
+        "cautions": [
+          "한 걸 아무도 몰라요",
+          "하고 싶은 걸 말하지 않아요"
+        ],
+        "tips": [
+          "오늘 내가 한 것 하나를 소리 내어 말해봐요."
+        ],
+        "funFact": "공기청정기의 필터는 머리카락보다 훨씬 작은 먼지를 걸러내요.",
+        "goodWith": [
+          "fridge",
+          "washer"
+        ]
+      }
+    },
+    {
+      "code": "robot",
+      "name": "로봇청소기",
+      "subtitle": "알아서 돌아다니는 사람",
+      "emoji": "🤖",
+      "color": "#e0455f",
+      "content": {
+        "summary": "시키지 않아도 스스로 움직여요. 막히면 방향을 바꿔서 다른 길로 가는 쪽이라, 맡겨두면 어느새 다 해놓아요.",
+        "strengths": [
+          "스스로 시작해요",
+          "막히면 다른 길을 찾아요",
+          "혼자서도 잘 해내요"
+        ],
+        "cautions": [
+          "가끔 엉뚱한 데로 가요",
+          "도움이 필요할 때 못 말해요"
+        ],
+        "tips": [
+          "오늘은 어디로 갈지 먼저 정하고 시작해봐요."
+        ],
+        "funFact": "로봇청소기는 부딪히면서 방 모양을 기억해요. 돌아다닐수록 똑똑해져요.",
+        "goodWith": [
+          "microwave",
+          "washer"
+        ]
+      }
+    }
+  ]
+}

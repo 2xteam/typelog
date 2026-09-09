@@ -1,0 +1,541 @@
+{
+  "$schema": "typelog/quiz/v1",
+  "mode": "upsert",
+  "_note": [
+    "프로그램에서 쓰는 가명 열두 개를 결과로 쓴다. 이름 자체는 흔한 옛날 이름이라",
+    "누구의 것도 아니지만, 프로그램 이름은 상표다 — 제목이 아니라 tagline 에서",
+    "가리키는 데만 쓰고 로고·화면·출연자 사진은 쓰지 않는다. disclaimer 도 붙인다.",
+    "",
+    "⚠️ 프로그램은 이름을 **도착 순서대로** 준다(첫 번째 남자가 영수). 그래서",
+    "이름과 성향 사이에 원래 정해진 짝은 없다 — 아래 짝은 이 질문지가 만든 것이다.",
+    "",
+    "이름이 남녀로 갈려 있어서 타입 하나에 **두 이름을 함께** 붙였다. 6타입으로",
+    "열두 이름을 다 덮고, 성별을 묻지 않아도 된다."
+  ],
+  "quiz": {
+    "slug": "solo-name",
+    "title": "나에게 어울리는 옛날 이름은?",
+    "tagline": "「나는 솔로」의 그 이름 열두 개 중에서",
+    "category": "name",
+    "ageRange": {
+      "min": 20,
+      "max": null
+    },
+    "cover": {
+      "emoji": "🌾",
+      "imageUrl": null
+    },
+    "disclaimer": "프로그램에서 쓰는 가명을 재미로 빌려 왔어요. 제작진·출연자와는 아무 관련이 없어요.",
+    "order": 140,
+    "shuffle": false
+  },
+  "outcomes": [
+    {
+      "id": "yeongsu",
+      "kind": "tally",
+      "label": "영수 · 정숙"
+    },
+    {
+      "id": "yeongho",
+      "kind": "tally",
+      "label": "영호 · 영숙"
+    },
+    {
+      "id": "yeongsik",
+      "kind": "tally",
+      "label": "영식 · 순자"
+    },
+    {
+      "id": "yeongcheol",
+      "kind": "tally",
+      "label": "영철 · 현숙"
+    },
+    {
+      "id": "gwangsu",
+      "kind": "tally",
+      "label": "광수 · 영자"
+    },
+    {
+      "id": "sangcheol",
+      "kind": "tally",
+      "label": "상철 · 옥순"
+    }
+  ],
+  "resolver": {
+    "strategy": "argmax",
+    "tiebreak": [
+      "yeongsu",
+      "yeongho",
+      "yeongsik",
+      "yeongcheol",
+      "gwangsu",
+      "sangcheol"
+    ]
+  },
+  "items": [
+    {
+      "linkId": "nm_first_meet",
+      "type": "choice",
+      "emoji": "🍵",
+      "required": true,
+      "text": "처음 만난 자리에서 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "궁금한 걸 바로 물어봐요",
+          "weights": {
+            "yeongsu": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "무슨 일 하는지부터 들어봐요",
+          "weights": {
+            "yeongho": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "가벼운 이야기로 분위기를 풀어요",
+          "weights": {
+            "yeongsik": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "nm_after",
+      "type": "choice",
+      "emoji": "🌙",
+      "required": true,
+      "text": "만남이 끝나고 집에 오면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "생각 정리하고 다음을 정해요",
+          "weights": {
+            "yeongcheol": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "느낌이 어땠는지 그대로 말해요",
+          "weights": {
+            "gwangsu": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "며칠 두고 다시 생각해요",
+          "weights": {
+            "sangcheol": 3
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "nm_like",
+      "type": "choice",
+      "emoji": "💗",
+      "required": true,
+      "text": "마음에 드는 사람이 생기면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "먼저 연락해요",
+          "weights": {
+            "yeongsu": 5
+          }
+        },
+        {
+          "oid": "b",
+          "text": "자연스럽게 자리를 만들어요",
+          "weights": {
+            "yeongsik": 5
+          }
+        },
+        {
+          "oid": "c",
+          "text": "좋다는 걸 티내며 말해요",
+          "weights": {
+            "gwangsu": 5
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "nm_conflict",
+      "type": "choice",
+      "emoji": "⚡",
+      "required": true,
+      "text": "상대와 생각이 다르면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "왜 그런지 근거를 들어요",
+          "weights": {
+            "yeongho": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "지금은 넘기고 나중에 봐요",
+          "weights": {
+            "yeongcheol": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "말 안 하고 지켜봐요",
+          "weights": {
+            "sangcheol": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "nm_choice",
+      "type": "choice",
+      "emoji": "🃏",
+      "required": true,
+      "text": "둘 중 하나를 골라야 하면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "끌리는 쪽으로 바로 정해요",
+          "weights": {
+            "yeongsu": 7
+          }
+        },
+        {
+          "oid": "b",
+          "text": "며칠 두고 천천히 정해요",
+          "weights": {
+            "yeongcheol": 7
+          }
+        },
+        {
+          "oid": "c",
+          "text": "각각의 문제를 짚어봐요",
+          "weights": {
+            "gwangsu": 7
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "nm_group",
+      "type": "choice",
+      "emoji": "🍽️",
+      "required": true,
+      "text": "여러 사람이 모인 자리에서 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "누가 어떤 사람인지 파악해요",
+          "weights": {
+            "yeongho": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "먼저 말을 걸어 자리를 열어요",
+          "weights": {
+            "yeongsik": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "조용히 앉아서 듣고 있어요",
+          "weights": {
+            "sangcheol": 3
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "nm_busy",
+      "type": "choice",
+      "emoji": "📆",
+      "required": true,
+      "text": "바쁜 시기에 연락이 줄면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "그래도 먼저 연락해요",
+          "weights": {
+            "yeongsu": 5
+          }
+        },
+        {
+          "oid": "b",
+          "text": "상황을 물어보고 조율해요",
+          "weights": {
+            "yeongho": 5
+          }
+        },
+        {
+          "oid": "c",
+          "text": "각자 할 일 하고 기다려요",
+          "weights": {
+            "yeongcheol": 5
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "nm_gift",
+      "type": "choice",
+      "emoji": "🎁",
+      "required": true,
+      "text": "상대에게 뭘 해주고 싶을 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "같이 재미있을 걸 준비해요",
+          "weights": {
+            "yeongsik": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "필요하다고 했던 걸 그대로 해줘요",
+          "weights": {
+            "gwangsu": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "말 없이 챙겨두고 나중에 알려줘요",
+          "weights": {
+            "sangcheol": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "nm_pace",
+      "type": "choice",
+      "emoji": "⏳",
+      "required": true,
+      "text": "관계가 빠르게 가까워질 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "좋으면 그 속도로 가요",
+          "weights": {
+            "yeongsu": 7
+          }
+        },
+        {
+          "oid": "b",
+          "text": "즐겁게 맞춰가요",
+          "weights": {
+            "yeongsik": 7
+          }
+        },
+        {
+          "oid": "c",
+          "text": "한 박자 늦춰요",
+          "weights": {
+            "sangcheol": 7
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "nm_end",
+      "type": "choice",
+      "emoji": "🚪",
+      "required": true,
+      "text": "아닌 것 같을 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "이유를 정리해서 말해요",
+          "weights": {
+            "yeongho": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "연락을 서서히 줄여요",
+          "weights": {
+            "yeongcheol": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "아니라고 분명하게 말해요",
+          "weights": {
+            "gwangsu": 3
+          }
+        }
+      ]
+    }
+  ],
+  "resultTypes": [
+    {
+      "code": "yeongsu",
+      "name": "영수 · 정숙",
+      "subtitle": "마음이 정해지면 직진하는 사람",
+      "emoji": "🎯",
+      "color": "#e0455f",
+      "content": {
+        "summary": "좋으면 좋다고 해요. 재는 시간이 짧아서 상대가 헷갈릴 일이 없어요. 돌려 말하지 않는 게 이 사람의 매력이에요.",
+        "strengths": [
+          "마음을 분명하게 알려줘요",
+          "먼저 다가가는 걸 겁내지 않아요",
+          "결정을 오래 미루지 않아요"
+        ],
+        "cautions": [
+          "상대의 속도를 앞질러요",
+          "거절당하면 크게 흔들려요"
+        ],
+        "tips": [
+          "이번 주에는 먼저 묻기 전에 한 번 기다려봐요."
+        ],
+        "funFact": "프로그램은 도착한 순서대로 이름을 줘요. 첫 번째 남자가 영수예요.",
+        "goodWith": [
+          "sangcheol",
+          "yeongho"
+        ]
+      }
+    },
+    {
+      "code": "yeongho",
+      "name": "영호 · 영숙",
+      "subtitle": "따져보고 움직이는 사람",
+      "emoji": "🧮",
+      "color": "#3a7bd5",
+      "content": {
+        "summary": "마음이 가도 조건을 한 번 봐요. 감정만으로 정하지 않기 때문에 나중에 후회가 적어요. 신중한 게 성실함으로 읽히는 쪽이에요.",
+        "strengths": [
+          "감정과 조건을 함께 봐요",
+          "약속한 걸 지켜요",
+          "무리한 선택을 피해요"
+        ],
+        "cautions": [
+          "재는 동안 기회가 지나가요",
+          "계산이 앞선다는 말을 들어요"
+        ],
+        "tips": [
+          "따져보기 전에 마음을 한 문장으로 적어봐요."
+        ],
+        "funFact": "같은 이름이 시즌마다 다시 나와요. 그래서 '몇 기 영호' 라고 불러요.",
+        "goodWith": [
+          "yeongsik",
+          "yeongsu"
+        ]
+      }
+    },
+    {
+      "code": "yeongsik",
+      "name": "영식 · 순자",
+      "subtitle": "자리를 편하게 만드는 사람",
+      "emoji": "🎈",
+      "color": "#e0b845",
+      "content": {
+        "summary": "어색한 자리를 그냥 두지 않아요. 먼저 말을 꺼내고 웃게 만들어서, 모임에 있으면 분위기가 풀려요.",
+        "strengths": [
+          "처음 만난 자리를 편하게 만들어요",
+          "말이 끊기지 않게 이어요",
+          "속상한 일을 오래 두지 않아요"
+        ],
+        "cautions": [
+          "진지한 이야기로 넘어가기 어려워요",
+          "혼자 있으면 힘이 빠져요"
+        ],
+        "tips": [
+          "오늘은 웃기지 않아도 되는 이야기를 한 번 해봐요."
+        ],
+        "funFact": "이름 열두 개는 1950~60년대에 아주 흔했던 이름들이에요.",
+        "goodWith": [
+          "yeongcheol",
+          "gwangsu"
+        ]
+      }
+    },
+    {
+      "code": "yeongcheol",
+      "name": "영철 · 현숙",
+      "subtitle": "자기 페이스를 지키는 사람",
+      "emoji": "🧭",
+      "color": "#7c6f9c",
+      "content": {
+        "summary": "남이 서둘러도 흔들리지 않아요. 내가 편한 속도로 알아가는 쪽이라, 시간이 지나면 오히려 오래 남아요.",
+        "strengths": [
+          "분위기에 휩쓸리지 않아요",
+          "혼자 있는 시간을 잘 써요",
+          "한 사람을 오래 봐요"
+        ],
+        "cautions": [
+          "관심을 표현하지 않아 오해받아요",
+          "시작이 늦어요"
+        ],
+        "tips": [
+          "이번 주에 한 사람에게 한 걸음만 먼저 가봐요."
+        ],
+        "funFact": "같은 이름이 여러 시즌에 나오다 보니 시청자들이 이름별로 성격을 붙이기 시작했어요.",
+        "goodWith": [
+          "yeongsik",
+          "sangcheol"
+        ]
+      }
+    },
+    {
+      "code": "gwangsu",
+      "name": "광수 · 영자",
+      "subtitle": "솔직하게 말하는 사람",
+      "emoji": "💬",
+      "color": "#2f9e74",
+      "content": {
+        "summary": "아닌 건 아니라고 해요. 듣기 좋은 말로 넘기지 않아서 처음엔 놀라게 하지만, 결국 믿을 수 있는 사람이 돼요.",
+        "strengths": [
+          "할 말을 미루지 않아요",
+          "거짓으로 맞춰주지 않아요",
+          "문제를 덮지 않아요"
+        ],
+        "cautions": [
+          "말이 세게 나가요",
+          "분위기를 굳게 만들 수 있어요"
+        ],
+        "tips": [
+          "말하기 전에 한 번 숨을 쉬어봐요."
+        ],
+        "funFact": "이름만 가명이고 나이·직업은 실제예요.",
+        "goodWith": [
+          "yeongsik",
+          "sangcheol"
+        ]
+      }
+    },
+    {
+      "code": "sangcheol",
+      "name": "상철 · 옥순",
+      "subtitle": "지켜보다 정하는 사람",
+      "emoji": "🔍",
+      "color": "#c96f8c",
+      "content": {
+        "summary": "먼저 나서지 않고 한참 봐요. 대신 한번 정하면 잘 바꾸지 않아서, 고른 쪽에게는 아주 든든한 사람이에요.",
+        "strengths": [
+          "사람을 오래 살펴봐요",
+          "한번 정하면 흔들리지 않아요",
+          "말보다 행동으로 보여줘요"
+        ],
+        "cautions": [
+          "마음을 늦게 알려줘요",
+          "지켜보다 놓칠 수 있어요"
+        ],
+        "tips": [
+          "지켜본 것 중 좋았던 하나를 오늘 말해봐요."
+        ],
+        "funFact": "옥순은 시즌마다 나오는 이름 중 시청자에게 가장 많이 불린 이름이에요.",
+        "goodWith": [
+          "yeongsu",
+          "yeongcheol"
+        ]
+      }
+    }
+  ]
+}

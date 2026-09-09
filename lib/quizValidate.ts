@@ -8,6 +8,7 @@ import {
   type Resolver,
   type ResultTypeInput,
 } from "@/lib/quizTypes";
+import { AGE_MAX } from "@/lib/ageRange";
 import { flattenItems, randomAnswers, score, seeded } from "@/lib/scoring";
 
 /**
@@ -122,14 +123,20 @@ export function validateImport(payload: unknown): Report {
    */
   const age = isPlainObject(meta.ageRange) ? meta.ageRange : null;
   const aMin = typeof age?.min === "number" ? age.min : null;
+  /**
+   * `max` 는 **없어도 된다.** 없으면 "그 나이 이상" 이라는 뜻이다(`20세 이상`).
+   * 어른 대상 질문지는 위가 열려 있는 게 맞다 — 억지로 `20~30세` 로 닫으면
+   * 서른한 살이 목록에서 자기 질문지를 못 본다.
+   */
   const aMax = typeof age?.max === "number" ? age.max : null;
-  if (aMin === null || aMax === null) {
-    err("quiz.ageRange", "추천 연령(min·max)이 필요해요. 목록에서 대상을 알려줘요.");
-  } else {
+  if (aMin === null) {
+    err("quiz.ageRange", "추천 연령의 min 이 필요해요. 목록에서 대상을 알려줘요.");
+  } else if (aMin < 3 || aMin > AGE_MAX) {
+    err("quiz.ageRange", `min 은 3부터 ${AGE_MAX} 사이로 적어요.`);
+  } else if (aMax !== null) {
     if (aMin > aMax) err("quiz.ageRange", `min(${aMin}) 이 max(${aMax}) 보다 커요.`);
-    if (aMin < 3 || aMax > 19) {
-      err("quiz.ageRange", "3세부터 19세 사이로 적어요. 그 밖이면 대상을 다시 생각해요.");
-    } else if (aMax - aMin > 10) {
+    else if (aMax > AGE_MAX) err("quiz.ageRange", `max 는 ${AGE_MAX} 이하로 적어요.`);
+    else if (aMax - aMin > 10) {
       // 너무 넓으면 알려주는 값이 없다. "6~19세" 는 아무 말도 하지 않는 것과 같다
       warn("quiz.ageRange", `범위가 ${aMax - aMin}살이에요 — 넓으면 알려주는 값이 없어요.`);
     }
