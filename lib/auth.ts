@@ -28,6 +28,8 @@ export type Viewer = {
   /** 통합 회원의 Mongo `_id` 문자열 */
   userId: string;
   adminRole: "master" | "operator" | null;
+  /** 자녀 프로필 세션이면 보호자 `_id`. 앱은 참고만 한다 */
+  guardianId: string | null;
 };
 
 export async function getViewer(req: Request): Promise<Viewer | null> {
@@ -54,7 +56,7 @@ export async function getViewer(req: Request): Promise<Viewer | null> {
 
 
   const role = doc.adminRole === "master" || doc.adminRole === "operator" ? doc.adminRole : null;
-  return { doc, userId: String(doc._id), adminRole: role };
+  return { doc, userId: String(doc._id), adminRole: role, guardianId: claims.gid ?? null };
 }
 
 export async function requireViewer(

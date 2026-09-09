@@ -22,6 +22,8 @@ export type TokenClaims = {
   exp: number;
   /** 세션 버전 — `users.sessionVersion` 과 같아야 한다. 옛 토큰에는 없다(= 0) */
   sv?: number;
+  /** 자녀 프로필로 들어온 세션이면 보호자 `_id`. 없으면 본인 → myjane/lib/family.ts */
+  gid?: string;
 };
 
 function getSecret(): string {
@@ -59,6 +61,7 @@ export function verifySessionToken(token: string | undefined | null): TokenClaim
     if (typeof claims.uid !== "string" || typeof claims.u !== "string") return null;
     if (typeof claims.exp !== "number" || claims.exp * 1000 < Date.now()) return null;
     if (claims.sv !== undefined && typeof claims.sv !== "number") return null;
+    if (claims.gid !== undefined && typeof claims.gid !== "string") return null;
     return claims;
   } catch {
     return null;
