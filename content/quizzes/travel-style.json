@@ -1,0 +1,534 @@
+{
+  "$schema": "typelog/quiz/v1",
+  "mode": "upsert",
+  "_note": [
+    "'살면 좋을 나라'와 짝이 되는 질문지다. 그건 **어디**를 고르고 이건 **어떻게**를 고른다.",
+    "나라 이름이나 여행사·항공사 이름은 쓰지 않는다. 방식만 쓴다.",
+    "취향 주제라 회차별 변화가 크지 않다 — 결과 문장을 '요즘'으로 못박지 않는다."
+  ],
+  "quiz": {
+    "slug": "travel-style",
+    "title": "나에게 맞는 여행 스타일은?",
+    "tagline": "열 가지 질문으로 찾는 나의 여행 방식",
+    "category": "travel",
+    "ageRange": {
+      "min": 19,
+      "max": null
+    },
+    "cover": {
+      "emoji": "✈️",
+      "imageUrl": null
+    },
+    "order": 190,
+    "shuffle": false
+  },
+  "outcomes": [
+    {
+      "id": "plan",
+      "kind": "tally",
+      "label": "계획형"
+    },
+    {
+      "id": "wander",
+      "kind": "tally",
+      "label": "즉흥형"
+    },
+    {
+      "id": "rest",
+      "kind": "tally",
+      "label": "휴양형"
+    },
+    {
+      "id": "food",
+      "kind": "tally",
+      "label": "미식형"
+    },
+    {
+      "id": "trek",
+      "kind": "tally",
+      "label": "자연형"
+    },
+    {
+      "id": "stay",
+      "kind": "tally",
+      "label": "한 도시형"
+    }
+  ],
+  "resolver": {
+    "strategy": "argmax",
+    "tiebreak": [
+      "plan",
+      "wander",
+      "rest",
+      "food",
+      "trek",
+      "stay"
+    ]
+  },
+  "items": [
+    {
+      "linkId": "tr_before",
+      "type": "choice",
+      "emoji": "🧭",
+      "required": true,
+      "text": "여행 한 달 전 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "일정표를 만들어요",
+          "weights": {
+            "plan": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "비행기표만 잡아둬요",
+          "weights": {
+            "wander": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "숙소만 좋은 데로 잡아요",
+          "weights": {
+            "rest": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "tr_first_day",
+      "type": "choice",
+      "emoji": "🌅",
+      "required": true,
+      "text": "도착한 첫날 하고 싶은 건?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "그 지역 음식을 먹어요",
+          "weights": {
+            "food": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "산이나 바다로 가요",
+          "weights": {
+            "trek": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "동네를 한 바퀴 걸어요",
+          "weights": {
+            "stay": 3
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "tr_rain",
+      "type": "choice",
+      "emoji": "🌧️",
+      "required": true,
+      "text": "비가 와서 계획이 틀어지면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "실내로 바꿔서 그대로 가요",
+          "weights": {
+            "plan": 5
+          }
+        },
+        {
+          "oid": "b",
+          "text": "숙소에서 쉬어요",
+          "weights": {
+            "rest": 5
+          }
+        },
+        {
+          "oid": "c",
+          "text": "안 가본 산책로를 찾아요",
+          "weights": {
+            "trek": 5
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "tr_free_day",
+      "type": "choice",
+      "emoji": "🗓️",
+      "required": true,
+      "text": "일정에 빈 하루가 생기면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "그날 정해서 어디든 가요",
+          "weights": {
+            "wander": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "맛있는 데를 찾아가요",
+          "weights": {
+            "food": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "동네에서 그냥 보내요",
+          "weights": {
+            "stay": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "tr_budget",
+      "type": "choice",
+      "emoji": "💳",
+      "required": true,
+      "text": "여행비를 어디에 더 쓰나요?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "이동과 입장료에 써요",
+          "weights": {
+            "plan": 7
+          }
+        },
+        {
+          "oid": "b",
+          "text": "먹는 데 써요",
+          "weights": {
+            "food": 7
+          }
+        },
+        {
+          "oid": "c",
+          "text": "장비와 교통에 써요",
+          "weights": {
+            "trek": 7
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "tr_photo",
+      "type": "choice",
+      "emoji": "📷",
+      "required": true,
+      "text": "여행 사진에 주로 뭐가 있나요?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "가본 곳 간판과 풍경",
+          "weights": {
+            "wander": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "숙소와 하늘",
+          "weights": {
+            "rest": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "같은 골목 여러 장",
+          "weights": {
+            "stay": 3
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "tr_tired",
+      "type": "choice",
+      "emoji": "😴",
+      "required": true,
+      "text": "여행 중 지쳤을 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "일정을 접고 쉬어요",
+          "weights": {
+            "plan": 5
+          }
+        },
+        {
+          "oid": "b",
+          "text": "그래도 걷던 길을 끝내요",
+          "weights": {
+            "wander": 5
+          }
+        },
+        {
+          "oid": "c",
+          "text": "숙소 근처만 돌아요",
+          "weights": {
+            "food": 5
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "tr_return",
+      "type": "choice",
+      "emoji": "🏡",
+      "required": true,
+      "text": "돌아올 때 기분은?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "다 봐서 뿌듯해요",
+          "weights": {
+            "rest": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "푹 쉬어서 가벼워요",
+          "weights": {
+            "trek": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "또 오고 싶어요",
+          "weights": {
+            "stay": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "tr_companion",
+      "type": "choice",
+      "emoji": "🧑‍🤝‍🧑",
+      "required": true,
+      "text": "같이 가는 사람에게 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "일정을 정해서 알려줘요",
+          "weights": {
+            "plan": 7
+          }
+        },
+        {
+          "oid": "b",
+          "text": "쉬자고 먼저 말해요",
+          "weights": {
+            "rest": 7
+          }
+        },
+        {
+          "oid": "c",
+          "text": "여기 더 있자고 해요",
+          "weights": {
+            "stay": 7
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "tr_next",
+      "type": "choice",
+      "emoji": "🔭",
+      "required": true,
+      "text": "다음 여행은 어디로?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "가보고 정할래요",
+          "weights": {
+            "wander": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "먹으러 가고 싶어요",
+          "weights": {
+            "food": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "걷기 좋은 데로 가고 싶어요",
+          "weights": {
+            "trek": 3
+          }
+        }
+      ]
+    }
+  ],
+  "resultTypes": [
+    {
+      "code": "plan",
+      "name": "계획형",
+      "subtitle": "다 정해두고 떠나는 사람",
+      "emoji": "🗒️",
+      "color": "#3a7bd5",
+      "content": {
+        "summary": "가기 전에 다 정해둬요. 시간표가 있어야 마음이 편한 쪽이라, 짧은 일정에서도 알차게 다녀와요.",
+        "strengths": [
+          "시간을 낭비하지 않아요",
+          "예상 밖의 일에 대비해요",
+          "같이 가는 사람이 편해요"
+        ],
+        "cautions": [
+          "계획이 어긋나면 힘들어요",
+          "우연히 좋은 걸 놓쳐요"
+        ],
+        "tips": [
+          "이번 여행에서 반나절은 아무 계획 없이 둬봐요."
+        ],
+        "funFact": "여행 만족도는 계획을 세우는 동안에도 올라간다고 해요. 준비도 여행의 일부예요.",
+        "goodWith": [
+          "wander",
+          "stay"
+        ]
+      }
+    },
+    {
+      "code": "wander",
+      "name": "즉흥형",
+      "subtitle": "가서 정하는 사람",
+      "emoji": "🎒",
+      "color": "#e0455f",
+      "content": {
+        "summary": "정해두면 재미가 없어요. 그날 마음 가는 데로 가는 쪽이라, 계획에 없던 곳에서 제일 좋은 걸 만나요.",
+        "strengths": [
+          "예상 밖의 일을 즐겨요",
+          "어디서든 잘 지내요",
+          "결정을 빨리 해요"
+        ],
+        "cautions": [
+          "헤매다 시간을 버려요",
+          "같이 가는 사람이 불안해해요"
+        ],
+        "tips": [
+          "이번엔 하루의 첫 일정만 정해두고 가봐요."
+        ],
+        "funFact": "계획 없는 여행이 기억에 더 오래 남는다는 이야기가 있어요 — 예상 밖의 일이 더 많아서요.",
+        "goodWith": [
+          "plan",
+          "trek"
+        ]
+      }
+    },
+    {
+      "code": "rest",
+      "name": "휴양형",
+      "subtitle": "아무것도 안 하러 가는 사람",
+      "emoji": "🏖️",
+      "color": "#2f9e74",
+      "content": {
+        "summary": "여행은 쉬러 가는 거예요. 돌아다니는 대신 한 곳에서 머무는 쪽이라, 돌아올 때 진짜로 쉬어져 있어요.",
+        "strengths": [
+          "제대로 회복하고 돌아와요",
+          "무리한 일정을 만들지 않아요",
+          "지금 있는 자리를 즐겨요"
+        ],
+        "cautions": [
+          "안 가본 걸 놓쳐요",
+          "돌아와서 아쉬울 수 있어요"
+        ],
+        "tips": [
+          "하루는 숙소 밖으로 한 걸음만 나가봐요."
+        ],
+        "funFact": "쉬는 여행이 일하는 능력을 실제로 회복시킨다는 연구가 여러 개 있어요.",
+        "goodWith": [
+          "food",
+          "stay"
+        ]
+      }
+    },
+    {
+      "code": "food",
+      "name": "미식형",
+      "subtitle": "먹으러 떠나는 사람",
+      "emoji": "🍜",
+      "color": "#e0b845",
+      "content": {
+        "summary": "그 도시를 혀로 기억해요. 관광지보다 시장과 가게를 먼저 찾는 쪽이라, 남들이 모르는 데를 알고 와요.",
+        "strengths": [
+          "그 지역을 깊게 알게 돼요",
+          "찾아보는 걸 잘해요",
+          "이야기가 많이 남아요"
+        ],
+        "cautions": [
+          "일정이 먹는 데로 몰려요",
+          "예산이 늘어나요"
+        ],
+        "tips": [
+          "이번엔 한 끼는 아무 데나 들어가봐요."
+        ],
+        "funFact": "그 지역 음식을 먹는 것만으로도 낯선 곳에 빨리 익숙해진다고 해요.",
+        "goodWith": [
+          "rest",
+          "wander"
+        ]
+      }
+    },
+    {
+      "code": "trek",
+      "name": "자연형",
+      "subtitle": "걸으러 떠나는 사람",
+      "emoji": "⛰️",
+      "color": "#7c6f9c",
+      "content": {
+        "summary": "도시보다 산과 바다로 가요. 몸을 쓰고 나면 머리가 비워지는 쪽이라, 힘들어도 그게 쉬는 방식이에요.",
+        "strengths": [
+          "체력이 좋아요",
+          "날씨와 환경에 잘 맞춰요",
+          "혼자서도 잘 다녀요"
+        ],
+        "cautions": [
+          "일정이 고돼요",
+          "같이 갈 사람을 찾기 어려워요"
+        ],
+        "tips": [
+          "이번엔 쉬는 날을 하루 끼워봐요."
+        ],
+        "funFact": "숲에서 두 시간만 걸어도 기분이 눈에 띄게 달라진다는 연구가 있어요.",
+        "goodWith": [
+          "wander",
+          "stay"
+        ]
+      }
+    },
+    {
+      "code": "stay",
+      "name": "한 도시형",
+      "subtitle": "살아보듯 머무는 사람",
+      "emoji": "🏘️",
+      "color": "#d94f8a",
+      "content": {
+        "summary": "여러 곳을 도는 대신 한 도시에 오래 있어요. 같은 카페에 다시 가고 시장을 다시 걷는 쪽이라, 그 도시가 익숙해져요.",
+        "strengths": [
+          "한 곳을 깊게 알아요",
+          "서두르지 않아요",
+          "낯선 곳을 내 자리로 만들어요"
+        ],
+        "cautions": [
+          "안 가본 도시가 계속 남아요",
+          "일정이 단조로워질 수 있어요"
+        ],
+        "tips": [
+          "이번엔 옆 도시에 하루만 다녀와봐요."
+        ],
+        "funFact": "같은 길을 세 번 걸으면 그 동네가 기억에 자리를 잡는다고 해요.",
+        "goodWith": [
+          "rest",
+          "plan"
+        ]
+      }
+    }
+  ]
+}

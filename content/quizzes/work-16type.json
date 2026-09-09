@@ -1,0 +1,777 @@
+{
+  "$schema": "typelog/quiz/v1",
+  "mode": "upsert",
+  "_note": [
+    "4축 16유형(`letters`). kids-16type 과 같은 구조이고 대상만 어른이다.",
+    "",
+    "⚠️ 글자를 E·I·S·N·T·F·J·P 로 쓰지 않는다 — 특정 검사의 상표다.",
+    "여기서는 A·T(혼자·함께) / P·F(계획·즉흥) / D·R(숫자·사람) /",
+    "C·O(마무리·확장) 를 쓴다.",
+    "",
+    "⚠️ 축마다 문항을 홀수(3개)로 둔다. 3문항 × ±2 면 합이 {-6,-2,2,6} 이라",
+    "POMP 가 {0, 33.3, 66.7, 100} 뿐이고 임계값 50 에 닿지 않는다.",
+    "짝수 개면 합 0 이 나올 수 있고, 그때는 결과가 임계값 비교에 걸린다.",
+    "",
+    "16유형 전부에 이름·문장이 있어야 한다 — 하나라도 빠지면 검증기가 막는다."
+  ],
+  "quiz": {
+    "slug": "work-16type",
+    "title": "일할 때의 나는 어떤 유형?",
+    "tagline": "네 가지 축으로 보는 나의 일하는 방식",
+    "category": "work",
+    "ageRange": {
+      "min": 19,
+      "max": null
+    },
+    "cover": {
+      "emoji": "💼",
+      "imageUrl": null
+    },
+    "order": 200,
+    "shuffle": false
+  },
+  "outcomes": [
+    {
+      "id": "focus",
+      "kind": "axis",
+      "label": "일하는 자리",
+      "left": {
+        "code": "A",
+        "label": "혼자"
+      },
+      "right": {
+        "code": "T",
+        "label": "함께"
+      }
+    },
+    {
+      "id": "plan",
+      "kind": "axis",
+      "label": "일을 여는 방식",
+      "left": {
+        "code": "P",
+        "label": "계획적으로"
+      },
+      "right": {
+        "code": "F",
+        "label": "그때그때"
+      }
+    },
+    {
+      "id": "judge",
+      "kind": "axis",
+      "label": "정할 때 보는 것",
+      "left": {
+        "code": "D",
+        "label": "숫자로"
+      },
+      "right": {
+        "code": "R",
+        "label": "사람으로"
+      }
+    },
+    {
+      "id": "finish",
+      "kind": "axis",
+      "label": "일을 닫는 방식",
+      "left": {
+        "code": "C",
+        "label": "마무리부터"
+      },
+      "right": {
+        "code": "O",
+        "label": "다음부터"
+      }
+    }
+  ],
+  "resolver": {
+    "strategy": "letters",
+    "order": [
+      "focus",
+      "plan",
+      "judge",
+      "finish"
+    ],
+    "threshold": 50
+  },
+  "items": [
+    {
+      "linkId": "wk_new_task",
+      "type": "choice",
+      "emoji": "🌅",
+      "required": true,
+      "text": "새 일을 맡으면 먼저 무엇부터?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "혼자 자료를 훑어봐요",
+          "weights": {
+            "focus": -2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "관련된 사람에게 물어봐요",
+          "weights": {
+            "focus": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "wk_week",
+      "type": "choice",
+      "emoji": "🗓️",
+      "required": true,
+      "text": "한 주를 시작할 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "할 일을 미리 적어둬요",
+          "weights": {
+            "plan": -2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "그날 급한 것부터 해요",
+          "weights": {
+            "plan": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "wk_decide",
+      "type": "choice",
+      "emoji": "📊",
+      "required": true,
+      "text": "결정할 때 무엇을 근거로 삼아요?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "기록과 숫자를 봐요",
+          "weights": {
+            "judge": -2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "사람들 반응을 봐요",
+          "weights": {
+            "judge": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "wk_almost",
+      "type": "choice",
+      "emoji": "🏁",
+      "required": true,
+      "text": "일이 거의 끝나갈 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "남은 걸 다 닫아요",
+          "weights": {
+            "finish": -2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "다음에 뭘 할지 봐요",
+          "weights": {
+            "finish": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "wk_deep",
+      "type": "choice",
+      "emoji": "🎧",
+      "required": true,
+      "text": "집중이 필요할 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "혼자 있는 자리를 찾아요",
+          "weights": {
+            "focus": -2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "옆에 사람이 있어도 괜찮아요",
+          "weights": {
+            "focus": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "wk_change",
+      "type": "choice",
+      "emoji": "🔀",
+      "required": true,
+      "text": "일정이 갑자기 바뀌면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "원래 순서를 먼저 지켜요",
+          "weights": {
+            "plan": -2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "바뀐 쪽으로 바로 옮겨요",
+          "weights": {
+            "plan": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "wk_objection",
+      "type": "choice",
+      "emoji": "🙋",
+      "required": true,
+      "text": "누가 반대하면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "근거를 다시 정리해 보여줘요",
+          "weights": {
+            "judge": -2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "왜 불편한지 먼저 들어요",
+          "weights": {
+            "judge": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "wk_many",
+      "type": "choice",
+      "emoji": "🧩",
+      "required": true,
+      "text": "여러 일이 동시에 열려 있으면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "하나씩 끝내야 편해요",
+          "weights": {
+            "finish": -2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "여러 개 굴리는 게 편해요",
+          "weights": {
+            "finish": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "wk_idea",
+      "type": "choice",
+      "emoji": "💡",
+      "required": true,
+      "text": "아이디어가 떠오르면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "혼자 정리한 뒤에 꺼내요",
+          "weights": {
+            "focus": -2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "바로 말해서 같이 굴려요",
+          "weights": {
+            "focus": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "wk_long",
+      "type": "choice",
+      "emoji": "⏳",
+      "required": true,
+      "text": "오래 걸리는 일을 맡으면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "단계를 나눠 정해둬요",
+          "weights": {
+            "plan": -2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "하면서 방법을 찾아요",
+          "weights": {
+            "plan": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "wk_wellDone",
+      "type": "choice",
+      "emoji": "🎖️",
+      "required": true,
+      "text": "잘했는지 어떻게 알아요?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "목표 숫자로 확인해요",
+          "weights": {
+            "judge": -2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "같이 한 사람 말로 알아요",
+          "weights": {
+            "judge": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "wk_meeting",
+      "type": "choice",
+      "emoji": "📝",
+      "required": true,
+      "text": "회의가 끝나면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "결론과 담당을 정리해요",
+          "weights": {
+            "finish": -2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "새로 나온 이야기를 챙겨요",
+          "weights": {
+            "finish": 2
+          }
+        }
+      ]
+    }
+  ],
+  "resultTypes": [
+    {
+      "code": "APDC",
+      "name": "묶어서 끝내는 정리자",
+      "subtitle": "혼자 조용히 다 닫아 놓는 사람",
+      "emoji": "📐",
+      "color": "#3a7bd5",
+      "content": {
+        "summary": "혼자 파고들어 수치까지 맞춰 놓고 끝을 봐요. 맡기면 다시 물어볼 일이 없는 쪽이에요.",
+        "strengths": [
+          "맡은 걸 끝까지 닫아요",
+          "근거를 남겨 둬요"
+        ],
+        "cautions": [
+          "혼자 다 하려다 늦어질 수 있어요"
+        ],
+        "tips": [
+          "이번 주에 한 가지는 중간에 공유해봐요."
+        ],
+        "funFact": "끝을 닫는 사람이 팀에 한 명은 있어야 일이 쌓이지 않아요.",
+        "goodWith": [
+          "TPRC",
+          "AFDO"
+        ]
+      }
+    },
+    {
+      "code": "APDO",
+      "name": "판을 그리는 설계자",
+      "subtitle": "혼자 큰 그림을 짜는 사람",
+      "emoji": "🗺️",
+      "color": "#25526b",
+      "content": {
+        "summary": "혼자 자료를 모아 구조를 그려요. 지금 일보다 그다음 판이 먼저 보이는 쪽이에요.",
+        "strengths": [
+          "전체 구조를 먼저 봐요",
+          "수치로 앞을 그려요"
+        ],
+        "cautions": [
+          "지금 끝낼 일을 뒤로 밀 수 있어요"
+        ],
+        "tips": [
+          "오늘은 그림 말고 한 칸만 채워봐요."
+        ],
+        "funFact": "구조를 그리는 일은 눈에 안 보여서 티가 늦게 나요. 중간에 보여주면 좋아요.",
+        "goodWith": [
+          "TPRO",
+          "AFDC"
+        ]
+      }
+    },
+    {
+      "code": "APRC",
+      "name": "조용히 챙기는 관리자",
+      "subtitle": "말 없이 빠진 걸 메우는 사람",
+      "emoji": "📔",
+      "color": "#7c6f9c",
+      "content": {
+        "summary": "혼자 정리하면서 사람들 사정까지 챙겨요. 요란하지 않은데 빠지는 게 없는 쪽이에요.",
+        "strengths": [
+          "빠진 걸 먼저 알아차려요",
+          "약속한 걸 지켜요"
+        ],
+        "cautions": [
+          "한 일을 아무도 모를 수 있어요"
+        ],
+        "tips": [
+          "이번 주에 한 일 하나를 말해봐요."
+        ],
+        "funFact": "챙긴 걸 적어 두면 나중에 나를 설명해 주는 기록이 돼요.",
+        "goodWith": [
+          "TPDC",
+          "AFRO"
+        ]
+      }
+    },
+    {
+      "code": "APRO",
+      "name": "멀리 보는 기획자",
+      "subtitle": "사람과 다음을 함께 보는 사람",
+      "emoji": "🔭",
+      "color": "#116271",
+      "content": {
+        "summary": "혼자 오래 생각해서 방향을 잡아요. 숫자보다 사람이 어떻게 움직일지를 먼저 그리는 쪽이에요.",
+        "strengths": [
+          "다음에 필요할 걸 미리 봐요",
+          "사람의 반응을 먼저 헤아려요"
+        ],
+        "cautions": [
+          "지금의 실무를 놓칠 수 있어요"
+        ],
+        "tips": [
+          "오늘은 손에 잡히는 것 하나를 처리해봐요."
+        ],
+        "funFact": "방향을 잡는 사람과 닫는 사람이 짝이 되면 일이 잘 굴러가요.",
+        "goodWith": [
+          "TPDO",
+          "AFRC"
+        ]
+      }
+    },
+    {
+      "code": "AFDC",
+      "name": "바로 고치는 해결사",
+      "subtitle": "문제를 손으로 끝내는 사람",
+      "emoji": "🔧",
+      "color": "#2f9e74",
+      "content": {
+        "summary": "계획보다 지금 고장 난 걸 봐요. 혼자 붙어서 원인까지 찾아 닫는 쪽이에요.",
+        "strengths": [
+          "원인을 끝까지 찾아요",
+          "손으로 바로 해결해요"
+        ],
+        "cautions": [
+          "같은 문제가 또 나도록 두기 쉬워요"
+        ],
+        "tips": [
+          "고친 방법을 세 줄로 남겨봐요."
+        ],
+        "funFact": "고친 기록을 남기면 다음엔 훨씬 빨리 끝나요.",
+        "goodWith": [
+          "TFRC",
+          "APDO"
+        ]
+      }
+    },
+    {
+      "code": "AFDO",
+      "name": "해보고 배우는 실험가",
+      "subtitle": "일단 만들어 보는 사람",
+      "emoji": "🧪",
+      "color": "#4a7f8c",
+      "content": {
+        "summary": "생각보다 만들어 보는 게 빨라요. 작게 해보고 결과를 재서 다음을 정하는 쪽이에요.",
+        "strengths": [
+          "빠르게 시도해요",
+          "결과를 재서 다음을 정해요"
+        ],
+        "cautions": [
+          "끝내지 않고 다음 걸 시작해요"
+        ],
+        "tips": [
+          "지금 열린 것 중 하나만 골라 닫아봐요."
+        ],
+        "funFact": "작게 해보고 재는 방식은 오래 계획하는 것보다 실패 비용이 적어요.",
+        "goodWith": [
+          "TFRO",
+          "APDC"
+        ]
+      }
+    },
+    {
+      "code": "AFRC",
+      "name": "손끝으로 완성하는 장인",
+      "subtitle": "혼자 다듬어 끝내는 사람",
+      "emoji": "🎨",
+      "color": "#c96f8c",
+      "content": {
+        "summary": "정해진 순서보다 감이 앞서요. 대신 한번 잡으면 마음에 들 때까지 다듬어 끝내는 쪽이에요.",
+        "strengths": [
+          "끝의 완성도가 높아요",
+          "감으로 좋은 걸 알아봐요"
+        ],
+        "cautions": [
+          "왜 그렇게 했는지 설명을 건너뛰어요"
+        ],
+        "tips": [
+          "오늘은 이유를 한 문장으로 적어봐요."
+        ],
+        "funFact": "완성도를 아는 사람의 기준은 팀의 기준이 돼요.",
+        "goodWith": [
+          "TFDC",
+          "APRO"
+        ]
+      }
+    },
+    {
+      "code": "AFRO",
+      "name": "이야기를 짓는 창작자",
+      "subtitle": "없는 걸 떠올리는 사람",
+      "emoji": "🪄",
+      "color": "#8c5aa8",
+      "content": {
+        "summary": "정해진 틀 밖에서 생각해요. 혼자 상상해 새로 만들어 보고, 그걸 사람들에게 보여주는 쪽이에요.",
+        "strengths": [
+          "남들이 안 떠올린 걸 꺼내요",
+          "사람의 마음을 움직여요"
+        ],
+        "cautions": [
+          "마무리가 남아 있을 수 있어요"
+        ],
+        "tips": [
+          "만든 것 하나를 끝까지 다듬어봐요."
+        ],
+        "funFact": "새로 만드는 일은 실패가 많아요. 실패한 것도 재료가 돼요.",
+        "goodWith": [
+          "TFDO",
+          "APRC"
+        ]
+      }
+    },
+    {
+      "code": "TPDC",
+      "name": "일정을 지키는 진행자",
+      "subtitle": "함께 정해둔 대로 닫는 사람",
+      "emoji": "📋",
+      "color": "#3a6ea8",
+      "content": {
+        "summary": "여럿이 하는 일을 정해둔 순서대로 끌고 가요. 이 사람이 있으면 마감이 밀리지 않아요.",
+        "strengths": [
+          "일정을 지켜요",
+          "누가 뭘 하는지 정리해요"
+        ],
+        "cautions": [
+          "바뀐 상황에 늦게 맞춰요"
+        ],
+        "tips": [
+          "이번 주에 한 번은 순서를 바꿔봐요."
+        ],
+        "funFact": "마감이 지켜지는 팀에는 대개 이 자리를 맡은 사람이 있어요.",
+        "goodWith": [
+          "APRC",
+          "TFDO"
+        ]
+      }
+    },
+    {
+      "code": "TPDO",
+      "name": "구조를 세우는 전략가",
+      "subtitle": "판을 짜서 같이 가는 사람",
+      "emoji": "♟️",
+      "color": "#1e4a5f",
+      "content": {
+        "summary": "여럿이 움직일 판을 미리 짜요. 숫자로 앞을 보고 다음 판까지 그려 두는 쪽이에요.",
+        "strengths": [
+          "큰 판을 짜요",
+          "근거로 사람들을 움직여요"
+        ],
+        "cautions": [
+          "실무의 사정을 지나칠 수 있어요"
+        ],
+        "tips": [
+          "실제로 하는 사람 이야기를 한 번 들어봐요."
+        ],
+        "funFact": "좋은 판은 짜는 사람과 굴리는 사람이 다를 때 더 잘 굴러가요.",
+        "goodWith": [
+          "APRO",
+          "TFDC"
+        ]
+      }
+    },
+    {
+      "code": "TPRC",
+      "name": "팀을 굴리는 살림꾼",
+      "subtitle": "빠진 자리를 메워 닫는 사람",
+      "emoji": "🧰",
+      "color": "#6b8a5a",
+      "content": {
+        "summary": "사람들 사정을 보면서 정해둔 대로 끌고 가요. 티는 안 나는데 없으면 바로 멈추는 자리예요.",
+        "strengths": [
+          "빠진 자리를 메워요",
+          "사람과 일정을 같이 봐요"
+        ],
+        "cautions": [
+          "내 일이 계속 뒤로 밀려요"
+        ],
+        "tips": [
+          "이번 주에 내 몫 하나를 먼저 해봐요."
+        ],
+        "funFact": "이 자리는 일이 없어 보일 때가 가장 바쁜 자리예요.",
+        "goodWith": [
+          "APDC",
+          "TFRO"
+        ]
+      }
+    },
+    {
+      "code": "TPRO",
+      "name": "사람을 모으는 리더",
+      "subtitle": "방향을 정해 같이 가는 사람",
+      "emoji": "🚩",
+      "color": "#b5493f",
+      "content": {
+        "summary": "어디로 갈지 정하고 사람을 모아요. 계획을 세워 두고 사람의 마음을 함께 챙기는 쪽이에요.",
+        "strengths": [
+          "사람을 모아 움직여요",
+          "방향을 분명히 알려줘요"
+        ],
+        "cautions": [
+          "혼자 앞서 가버릴 수 있어요"
+        ],
+        "tips": [
+          "오늘은 정하기 전에 한 사람에게 먼저 물어봐요."
+        ],
+        "funFact": "방향을 정하는 일과 정한 걸 지키는 일은 다른 힘이 들어요.",
+        "goodWith": [
+          "APDO",
+          "TFRC"
+        ]
+      }
+    },
+    {
+      "code": "TFDC",
+      "name": "급한 불을 끄는 소방수",
+      "subtitle": "터진 걸 같이 닫는 사람",
+      "emoji": "🧯",
+      "color": "#c2513a",
+      "content": {
+        "summary": "일이 터지면 제일 먼저 뛰어들어요. 여럿을 붙여서 그 자리에서 닫아 버리는 쪽이에요.",
+        "strengths": [
+          "급한 상황에서 빨라요",
+          "사람을 바로 붙여요"
+        ],
+        "cautions": [
+          "급한 일만 하다 중요한 걸 놓쳐요"
+        ],
+        "tips": [
+          "이번 주에 급하지 않지만 중요한 것 하나를 해봐요."
+        ],
+        "funFact": "불을 끄는 사람만 있으면 불이 계속 나요. 원인을 남겨 두면 줄어요.",
+        "goodWith": [
+          "AFRC",
+          "TPDO"
+        ]
+      }
+    },
+    {
+      "code": "TFDO",
+      "name": "빠르게 시험하는 개척자",
+      "subtitle": "같이 던져 보는 사람",
+      "emoji": "🚀",
+      "color": "#0f7a6e",
+      "content": {
+        "summary": "다 정하지 않고 먼저 던져 봐요. 여럿이 빠르게 해보고 결과를 재서 방향을 트는 쪽이에요.",
+        "strengths": [
+          "시작이 아주 빨라요",
+          "결과를 보고 바로 바꿔요"
+        ],
+        "cautions": [
+          "정리되지 않은 게 쌓여요"
+        ],
+        "tips": [
+          "이번 주에 열린 것 하나를 정리해봐요."
+        ],
+        "funFact": "빨리 던지는 팀은 정리하는 사람이 있을 때 오래 가요.",
+        "goodWith": [
+          "AFRO",
+          "TPDC"
+        ]
+      }
+    },
+    {
+      "code": "TFRC",
+      "name": "분위기를 살리는 조율자",
+      "subtitle": "사람을 붙여 끝내는 사람",
+      "emoji": "🤝",
+      "color": "#d4884a",
+      "content": {
+        "summary": "일보다 사람 사이를 먼저 봐요. 어긋난 걸 붙여 놓고 그 자리에서 끝을 내는 쪽이에요.",
+        "strengths": [
+          "다툰 사이를 이어요",
+          "분위기를 편하게 만들어요"
+        ],
+        "cautions": [
+          "할 말을 미루게 돼요"
+        ],
+        "tips": [
+          "오늘은 미룬 말 하나를 해봐요."
+        ],
+        "funFact": "사람 사이가 풀리면 일정도 같이 풀려요.",
+        "goodWith": [
+          "AFDC",
+          "TPRO"
+        ]
+      }
+    },
+    {
+      "code": "TFRO",
+      "name": "판을 벌이는 촉진자",
+      "subtitle": "사람을 붙여 새로 만드는 사람",
+      "emoji": "🎪",
+      "color": "#a8567e",
+      "content": {
+        "summary": "사람을 모아 새로운 걸 벌여요. 정해진 틀 없이 함께 만들어 가는 쪽이에요.",
+        "strengths": [
+          "없던 자리를 만들어요",
+          "사람을 끌어들여요"
+        ],
+        "cautions": [
+          "벌인 것을 다 닫지 못해요"
+        ],
+        "tips": [
+          "벌인 것 중 하나를 골라 끝까지 가봐요."
+        ],
+        "funFact": "새로 벌이는 일에는 닫아 주는 사람이 꼭 한 명 필요해요.",
+        "goodWith": [
+          "AFDO",
+          "TPRC"
+        ]
+      }
+    }
+  ]
+}

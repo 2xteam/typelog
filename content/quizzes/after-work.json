@@ -1,0 +1,535 @@
+{
+  "$schema": "typelog/quiz/v1",
+  "mode": "upsert",
+  "_note": [
+    "이 앱의 핵심(재응시로 변화 보기)과 가장 잘 맞는 주제다 — 몇 달 뒤 다시 하면",
+    "답이 실제로 달라진다. 이직·이사·계절만 바뀌어도 저녁이 바뀐다.",
+    "그래서 결과 문장에 '이게 너다' 라고 쓰지 않는다. **요즘 이렇다**로 쓴다.",
+    "브랜드도 실제 인물도 쓰지 않아 disclaimer 가 필요 없다."
+  ],
+  "quiz": {
+    "slug": "after-work",
+    "title": "나의 퇴근 후 시간 유형은?",
+    "tagline": "열 가지 질문으로 보는 요즘 나의 저녁",
+    "category": "life",
+    "ageRange": {
+      "min": 19,
+      "max": null
+    },
+    "cover": {
+      "emoji": "🌆",
+      "imageUrl": null
+    },
+    "order": 170,
+    "shuffle": false
+  },
+  "outcomes": [
+    {
+      "id": "move",
+      "kind": "tally",
+      "label": "움직이는 저녁"
+    },
+    {
+      "id": "home",
+      "kind": "tally",
+      "label": "집에 있는 저녁"
+    },
+    {
+      "id": "gather",
+      "kind": "tally",
+      "label": "사람 만나는 저녁"
+    },
+    {
+      "id": "learn",
+      "kind": "tally",
+      "label": "배우는 저녁"
+    },
+    {
+      "id": "fan",
+      "kind": "tally",
+      "label": "좋아하는 걸 보는 저녁"
+    },
+    {
+      "id": "walk",
+      "kind": "tally",
+      "label": "걷는 저녁"
+    }
+  ],
+  "resolver": {
+    "strategy": "argmax",
+    "tiebreak": [
+      "move",
+      "home",
+      "gather",
+      "learn",
+      "fan",
+      "walk"
+    ]
+  },
+  "items": [
+    {
+      "linkId": "af_leave",
+      "type": "choice",
+      "emoji": "🚪",
+      "required": true,
+      "text": "회사 문을 나서는 순간 가장 하고 싶은 건?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "몸을 좀 움직이고 싶어요",
+          "weights": {
+            "move": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "빨리 집에 가고 싶어요",
+          "weights": {
+            "home": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "누구랑 이야기하고 싶어요",
+          "weights": {
+            "gather": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "af_free",
+      "type": "choice",
+      "emoji": "🕘",
+      "required": true,
+      "text": "저녁에 두 시간이 비면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "미뤄둔 걸 조금 익혀요",
+          "weights": {
+            "learn": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "좋아하는 걸 봐요",
+          "weights": {
+            "fan": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "그냥 걸어요",
+          "weights": {
+            "walk": 3
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "af_bad_day",
+      "type": "choice",
+      "emoji": "😮‍💨",
+      "required": true,
+      "text": "일이 잘 안 풀린 날 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "운동으로 털어버려요",
+          "weights": {
+            "move": 5
+          }
+        },
+        {
+          "oid": "b",
+          "text": "누군가에게 털어놓아요",
+          "weights": {
+            "gather": 5
+          }
+        },
+        {
+          "oid": "c",
+          "text": "좋아하는 걸로 기분을 돌려요",
+          "weights": {
+            "fan": 5
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "af_weekend_eve",
+      "type": "choice",
+      "emoji": "🌆",
+      "required": true,
+      "text": "금요일 저녁 계획은?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "아무 계획 없이 집에 있어요",
+          "weights": {
+            "home": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "배우던 걸 이어서 해요",
+          "weights": {
+            "learn": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "밤에 좀 걸어요",
+          "weights": {
+            "walk": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "af_money",
+      "type": "choice",
+      "emoji": "💸",
+      "required": true,
+      "text": "저녁 시간에 쓰는 돈은 주로?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "운동이나 장비에 써요",
+          "weights": {
+            "move": 7
+          }
+        },
+        {
+          "oid": "b",
+          "text": "책이나 수업에 써요",
+          "weights": {
+            "learn": 7
+          }
+        },
+        {
+          "oid": "c",
+          "text": "좋아하는 것에 써요",
+          "weights": {
+            "fan": 7
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "af_invite",
+      "type": "choice",
+      "emoji": "📱",
+      "required": true,
+      "text": "갑자기 약속이 생기면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "오늘은 집에 있고 싶어요",
+          "weights": {
+            "home": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "좋아요, 나갈게요",
+          "weights": {
+            "gather": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "짧게 만나고 걸어서 돌아와요",
+          "weights": {
+            "walk": 3
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "af_routine",
+      "type": "choice",
+      "emoji": "🔁",
+      "required": true,
+      "text": "요즘 저녁에 거의 매일 하는 게 있어요?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "운동 시간이 정해져 있어요",
+          "weights": {
+            "move": 5
+          }
+        },
+        {
+          "oid": "b",
+          "text": "집에서 하는 순서가 있어요",
+          "weights": {
+            "home": 5
+          }
+        },
+        {
+          "oid": "c",
+          "text": "정해둔 공부량이 있어요",
+          "weights": {
+            "learn": 5
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "af_alone",
+      "type": "choice",
+      "emoji": "🫧",
+      "required": true,
+      "text": "혼자 있는 저녁이 길어지면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "누구든 만나고 싶어져요",
+          "weights": {
+            "gather": 2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "볼 게 많아서 괜찮아요",
+          "weights": {
+            "fan": 2
+          }
+        },
+        {
+          "oid": "c",
+          "text": "밖에 나가 걸어요",
+          "weights": {
+            "walk": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "af_energy",
+      "type": "choice",
+      "emoji": "🔋",
+      "required": true,
+      "text": "퇴근 후 남은 기운은?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "아직 쓸 게 남아 있어요",
+          "weights": {
+            "move": 7
+          }
+        },
+        {
+          "oid": "b",
+          "text": "말할 기운은 있어요",
+          "weights": {
+            "gather": 7
+          }
+        },
+        {
+          "oid": "c",
+          "text": "천천히 움직일 만큼이에요",
+          "weights": {
+            "walk": 7
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "af_ideal",
+      "type": "choice",
+      "emoji": "✨",
+      "required": true,
+      "text": "이상적인 평일 저녁은?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "아무 일 없이 조용한 저녁",
+          "weights": {
+            "home": 3
+          }
+        },
+        {
+          "oid": "b",
+          "text": "뭔가 하나 배운 저녁",
+          "weights": {
+            "learn": 3
+          }
+        },
+        {
+          "oid": "c",
+          "text": "좋아하는 걸 실컷 본 저녁",
+          "weights": {
+            "fan": 3
+          }
+        }
+      ]
+    }
+  ],
+  "resultTypes": [
+    {
+      "code": "move",
+      "name": "움직이는 저녁",
+      "subtitle": "몸을 써서 하루를 끊는 사람",
+      "emoji": "🏃",
+      "color": "#e0455f",
+      "content": {
+        "summary": "요즘은 퇴근하고 앉기 전에 움직여요. 하루를 일과 쉼으로 딱 끊어 주는 게 이 사람의 방식이에요. 땀을 내야 머리가 비워지는 쪽이에요.",
+        "strengths": [
+          "일과 쉼의 경계를 스스로 만들어요",
+          "정한 만큼 매일 해내요",
+          "몸이 힘들면 오히려 머리가 가벼워져요"
+        ],
+        "cautions": [
+          "못 한 날은 하루가 안 끝난 것 같아요",
+          "피곤한데도 나가버려요"
+        ],
+        "tips": [
+          "이번 주에 하루는 안 움직이고 그냥 쉬어봐요."
+        ],
+        "funFact": "가볍게 걷기만 해도 스트레스 호르몬이 줄어든다고 해요. 세게 할 필요는 없어요.",
+        "goodWith": [
+          "walk",
+          "gather"
+        ]
+      }
+    },
+    {
+      "code": "home",
+      "name": "집에 있는 저녁",
+      "subtitle": "문 닫고 회복하는 사람",
+      "emoji": "🛋️",
+      "color": "#3a7bd5",
+      "content": {
+        "summary": "요즘은 집에 들어오면 그걸로 됐어요. 밖에서 쓴 힘을 조용한 데서 되채우는 쪽이라, 약속 없는 저녁이 아깝지 않아요.",
+        "strengths": [
+          "혼자 있는 시간을 잘 써요",
+          "무리한 약속을 만들지 않아요",
+          "집을 편하게 만들어 둬요"
+        ],
+        "cautions": [
+          "나가야 할 자리도 미뤄요",
+          "며칠 지나면 사람이 그리워져요"
+        ],
+        "tips": [
+          "이번 주에 한 번은 짧게라도 밖에서 만나봐요."
+        ],
+        "funFact": "집에 오면 바로 옷을 갈아입는 것만으로도 '일 끝' 신호가 된다고 해요.",
+        "goodWith": [
+          "fan",
+          "walk"
+        ]
+      }
+    },
+    {
+      "code": "gather",
+      "name": "사람 만나는 저녁",
+      "subtitle": "이야기로 풀리는 사람",
+      "emoji": "🍻",
+      "color": "#e0b845",
+      "content": {
+        "summary": "요즘은 누군가와 이야기해야 하루가 정리돼요. 혼자 삭이는 대신 말로 꺼내 놓는 쪽이라, 만나고 오면 가벼워져요.",
+        "strengths": [
+          "힘든 걸 혼자 두지 않아요",
+          "사람들과의 연결을 유지해요",
+          "분위기를 편하게 만들어요"
+        ],
+        "cautions": [
+          "약속이 몰리면 지쳐요",
+          "혼자 정리할 시간이 부족해요"
+        ],
+        "tips": [
+          "이번 주에 저녁 하나는 비워 둬봐요."
+        ],
+        "funFact": "속상한 일을 말로 꺼내면 그 감정의 세기가 실제로 줄어든다고 해요.",
+        "goodWith": [
+          "move",
+          "learn"
+        ]
+      }
+    },
+    {
+      "code": "learn",
+      "name": "배우는 저녁",
+      "subtitle": "조금씩 늘리는 사람",
+      "emoji": "📖",
+      "color": "#7c6f9c",
+      "content": {
+        "summary": "요즘은 저녁에 뭔가를 배우고 있어요. 오늘 하루가 어제보다 조금 늘었으면 마음이 놓이는 쪽이에요.",
+        "strengths": [
+          "오래 걸리는 걸 이어가요",
+          "지금 부족한 걸 알아차려요",
+          "혼자서도 계속 해요"
+        ],
+        "cautions": [
+          "쉬는 것도 미뤄요",
+          "안 한 날 스스로를 몰아세워요"
+        ],
+        "tips": [
+          "이번 주에 하루는 아무것도 배우지 말고 쉬어봐요."
+        ],
+        "funFact": "새로 배운 건 잠자는 동안 정리돼요. 밤늦게까지 붙잡는 것보다 자는 게 나아요.",
+        "goodWith": [
+          "fan",
+          "home"
+        ]
+      }
+    },
+    {
+      "code": "fan",
+      "name": "좋아하는 걸 보는 저녁",
+      "subtitle": "좋아하는 데 시간을 쓰는 사람",
+      "emoji": "🎧",
+      "color": "#d94f8a",
+      "content": {
+        "summary": "요즘은 좋아하는 것에 저녁을 써요. 남이 보면 사소해도 그 시간이 하루를 버티게 하는 쪽이에요.",
+        "strengths": [
+          "기분을 스스로 회복시켜요",
+          "좋아하는 게 분명해요",
+          "그 안에서 오래 깊어져요"
+        ],
+        "cautions": [
+          "시간이 훌쩍 지나가요",
+          "다른 걸 미루게 돼요"
+        ],
+        "tips": [
+          "시작할 때 끝낼 시각을 정해봐요."
+        ],
+        "funFact": "좋아하는 것에 몰입한 시간은 실제로 짧게 느껴져요. 시계를 미리 보는 게 도움이 돼요.",
+        "goodWith": [
+          "learn",
+          "home"
+        ]
+      }
+    },
+    {
+      "code": "walk",
+      "name": "걷는 저녁",
+      "subtitle": "천천히 정리하는 사람",
+      "emoji": "🌙",
+      "color": "#2f9e74",
+      "content": {
+        "summary": "요즘은 저녁에 걸어요. 목적지가 없어도 걷는 동안 생각이 정리되는 쪽이라, 돌아올 때는 마음이 좀 가벼워요.",
+        "strengths": [
+          "생각을 스스로 정리해요",
+          "무리하지 않고 꾸준해요",
+          "혼자 있는 걸 편하게 여겨요"
+        ],
+        "cautions": [
+          "결정을 미루면서 계속 걸어요",
+          "말로 꺼내지 않아요"
+        ],
+        "tips": [
+          "걷다가 떠오른 것 하나를 오늘 누군가에게 말해봐요."
+        ],
+        "funFact": "걷는 동안 떠오르는 생각이 앉아 있을 때보다 많다는 연구가 있어요.",
+        "goodWith": [
+          "home",
+          "move"
+        ]
+      }
+    }
+  ]
+}
