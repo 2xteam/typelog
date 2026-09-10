@@ -1,0 +1,782 @@
+{
+  "$schema": "typelog/quiz/v1",
+  "mode": "upsert",
+  "_note": [
+    "4축 16유형(`letters`). 축 체계는 인스타그램 @daily__dear 의 러너 유형 카드에서",
+    "가져왔다 — 크루/개인 · 장거리/단거리 · 중독/간헐 · 기록/즐김, 코드 C·P/L·S/A·I/R·F.",
+    "",
+    "⚠️ **유형명과 설명 문장은 가져오지 않았다.** 축을 나누는 건 러너를 분류하는",
+    "기능적 뼈대지만, 16개 유형명(조어)과 한 줄 설명은 그 계정이 지은 저작물이다.",
+    "상용 서비스에 그대로 옮기면 복제가 된다. 여기 이름·문장은 새로 썼다.",
+    "코드가 같으므로 사용 허락을 받으면 mode: \"content\" 한 번으로 갈아 끼울 수 있다.",
+    "",
+    "⚠️ 제목에 \"MBTI\" 를 쓰지 않는다 — The Myers-Briggs Company 의 상표다.",
+    "",
+    "⚠️ 축마다 문항을 홀수(3개)로 둔다. 3문항 × ±2 면 합이 {-6,-2,2,6} 이라",
+    "POMP 가 {0, 33.3, 66.7, 100} 뿐이고 임계값 50 에 닿지 않는다.",
+    "",
+    "달리기는 몸을 쓰는 일이라 문장에 **다치지 않게 하는 말**을 한 줄씩 넣었다.",
+    "훈련 처방은 하지 않는다 — FitLog 가 진단·처방을 거절하는 것과 같은 이유다."
+  ],
+  "quiz": {
+    "slug": "runner-16type",
+    "title": "나는 어떤 러너일까?",
+    "tagline": "네 가지 축으로 찾는 나의 러닝 성향",
+    "category": "sport",
+    "ageRange": {
+      "min": 15,
+      "max": null
+    },
+    "cover": {
+      "emoji": "🏃",
+      "imageUrl": null
+    },
+    "order": 210,
+    "shuffle": false,
+    "disclaimer": "재미로 보는 성향 놀이예요. 훈련 방법을 권하는 게 아니니, 몸이 아프면 쉬거나 전문가와 상의해요."
+  },
+  "outcomes": [
+    {
+      "id": "who",
+      "kind": "axis",
+      "label": "누구와 달리나요",
+      "left": {
+        "code": "C",
+        "label": "크루형"
+      },
+      "right": {
+        "code": "P",
+        "label": "개인형"
+      }
+    },
+    {
+      "id": "dist",
+      "kind": "axis",
+      "label": "어떤 거리를 좋아하나요",
+      "left": {
+        "code": "L",
+        "label": "장거리형"
+      },
+      "right": {
+        "code": "S",
+        "label": "단거리형"
+      }
+    },
+    {
+      "id": "freq",
+      "kind": "axis",
+      "label": "얼마나 자주 달리나요",
+      "left": {
+        "code": "A",
+        "label": "중독형"
+      },
+      "right": {
+        "code": "I",
+        "label": "간헐적형"
+      }
+    },
+    {
+      "id": "mind",
+      "kind": "axis",
+      "label": "어떤 마음으로 달리나요",
+      "left": {
+        "code": "R",
+        "label": "기록형"
+      },
+      "right": {
+        "code": "F",
+        "label": "즐김형"
+      }
+    }
+  ],
+  "resolver": {
+    "strategy": "letters",
+    "order": [
+      "who",
+      "dist",
+      "freq",
+      "mind"
+    ],
+    "threshold": 50
+  },
+  "items": [
+    {
+      "linkId": "rn_go_out",
+      "type": "choice",
+      "emoji": "👟",
+      "required": true,
+      "text": "달리러 나갈 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "같이 뛸 사람이 있으면 더 좋아요",
+          "weights": {
+            "who": -2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "혼자 나가는 게 편해요",
+          "weights": {
+            "who": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "rn_best_run",
+      "type": "choice",
+      "emoji": "🏔️",
+      "required": true,
+      "text": "가장 만족스러웠던 러닝은?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "오래 달려서 몸이 풀린 날",
+          "weights": {
+            "dist": -2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "짧게 세게 달려 숨이 찬 날",
+          "weights": {
+            "dist": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "rn_gap",
+      "type": "choice",
+      "emoji": "📅",
+      "required": true,
+      "text": "며칠 못 달리면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "몸이 찝찝해서 못 참아요",
+          "weights": {
+            "freq": -2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "별로 신경 쓰이지 않아요",
+          "weights": {
+            "freq": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "rn_after",
+      "type": "choice",
+      "emoji": "⌚",
+      "required": true,
+      "text": "달리고 나서 먼저 보는 건?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "페이스와 기록이요",
+          "weights": {
+            "mind": -2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "오늘 기분이요",
+          "weights": {
+            "mind": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "rn_while",
+      "type": "choice",
+      "emoji": "🫂",
+      "required": true,
+      "text": "달리는 중에 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "옆 사람과 이야기하며 달려요",
+          "weights": {
+            "who": -2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "내 호흡에만 집중해요",
+          "weights": {
+            "who": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "rn_course",
+      "type": "choice",
+      "emoji": "🛣️",
+      "required": true,
+      "text": "코스를 고를 때 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "길게 이어지는 코스가 좋아요",
+          "weights": {
+            "dist": -2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "짧게 돌아오는 코스가 좋아요",
+          "weights": {
+            "dist": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "rn_rain",
+      "type": "choice",
+      "emoji": "🌧️",
+      "required": true,
+      "text": "비가 오는 날 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "우비를 입고라도 나가요",
+          "weights": {
+            "freq": -2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "오늘은 쉬어요",
+          "weights": {
+            "freq": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "rn_plan",
+      "type": "choice",
+      "emoji": "📉",
+      "required": true,
+      "text": "훈련 계획이 있어요?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "목표에 맞춰 짜 둬요",
+          "weights": {
+            "mind": -2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "달리고 싶은 만큼 달려요",
+          "weights": {
+            "mind": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "rn_club",
+      "type": "choice",
+      "emoji": "📣",
+      "required": true,
+      "text": "달리기 모임 소식을 보면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "일단 한번 가보고 싶어요",
+          "weights": {
+            "who": -2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "내 페이스가 흐트러질까 걱정돼요",
+          "weights": {
+            "who": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "rn_race",
+      "type": "choice",
+      "emoji": "🏆",
+      "required": true,
+      "text": "대회에 나간다면 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "하프나 풀코스에 도전해요",
+          "weights": {
+            "dist": -2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "5km나 10km가 딱이에요",
+          "weights": {
+            "dist": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "rn_days",
+      "type": "choice",
+      "emoji": "🔁",
+      "required": true,
+      "text": "달리는 날은?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "거의 정해져 있어요",
+          "weights": {
+            "freq": -2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "그때그때 정해요",
+          "weights": {
+            "freq": 2
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "rn_slow",
+      "type": "choice",
+      "emoji": "😌",
+      "required": true,
+      "text": "기록이 안 나온 날 나는?",
+      "options": [
+        {
+          "oid": "a",
+          "text": "뭐가 부족했는지 따져봐요",
+          "weights": {
+            "mind": -2
+          }
+        },
+        {
+          "oid": "b",
+          "text": "그래도 뛴 게 어디예요",
+          "weights": {
+            "mind": 2
+          }
+        }
+      ]
+    }
+  ],
+  "resultTypes": [
+    {
+      "code": "CLAR",
+      "name": "앞에서 끌고 가는 페이서",
+      "subtitle": "크루와 멀리, 매일, 기록까지",
+      "emoji": "🚩",
+      "color": "#b5493f",
+      "content": {
+        "summary": "사람들과 함께 긴 거리를 달리면서 기록까지 챙겨요. 뒤에 붙어 오는 사람들의 페이스를 맞춰 주는 자리예요.",
+        "strengths": [
+          "여럿의 페이스를 맞춰 줘요",
+          "먼 거리를 끝까지 끌고 가요"
+        ],
+        "cautions": [
+          "내 컨디션보다 크루를 먼저 챙겨요"
+        ],
+        "tips": [
+          "이번 주 한 번은 혼자, 내 페이스로만 달려봐요."
+        ],
+        "funFact": "페이서는 자기 기록보다 일정한 속도가 더 어려운 자리예요.",
+        "goodWith": [
+          "PLIR",
+          "CSAF"
+        ]
+      }
+    },
+    {
+      "code": "CLAF",
+      "name": "끝까지 같이 달리는 짝꿍",
+      "subtitle": "크루와 멀리, 매일, 즐겁게",
+      "emoji": "🤝",
+      "color": "#d4884a",
+      "content": {
+        "summary": "기록보다 같이 달리는 시간이 좋아요. 오래 달려도 옆에 사람이 있으면 힘든 게 덜한 쪽이에요.",
+        "strengths": [
+          "함께 달리면 더 멀리 가요",
+          "지친 사람을 두고 가지 않아요"
+        ],
+        "cautions": [
+          "혼자 달릴 날에 힘이 안 나요"
+        ],
+        "tips": [
+          "혼자 달리는 코스 하나를 만들어 둬봐요."
+        ],
+        "funFact": "둘이 달리면 혼자보다 더 멀리 간다는 이야기는 실제로 여러 기록에 나와요.",
+        "goodWith": [
+          "PLIF",
+          "CSAR"
+        ]
+      }
+    },
+    {
+      "code": "CLIR",
+      "name": "대회 때만 진심인 승부사",
+      "subtitle": "크루와 멀리, 가끔, 기록으로",
+      "emoji": "🎯",
+      "color": "#116271",
+      "content": {
+        "summary": "자주 달리지는 않아요. 그런데 대회가 잡히면 그때부터 사람이 달라지는 쪽이에요.",
+        "strengths": [
+          "목표가 생기면 확실히 몰아붙여요",
+          "필요한 만큼만 정확히 준비해요"
+        ],
+        "cautions": [
+          "평소 기초 체력이 흔들려요"
+        ],
+        "tips": [
+          "대회가 없는 주에도 짧게 한 번 나가봐요."
+        ],
+        "funFact": "달리기는 쉰 만큼 되돌아가요. 짧게라도 이어 두면 회복이 훨씬 빨라요.",
+        "goodWith": [
+          "PLAR",
+          "CSIF"
+        ]
+      }
+    },
+    {
+      "code": "CLIF",
+      "name": "달리며 여행하는 산책자",
+      "subtitle": "크루와 멀리, 가끔, 즐겁게",
+      "emoji": "🗺️",
+      "color": "#4a7f8c",
+      "content": {
+        "summary": "달리는 게 목적이 아니라 그 길을 지나가는 게 좋아요. 사람들과 새 코스를 찾아 천천히 오래 달리는 쪽이에요.",
+        "strengths": [
+          "새로운 코스를 찾아내요",
+          "달리는 시간을 즐겨요"
+        ],
+        "cautions": [
+          "기록이 잘 늘지 않아요"
+        ],
+        "tips": [
+          "같은 코스를 두 번 달려서 시간을 비교해봐요."
+        ],
+        "funFact": "코스를 바꾸면 몸이 쓰는 근육도 바뀌어요. 부상이 줄어드는 이유예요.",
+        "goodWith": [
+          "PLAF",
+          "CSIR"
+        ]
+      }
+    },
+    {
+      "code": "CSAR",
+      "name": "트랙에서 몰아붙이는 스프린터",
+      "subtitle": "크루와 짧게, 매일, 기록으로",
+      "emoji": "⚡",
+      "color": "#c2513a",
+      "content": {
+        "summary": "짧은 거리에 전부 쏟아요. 크루와 트랙에 모여 서로 시간을 재며 밀어붙이는 쪽이에요.",
+        "strengths": [
+          "짧은 거리에 집중력이 좋아요",
+          "같이 하면 더 세게 해요"
+        ],
+        "cautions": [
+          "회복을 건너뛰기 쉬워요"
+        ],
+        "tips": [
+          "이번 주에 하루는 아주 천천히만 달려봐요."
+        ],
+        "funFact": "빠른 훈련은 느린 훈련이 받쳐줄 때 늘어요. 둘 다 필요해요.",
+        "goodWith": [
+          "PSIR",
+          "CLAF"
+        ]
+      }
+    },
+    {
+      "code": "CSAF",
+      "name": "분위기를 띄우는 수다 러너",
+      "subtitle": "크루와 짧게, 매일, 즐겁게",
+      "emoji": "🎉",
+      "color": "#e0b845",
+      "content": {
+        "summary": "달리기가 모임이에요. 짧고 가볍게 뛰고 나서 이야기하는 시간이 더 기다려지는 쪽이에요.",
+        "strengths": [
+          "사람들을 계속 나오게 만들어요",
+          "부담 없이 매일 이어가요"
+        ],
+        "cautions": [
+          "혼자서는 잘 안 나가요"
+        ],
+        "tips": [
+          "혼자 나가는 날을 하나 정해 둬봐요."
+        ],
+        "funFact": "가볍게 자주 달리는 게 세게 드물게 달리는 것보다 오래 이어져요.",
+        "goodWith": [
+          "PSIF",
+          "CLAR"
+        ]
+      }
+    },
+    {
+      "code": "CSIR",
+      "name": "한 번에 터뜨리는 한방형",
+      "subtitle": "크루와 짧게, 가끔, 기록으로",
+      "emoji": "💥",
+      "color": "#8c5aa8",
+      "content": {
+        "summary": "자주 나오지는 않아요. 대신 나온 날은 짧은 거리에서 확실하게 갈아 넣는 쪽이에요.",
+        "strengths": [
+          "한 번에 집중해서 해내요",
+          "짧은 승부에 강해요"
+        ],
+        "cautions": [
+          "쉬는 사이에 몸이 식어요"
+        ],
+        "tips": [
+          "달리지 않는 주에 가벼운 다른 운동을 넣어봐요."
+        ],
+        "funFact": "짧고 강한 운동은 효과가 크지만 그만큼 회복 시간도 길게 필요해요.",
+        "goodWith": [
+          "PSAR",
+          "CLIF"
+        ]
+      }
+    },
+    {
+      "code": "CSIF",
+      "name": "내킬 때 나오는 기분파",
+      "subtitle": "크루와 짧게, 가끔, 즐겁게",
+      "emoji": "🎈",
+      "color": "#d94f8a",
+      "content": {
+        "summary": "정해두고 달리지 않아요. 마음이 내킬 때 사람들과 짧게 가볍게 뛰는 쪽이에요.",
+        "strengths": [
+          "부담 없이 시작해요",
+          "달리기를 싫어지지 않게 지켜요"
+        ],
+        "cautions": [
+          "습관으로 자리 잡기 어려워요"
+        ],
+        "tips": [
+          "일주일에 하루만 시간을 정해 둬봐요."
+        ],
+        "funFact": "달리기를 오래 하는 사람들의 공통점은 재미를 잃지 않았다는 거예요.",
+        "goodWith": [
+          "PSAF",
+          "CLIR"
+        ]
+      }
+    },
+    {
+      "code": "PLAR",
+      "name": "혼자 기록을 쌓는 사냥꾼",
+      "subtitle": "혼자 멀리, 매일, 기록으로",
+      "emoji": "🏹",
+      "color": "#1e4a5f",
+      "content": {
+        "summary": "말없이 거리를 쌓아요. 남과 겨루지 않고 어제의 내 기록만 보는 쪽이라, 어느새 멀리 가 있어요.",
+        "strengths": [
+          "혼자서도 계속 이어가요",
+          "긴 거리를 견뎌내요"
+        ],
+        "cautions": [
+          "아파도 계획대로 달리려 해요"
+        ],
+        "tips": [
+          "이번 주에 하루는 계획을 접고 쉬어봐요."
+        ],
+        "funFact": "장거리 훈련의 80%는 느리게 달려야 한다는 게 오래된 원칙이에요.",
+        "goodWith": [
+          "CLIR",
+          "PSAF"
+        ]
+      }
+    },
+    {
+      "code": "PLAF",
+      "name": "매일 같은 길을 도는 순례자",
+      "subtitle": "혼자 멀리, 매일, 즐겁게",
+      "emoji": "🌄",
+      "color": "#6b8a5a",
+      "content": {
+        "summary": "매일 같은 길을 오래 달려요. 기록을 위한 게 아니라 그 시간이 하루를 정리해 주는 쪽이에요.",
+        "strengths": [
+          "혼자 있는 시간을 잘 써요",
+          "무리하지 않고 오래 해요"
+        ],
+        "cautions": [
+          "새로운 자극이 부족해요"
+        ],
+        "tips": [
+          "이번엔 반대 방향으로 한 번 달려봐요."
+        ],
+        "funFact": "같은 코스를 달려도 방향을 바꾸면 오르막·내리막이 달라져요.",
+        "goodWith": [
+          "CLIF",
+          "PSAR"
+        ]
+      }
+    },
+    {
+      "code": "PLIR",
+      "name": "숨겨둔 욕심이 있는 잠재형",
+      "subtitle": "혼자 멀리, 가끔, 기록으로",
+      "emoji": "🔥",
+      "color": "#7c6f9c",
+      "content": {
+        "summary": "자주 나가지 않는데 목표는 크게 잡아요. 마음속에 기록에 대한 욕심이 분명한 쪽이에요.",
+        "strengths": [
+          "목표를 크게 잡아요",
+          "혼자서 준비할 수 있어요"
+        ],
+        "cautions": [
+          "준비 기간을 짧게 잡아요"
+        ],
+        "tips": [
+          "목표 대회까지 남은 주 수를 세어 계획을 나눠봐요."
+        ],
+        "funFact": "장거리 준비는 보통 12~16주를 잡아요. 몸이 적응하는 데 걸리는 시간이에요.",
+        "goodWith": [
+          "CLAR",
+          "PSIF"
+        ]
+      }
+    },
+    {
+      "code": "PLIF",
+      "name": "혼자 멀리 나가보는 탐험가",
+      "subtitle": "혼자 멀리, 가끔, 즐겁게",
+      "emoji": "🧭",
+      "color": "#2f9e74",
+      "content": {
+        "summary": "혼자 긴 거리를 나가는 걸 좋아해요. 어디까지 갈 수 있는지 보는 게 재미인 쪽이에요.",
+        "strengths": [
+          "낯선 길로 먼저 가봐요",
+          "혼자서도 멀리 가요"
+        ],
+        "cautions": [
+          "무리한 코스로 나갈 수 있어요"
+        ],
+        "tips": [
+          "나가기 전에 돌아올 방법을 정해 둬봐요."
+        ],
+        "funFact": "장거리를 혼자 나갈 땐 물과 위치 공유 하나만 챙겨도 훨씬 안전해요.",
+        "goodWith": [
+          "CLAF",
+          "PSIR"
+        ]
+      }
+    },
+    {
+      "code": "PSAR",
+      "name": "초를 깎는 기록 장인",
+      "subtitle": "혼자 짧게, 매일, 기록으로",
+      "emoji": "⏱️",
+      "color": "#3a6ea8",
+      "content": {
+        "summary": "짧은 거리를 매일 혼자 달리면서 초 단위로 줄여가요. 아주 작은 차이를 알아차리는 쪽이에요.",
+        "strengths": [
+          "작은 변화를 알아차려요",
+          "매일 정한 만큼 해내요"
+        ],
+        "cautions": [
+          "숫자에 마음이 크게 흔들려요"
+        ],
+        "tips": [
+          "이번 주 한 번은 시계를 안 보고 달려봐요."
+        ],
+        "funFact": "같은 코스라도 기온이 5도 오르면 페이스가 느려지는 게 정상이에요.",
+        "goodWith": [
+          "CSIR",
+          "PLAF"
+        ]
+      }
+    },
+    {
+      "code": "PSAF",
+      "name": "가볍게 매일 나가는 산책러",
+      "subtitle": "혼자 짧게, 매일, 즐겁게",
+      "emoji": "🍃",
+      "color": "#0f7a6e",
+      "content": {
+        "summary": "짧게, 매일, 혼자 나가요. 힘들게 하지 않아서 오히려 하루도 안 빼먹는 쪽이에요.",
+        "strengths": [
+          "빠지는 날이 거의 없어요",
+          "몸에 무리를 주지 않아요"
+        ],
+        "cautions": [
+          "더 늘려볼 기회를 놓쳐요"
+        ],
+        "tips": [
+          "한 주에 한 번만 조금 더 멀리 가봐요."
+        ],
+        "funFact": "짧게라도 매일 움직인 사람이 몰아서 한 사람보다 오래 건강했다는 연구가 많아요.",
+        "goodWith": [
+          "CSIF",
+          "PLAR"
+        ]
+      }
+    },
+    {
+      "code": "PSIR",
+      "name": "필요할 때만 나타나는 저격수",
+      "subtitle": "혼자 짧게, 가끔, 기록으로",
+      "emoji": "🎽",
+      "color": "#25526b",
+      "content": {
+        "summary": "평소엔 조용해요. 그런데 재야 할 순간이 오면 혼자 나가서 정확하게 기록을 찍고 오는 쪽이에요.",
+        "strengths": [
+          "필요한 순간에 해내요",
+          "군더더기 없이 준비해요"
+        ],
+        "cautions": [
+          "기초가 쌓이지 않아요"
+        ],
+        "tips": [
+          "달리지 않는 주에 걷기라도 이어봐요."
+        ],
+        "funFact": "심장과 폐는 비교적 빨리 좋아지지만 힘줄과 관절은 훨씬 천천히 적응해요.",
+        "goodWith": [
+          "CSAR",
+          "PLIF"
+        ]
+      }
+    },
+    {
+      "code": "PSIF",
+      "name": "부담 없이 뛰는 자유로운 발",
+      "subtitle": "혼자 짧게, 가끔, 즐겁게",
+      "emoji": "🕊️",
+      "color": "#a8567e",
+      "content": {
+        "summary": "정한 것도 재는 것도 없어요. 내키는 만큼만 혼자 가볍게 달리는 쪽이라 달리기가 짐이 되지 않아요.",
+        "strengths": [
+          "부담을 만들지 않아요",
+          "언제 시작해도 어색하지 않아요"
+        ],
+        "cautions": [
+          "몇 달을 통째로 쉬기도 해요"
+        ],
+        "tips": [
+          "달력에 이번 주 하루만 표시해 둬봐요."
+        ],
+        "funFact": "달리기는 몇 달 쉬어도 다시 시작할 수 있어요. 처음보다는 늘 빨라요.",
+        "goodWith": [
+          "CSAF",
+          "PLIR"
+        ]
+      }
+    }
+  ]
+}

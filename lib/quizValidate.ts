@@ -60,6 +60,25 @@ export function validateImport(payload: unknown): Report {
   if (!isPlainObject(payload)) {
     return { errors: [{ path: "$", message: "JSON 객체가 아니에요." }], warnings };
   }
+  /**
+   * 모르는 최상위 키를 알려준다.
+   *
+   * 필드를 **엉뚱한 깊이**에 넣으면 아무 일도 일어나지 않는다. `disclaimer` 를
+   * `quiz` 안이 아니라 최상위에 둔 적이 있는데, 저장 코드가 `body.quiz.disclaimer`
+   * 를 읽으므로 조용히 버려졌고 검증기도 통과시켰다 — 화면에 안 뜨는 것으로만
+   * 알 수 있었다 (2026-09-10 runner-16type).
+   * → my-obsidian-vault / 30-Patterns/설문지 JSON 작성 지침.md
+   */
+  const TOP_KEYS = new Set([
+    "$schema", "mode", "_note", "quiz", "quizSlug",
+    "outcomes", "resolver", "items", "resultTypes",
+  ]);
+  for (const key of Object.keys(payload)) {
+    if (!TOP_KEYS.has(key)) {
+      warn(key, `최상위에 있으면 안 읽어요. ${key === "disclaimer" || key === "ageRange" || key === "cover" || key === "title" || key === "tagline" ? '"quiz" 안으로 옮겨요.' : "이름이 맞는지 확인해요."}`);
+    }
+  }
+
   const mode = payload.mode;
   if (mode !== "upsert" && mode !== "content") {
     return {
