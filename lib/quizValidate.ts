@@ -70,7 +70,7 @@ export function validateImport(payload: unknown): Report {
    * → my-obsidian-vault / 30-Patterns/설문지 JSON 작성 지침.md
    */
   const TOP_KEYS = new Set([
-    "$schema", "mode", "_note", "quiz", "quizSlug",
+    "$schema", "mode", "_note", "quiz", "quizSlug", "quizMeta",
     "outcomes", "resolver", "items", "resultTypes",
   ]);
   for (const key of Object.keys(payload)) {
@@ -92,7 +92,18 @@ export function validateImport(payload: unknown): Report {
     if (typeof payload.quizSlug !== "string" || !payload.quizSlug.trim()) {
       err("quizSlug", "어느 질문지인지 slug 가 필요해요.");
     }
-    validateResultTypes(payload.resultTypes, null, err, warn);
+    const qm = payload.quizMeta;
+    if (qm !== undefined && qm !== null) {
+      if (!isPlainObject(qm)) err("quizMeta", "객체여야 해요.");
+      else {
+        for (const key of Object.keys(qm)) {
+          if (!["title", "tagline", "disclaimer"].includes(key)) warn(`quizMeta.${key}`, "title · tagline · disclaimer 만 고칠 수 있어요.");
+        }
+        if (qm.title !== undefined && (typeof qm.title !== "string" || !qm.title.trim())) err("quizMeta.title", "비어 있어요.");
+      }
+    }
+    // 제목만 고칠 때는 결과 문장을 보내지 않아도 된다
+    if (payload.resultTypes !== undefined || !isPlainObject(qm)) validateResultTypes(payload.resultTypes, null, err, warn);
     return { errors, warnings };
   }
 
@@ -104,7 +115,9 @@ export function validateImport(payload: unknown): Report {
   const resultTypes = payload.resultTypes;
 
   if (!isPlainObject(quiz)) err("quiz", "질문지 메타가 없어요.");
-  if (!Array.isArray(outcomes) || outcomes.length === 0) err("outcomes", "결과 변수 선언이 없어요.");
+  // threshold 는 점수를 모으지 않고 기록을 표에 댄다 — outcome 이 없어도 된다
+  const isThreshold = isPlainObject(resolver) && resolver.strategy === "threshold";
+  if (!Array.isArray(outcomes) || (outcomes.length === 0 && !isThreshold)) err("outcomes", "결과 변수 선언이 없어요.");
   if (!Array.isArray(items) || items.length === 0) err("items", "문항이 없어요.");
   if (!isPlainObject(resolver)) err("resolver", "결과를 정하는 방법이 없어요.");
   if (!Array.isArray(resultTypes) || resultTypes.length === 0)
@@ -258,9 +271,41 @@ export function validateImport(payload: unknown): Report {
     } else if (it.type === "ranking") {
       if (!it.rankCoefficients?.length) err(`${at}.rankCoefficients`, "빠졌어요.");
       scoringItems += 1;
+    } else if (it.type === "duration") {
+      const dist = flat.find((x) => x.linkId === it.distanceFrom);
+      if (!it.distanceFrom || !dist || !seenOrder.includes(it.distanceFrom)) {
+        err(`${at}.distanceFrom`, "앞에 있는 거리 choice 의 linkId 가 필요해요.");
+      } else if ((dist.options ?? []).some((o) => typeof o.value !== "number" || o.value <= 0)) {
+        err(`${at}.distanceFrom`, `"${it.distanceFrom}" 선택지마다 value(km)가 필요해요.`);
+      }
+      scoringItems += 1;
+    } else if (it.type === "measure") {
+      const fields = it.fields ?? [];
+      if (!fields.length) err(`${at}.fields`, "칸이 없어요.");
+      for (const [j, f] of fields.entries()) {
+        if (!f?.key || !f?.label) err(`${at}.fields[${j}]`, "key 와 label 이 필요해요.");
+        if (!(typeof f?.min === "number" && typeof f?.max === "number" && f.max > f.min)) {
+          err(`${at}.fields[${j}]`, "min < max 가 필요해요.");
+        }
+      }
+      if (it.required !== false) warn(`${at}.required`, "키·몸무게 같은 칸은 선택(required: false)으로 두는 게 좋아요.");
+    }
+    if (it.afterFinishOnly && !it.editableAfterFinish) {
+      err(`${at}.afterFinishOnly`, "결과 화면에서만 넣는 문항은 editableAfterFinish 도 true 여야 해요.");
+    }
+    if (it.afterFinishOnly && it.required !== false) err(`${at}.required`, "결과 화면에서만 넣는 문항은 required: false 여야 해요.");
+    if (it.editableAfterFinish && it.type !== "string") {
+      err(`${at}.editableAfterFinish`, "점수에 쓰이지 않는 string 문항만 완료 뒤에 고칠 수 있어요.");
     }
 
-    if (it.enableWhen) {
+    if (it.enableWhen?.resultIn) {
+      if (res.strategy !== "threshold") err(`${at}.enableWhen.resultIn`, "미리 낸 결과로 거르는 건 threshold 전략에서만 돼요.");
+      const codes = new Set(types.map((t) => t.code));
+      for (const c of it.enableWhen.resultIn) {
+        if (!codes.has(c)) err(`${at}.enableWhen.resultIn`, `"${c}" 는 없는 결과 타입이에요.`);
+      }
+      if (it.required !== false) err(`${at}.required`, "미리 낸 결과로 보이는 문항은 required: false 여야 해요.");
+    } else if (it.enableWhen) {
       const target = it.enableWhen.linkId;
       if (!target) err(`${at}.enableWhen.linkId`, "빠졌어요.");
       else if (!seenOrder.includes(target)) {
@@ -273,7 +318,7 @@ export function validateImport(payload: unknown): Report {
     if (it.linkId) seenOrder.push(it.linkId);
   }
 
-  if (flat.filter((i) => i.type !== "display").length < 6) {
+  if (!isThreshold && flat.filter((i) => i.type !== "display").length < 6) {
     warn("items", "문항이 6개 미만이면 결과가 우연에 좌우돼요.");
   }
   if (flat.length > 40) warn("items", "40개를 넘으면 아이가 끝까지 못 해요.");
@@ -297,6 +342,7 @@ export function validateImport(payload: unknown): Report {
   const templated = JSON.stringify(types);
   for (const it of flat) {
     if (it.type !== "string" && it.type !== "date") continue;
+    if (it.editableAfterFinish) continue; // 결과 화면이 직접 쓴다 (러닝 기록의 대회 이름)
     if (!templated.includes(`{{answer.${it.linkId}}}`)) {
       warn(`items(${it.linkId})`, "자유 입력인데 결과 문장에서 한 번도 쓰이지 않아요.");
     }
@@ -395,6 +441,8 @@ export function validateImport(payload: unknown): Report {
     }
   }
 
+  if (res.strategy === "threshold") validateCutoffs(res, flat, types, err);
+
   validateResultTypes(types, res, err, warn);
 
   /**
@@ -468,8 +516,9 @@ export function validateImport(payload: unknown): Report {
      * (2026-09-04 english-name 이 배열 순서로 결정되고 있던 것을 이 게이트가
      *  없어서 놓쳤다)
      */
-    const even = types.length ? 100 / types.length : 0;
-    for (const d of distribution) {
+    // threshold 는 무작위 기록의 분포가 의미 없다 — 실제 기록 분포를 따른다. 빈틈만 본다
+    const even = types.length && !isThreshold ? 100 / types.length : 0;
+    for (const d of isThreshold ? distribution.filter((x) => x.code === "(결과 없음)") : distribution) {
       if (d.code === "(결과 없음)") {
         err("resolver", `무작위 응답 ${d.pct}% 가 어떤 결과에도 걸리지 않아요.`);
       } else if (d.pct > 40) {
@@ -481,7 +530,7 @@ export function validateImport(payload: unknown): Report {
         );
       }
     }
-    for (const t of types) {
+    for (const t of isThreshold ? [] : types) {
       const found = distribution.find((d) => d.code === t.code);
       if (!found) warn("distribution", `"${t.code}" 는 한 번도 나오지 않았어요 — 도달 불가일 수 있어요.`);
       else if (found.pct < 2) warn("distribution", `"${t.code}" 가 ${found.pct}% 로 거의 안 나와요.`);
@@ -592,4 +641,57 @@ function validateResultTypes(
     }
   }
   void res;
+}
+
+/**
+ * threshold — 경계표가 (성별 × 거리) 모든 칸에 있는지, 위에서 아래로 늘어나는지,
+ * 마지막이 열려 있는지. 빈 칸이 있으면 그 조합은 결과가 없는 응답이 된다.
+ * → my-obsidian-vault / 50-Plans/J 러닝 기록 급수.md
+ */
+function validateCutoffs(
+  res: Resolver,
+  flat: Item[],
+  types: ResultTypeInput[],
+  err: (p: string, m: string) => void,
+) {
+  const c = res.cutoffs;
+  if (!c) {
+    err("resolver.cutoffs", "threshold 인데 경계표가 없어요.");
+    return;
+  }
+  const g = flat.find((i) => i.linkId === c.gender);
+  const d = flat.find((i) => i.linkId === c.distance);
+  const t = flat.find((i) => i.linkId === c.time);
+  if (!g || g.type !== "choice") err("resolver.cutoffs.gender", "성별 choice 문항을 찾을 수 없어요.");
+  if (!d || d.type !== "choice") err("resolver.cutoffs.distance", "거리 choice 문항을 찾을 수 없어요.");
+  if (!t || t.type !== "duration") err("resolver.cutoffs.time", "duration 문항을 찾을 수 없어요.");
+  if (!g || !d) return;
+  const codes = new Set(types.map((x) => x.code));
+  for (const go of g.options ?? []) {
+    for (const dop of d.options ?? []) {
+      const key = `${go.oid}:${dop.oid}`;
+      const bands = c.tables?.[key];
+      if (!bands?.length) {
+        err(`resolver.cutoffs.tables`, `"${key}" 칸이 비었어요.`);
+        continue;
+      }
+      let prev = -Infinity;
+      for (const [i, b] of bands.entries()) {
+        if (!codes.has(b.code)) err(`resolver.cutoffs.tables.${key}[${i}]`, `"${b.code}" 는 없는 결과 타입이에요.`);
+        if (b.upTo === undefined) {
+          if (i !== bands.length - 1) err(`resolver.cutoffs.tables.${key}[${i}]`, "열린 구간은 맨 끝에 둬요.");
+        } else {
+          if (b.upTo <= prev) err(`resolver.cutoffs.tables.${key}[${i}]`, "앞 구간보다 빠르거나 같아요.");
+          prev = b.upTo;
+        }
+      }
+      if (bands[bands.length - 1].upTo !== undefined) {
+        err(`resolver.cutoffs.tables.${key}`, "마지막 구간이 열려 있지 않아 느린 기록이 결과를 못 받아요.");
+      }
+      const floor = c.floor?.[key];
+      if (typeof floor === "number" && typeof bands[0].upTo === "number" && bands[0].upTo < floor) {
+        err(`resolver.cutoffs.tables.${key}`, "첫 구간이 세계기록보다 빨라 아무도 받을 수 없어요.");
+      }
+    }
+  }
 }

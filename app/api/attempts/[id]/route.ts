@@ -5,8 +5,10 @@ import { badRequest, forbidden, getViewer, notFound, serverError } from "@/lib/a
 import { getQuizModel } from "@/models/Quiz";
 import { getResultTypeModel } from "@/models/ResultType";
 import { getAttemptModel, type AttemptDoc } from "@/models/Attempt";
-import { ENGINE_VERSION, flattenItems, score, type Answer } from "@/lib/scoring";
-import type { Item } from "@/lib/quizTypes";
+import { ENGINE_VERSION, flattenItems, score, scoreRecord, type Answer } from "@/lib/scoring";
+import type { Item, Resolver } from "@/lib/quizTypes";
+import { formatClock, tooFast } from "@/lib/record";
+import { getUserModel } from "@/models/User";
 import { publicItem } from "@/lib/quizPublic";
 import { signClaim } from "@/lib/claimToken";
 
@@ -26,6 +28,31 @@ async function own(req: Request, attempt: AttemptDoc, guestKey?: string | null) 
     return !!viewer && viewer.userId === attempt.owner.userId;
   }
   return !!guestKey && guestKey === attempt.owner.guestKey;
+}
+
+/**
+ * 지금까지의 답으로 미리 낸 결과 — threshold 질문지만.
+ * 화면은 이걸로 `enableWhen.resultIn` 문항(신문이 나온 사람의 대회 이름)을 보일지 정한다.
+ * 결과를 알려 주려는 게 아니라 **다음 문항을 고르려는** 값이다.
+ */
+function previewCode(quiz: { items?: unknown; resolver?: unknown }, answers: Answer[]) {
+  const resolver = quiz.resolver as Resolver | undefined;
+  if (resolver?.strategy !== "threshold") return null;
+  return (
+    scoreRecord({
+      outcomes: [],
+      items: (quiz.items ?? []) as Item[],
+      resolver,
+      resultTypes: [],
+      answers,
+    })?.code ?? null
+  );
+}
+
+/** 자유 입력 한 줄 — 제어 문자를 빼고 길이를 자른다 */
+function cleanLine(v: unknown, max: number) {
+  if (typeof v !== "string") return "";
+  return v.replace(/[\u0000-\u001f\u007f]/g, "").replace(/\s+/g, " ").trim().slice(0, max);
 }
 
 function asObjectId(id: string) {
@@ -67,6 +94,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
         emoji: quiz.cover?.emoji ?? null,
         /** 브랜드·나라 이름을 결과로 쓰는 질문지에 붙는 한 줄 */
         disclaimer: quiz.disclaimer ?? null,
+        experience: quiz.experience ?? null,
       },
       answers: (attempt.answers ?? []).map((a) => ({
         linkId: a.linkId,
@@ -108,8 +136,16 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
             .lean()
         : [];
 
+      /** 러닝 기록 — 자격증의 「러너」 칸. 회원이면 닉네임 */
+      if (quiz.experience === "running" && attempt.owner.kind === "user" && attempt.owner.userId) {
+        const u = await getUserModel().findById(attempt.owner.userId).select({ nickname: 1 }).lean();
+        body.ownerName = (u as { nickname?: string | null } | null)?.nickname ?? null;
+      }
+
       body.result = {
         code: attempt.result?.code ?? null,
+        detail: attempt.result?.detail ?? null,
+        completedAt: attempt.completedAt ?? null,
         type: mine
           ? {
               code: mine.code,
@@ -150,6 +186,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       };
     } else {
       body.items = items.map(publicItem);
+      body.preview = previewCode(quiz, (attempt.answers ?? []) as Answer[]);
     }
 
     return NextResponse.json(body);
@@ -173,6 +210,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       guestKey?: string;
       answer?: { linkId?: string; oids?: string[]; value?: unknown };
       finish?: boolean;
+      /** 저장하지 않는 답(키·몸무게) — 채점에만 쓴다 */
+      transient?: Record<string, unknown>;
     };
     try {
       body = await req.json();
@@ -187,11 +226,59 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     if (!(await own(req, attempt as AttemptDoc, body.guestKey))) {
       return forbidden("이 기록은 고칠 수 없어요.");
     }
-    if (attempt.status === "completed") return badRequest("이미 끝난 기록이에요.");
+    const quizDoc = await getQuizModel().findById(attempt.quizId).lean();
+    if (!quizDoc) return notFound("질문지가 사라졌어요.");
+    const allItems = flattenItems((quizDoc.items ?? []) as Item[]);
+    const target = body.answer?.linkId ? allItems.find((i) => i.linkId === body.answer!.linkId) : null;
+
+    if (attempt.status === "completed") {
+      /**
+       * 끝난 기록에서 고칠 수 있는 건 `editableAfterFinish` 문항뿐이다 —
+       * 점수에 쓰이지 않는 자유 입력(러닝 기록의 대회 이름). 공유하기 전에 바꾼다.
+       */
+      if (!target?.editableAfterFinish || body.finish) return badRequest("이미 끝난 기록이에요.");
+      const text = cleanLine(body.answer?.value, target.maxLength ?? 40);
+      const has = (attempt.answers ?? []).some((a) => a.linkId === target.linkId);
+      if (has) {
+        await Attempt.updateOne(
+          { _id: oid, "answers.linkId": target.linkId },
+          {
+            $set: { "answers.$.value": text || null, "answers.$.answeredAt": new Date() },
+            $inc: { "answers.$.changedCount": 1 },
+          },
+        );
+      } else {
+        await Attempt.updateOne(
+          { _id: oid },
+          {
+            $push: {
+              answers: { linkId: target.linkId, oids: [], value: text || null, answeredAt: new Date(), changedCount: 0 },
+            },
+          },
+        );
+      }
+      return NextResponse.json({ ok: true, saved: target.linkId, value: text || null });
+    }
 
     // ── 답 하나 저장 ──
     if (body.answer?.linkId) {
-      const { linkId, oids, value } = body.answer;
+      const { linkId, oids } = body.answer;
+      let value = body.answer.value;
+      if (!target) return badRequest("없는 질문이에요.");
+      if (target.transient) return badRequest("이 답은 저장하지 않아요.");
+      if (target.type === "string") value = cleanLine(value, target.maxLength ?? 200) || null;
+      if (target.type === "duration") {
+        const sec = Math.round(Number(value));
+        if (!Number.isFinite(sec) || sec <= 0 || sec > 24 * 3600) return badRequest("기록을 다시 봐 주세요.");
+        value = sec;
+        // 세계기록보다 빠르면 받지 않는다 — 거리·성별을 먼저 골랐을 때만 알 수 있다
+        const c = (quizDoc.resolver as Resolver | undefined)?.cutoffs;
+        const g = (attempt.answers ?? []).find((a) => a.linkId === c?.gender)?.oids?.[0];
+        const d = (attempt.answers ?? []).find((a) => a.linkId === c?.distance)?.oids?.[0];
+        if (c && g && d && tooFast(c, g, d, sec)) {
+          return badRequest(`${formatClock(sec)} 은 세계기록보다 빨라요. 한 번만 다시 볼까요? 🙂`);
+        }
+      }
       const prev = (attempt.answers ?? []).find((a) => a.linkId === linkId);
       if (prev) {
         // 답을 고치는 것은 정상이다. 마지막 값만 남기되 횟수를 센다
@@ -222,18 +309,25 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
           },
         );
       }
-      if (!body.finish) return NextResponse.json({ ok: true, saved: linkId });
+      if (!body.finish) {
+        const after = await Attempt.findById(oid).select({ answers: 1 }).lean();
+        return NextResponse.json({
+          ok: true,
+          saved: linkId,
+          preview: previewCode(quizDoc, (after?.answers ?? []) as Answer[]),
+        });
+      }
     }
 
     if (!body.finish) return badRequest("저장할 답이 없어요.");
 
     // ── 완료: 채점 ──
     const fresh = await Attempt.findById(oid).lean();
-    const quiz = await getQuizModel().findById(attempt.quizId).lean();
-    if (!fresh || !quiz) return notFound("질문지가 사라졌어요.");
+    const quiz = quizDoc;
+    if (!fresh) return notFound("없는 기록이에요.");
 
     const items = flattenItems((quiz.items ?? []) as Item[]);
-    const required = items.filter((i) => (i.required ?? true) && i.type !== "display");
+    const required = items.filter((i) => (i.required ?? true) && i.type !== "display" && !i.transient);
     const answered = new Set((fresh.answers ?? []).map((a) => a.linkId));
     const missing = required.filter((i) => !answered.has(i.linkId));
     if (missing.length) {
@@ -257,6 +351,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
         oids: a.oids ?? [],
         value: a.value,
       })),
+      transient: transientAnswers(items, body.transient),
     });
 
     if (!outcome.code) {
@@ -280,6 +375,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
             ranked: outcome.ranked,
             outcomes: outcome.outcomes,
             confidence: outcome.confidence,
+            detail: outcome.detail ?? null,
             engineVersion: ENGINE_VERSION,
             computedAt: now,
             recomputedAt: null,
@@ -288,8 +384,28 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       },
     );
 
-    return NextResponse.json({ ok: true, finished: true, code: outcome.code });
+    return NextResponse.json({ ok: true, finished: true, code: outcome.code, detail: outcome.detail ?? null });
   } catch (err) {
     return serverError(err);
   }
+}
+
+/**
+ * 저장하지 않는 답 — `transient` 문항만, 칸마다 min·max 안의 숫자만 남긴다.
+ * 범위 밖이면 그 칸은 버린다(보정 없이 계산된다). 값은 채점에만 쓰고 어디에도 남기지 않는다.
+ */
+function transientAnswers(items: Item[], raw: Record<string, unknown> | undefined) {
+  const out: Record<string, Record<string, number>> = {};
+  for (const it of items) {
+    if (!it.transient || !it.fields) continue;
+    const v = raw?.[it.linkId];
+    if (!v || typeof v !== "object") continue;
+    const clean: Record<string, number> = {};
+    for (const f of it.fields) {
+      const n = Number((v as Record<string, unknown>)[f.key]);
+      if (Number.isFinite(n) && n >= f.min && n <= f.max) clean[f.key] = n;
+    }
+    if (Object.keys(clean).length) out[it.linkId] = clean;
+  }
+  return out;
 }

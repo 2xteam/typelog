@@ -20,11 +20,20 @@ export function publicItem(item: Item) {
     repeats: item.repeats ?? false,
     scale: item.scale ?? null,
     enableWhen: item.enableWhen ?? null,
+    note: item.note ?? null,
+    /** duration — 짝 거리 문항. 거리 km 는 선택지 value 로 온다 (점수 아님) */
+    distanceFrom: item.distanceFrom ?? null,
+    fields: item.fields ?? null,
+    transient: item.transient ?? false,
+    maxLength: item.maxLength ?? null,
+    editableAfterFinish: item.editableAfterFinish ?? false,
+    afterFinishOnly: item.afterFinishOnly ?? false,
     options: (item.options ?? []).map((o) => ({
       oid: o.oid,
       text: o.text,
       emoji: o.emoji ?? null,
       imageUrl: o.imageUrl ?? null,
+      value: typeof o.value === "number" ? o.value : null,
     })),
   };
 }

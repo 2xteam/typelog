@@ -89,7 +89,16 @@ export async function POST(req: Request) {
     // ── content: 문장만 갈아 끼운다. code·vector 는 바꿀 수 없다 ──
     if (body.mode === "content") {
       const quizId = existing!._id;
-      for (const t of body.resultTypes) {
+      // 질문지 글자(제목 · 한 줄 소개 · 안내) — 채점과 무관해서 공개 뒤에도 고친다
+      const qm = body.quizMeta;
+      if (qm) {
+        const set: Record<string, unknown> = {};
+        if (typeof qm.title === "string" && qm.title.trim()) set.title = qm.title.trim();
+        if (typeof qm.tagline === "string" && qm.tagline.trim()) set.tagline = qm.tagline.trim();
+        if (qm.disclaimer !== undefined) set.disclaimer = qm.disclaimer ?? null;
+        if (Object.keys(set).length) await Quiz.updateOne({ _id: quizId }, { $set: set });
+      }
+      for (const t of body.resultTypes ?? []) {
         const prev = await ResultType.findOne({ quizId, code: t.code }).lean();
         if (!prev) return notFound(`"${t.code}" 는 없는 결과 타입이에요.`);
         if (t.vector && JSON.stringify(t.vector) !== JSON.stringify(prev.vector ?? null)) {
@@ -137,6 +146,7 @@ export async function POST(req: Request) {
       ageRange: q.ageRange ?? { min: null, max: null },
       cover: { emoji: q.cover?.emoji ?? null, imageUrl: q.cover?.imageUrl ?? null },
       disclaimer: q.disclaimer ?? null,
+      experience: q.experience ?? null,
       status: "draft" as const,
       schedule: {
         startAt: sc.startAt ? new Date(sc.startAt) : null,

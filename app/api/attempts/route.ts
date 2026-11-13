@@ -38,7 +38,12 @@ export async function POST(req: Request) {
 
     await connectDB();
     const quiz = await getQuizModel().findOne({ slug }).lean();
-    if (!quiz || quiz.status === "draft") return notFound("아직 없는 질문지예요.");
+    /**
+     * 로컬 개발 서버에서만 draft 를 해 볼 수 있다 — 공개 전에 화면을 다듬기 위해서다.
+     * 배포 환경(NODE_ENV=production)에서는 지금처럼 막힌다.
+     */
+    const devPreview = process.env.NODE_ENV === "development";
+    if (!quiz || (quiz.status === "draft" && !devPreview)) return notFound("아직 없는 질문지예요.");
     if (quiz.status === "closed") return forbidden("지금은 할 수 없어요.");
 
     const check = canStart(quiz.schedule);
@@ -76,7 +81,7 @@ export async function POST(req: Request) {
         "owner.guestKey": guestKey,
         quizId: quiz._id,
       });
-      if (already > 0) {
+      if (already > 0 && !devPreview) {
         return conflict("가입하지 않으면 한 번만 해볼 수 있어요. 가입하면 다시 할 수 있어요.");
       }
       owner = { kind: "guest", userId: null, guestKey };

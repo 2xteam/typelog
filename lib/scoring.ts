@@ -6,6 +6,7 @@ import type {
   ResultTypeInput,
   Weights,
 } from "@/lib/quizTypes";
+import { resolveRecord, type RecordDetail } from "@/lib/record";
 
 /**
  * 채점 엔진.
@@ -20,7 +21,8 @@ import type {
  * → my-obsidian-vault / 10-Projects/TypeLog.md
  */
 
-export const ENGINE_VERSION = 1;
+/** 2 — threshold 전략 · duration · measure (러닝 기록, 2026-11-14) */
+export const ENGINE_VERSION = 2;
 
 export type Answer = {
   linkId: string;
@@ -41,6 +43,8 @@ export type ScoreResult = {
   ranked: { code: string; score: number }[];
   outcomes: OutcomeScore[];
   confidence: number | null;
+  /** threshold — 기록 · 페이스 · 상위 % · 체급 보정 */
+  detail?: RecordDetail | null;
 };
 
 /** 문항 트리를 평탄하게 — group 은 담기만 하고 점수를 내지 않는다 */
@@ -252,9 +256,42 @@ export type ScoreInput = {
   resolver: Resolver;
   resultTypes: Pick<ResultTypeInput, "code" | "vector">[];
   answers: Answer[];
+  /** 저장하지 않는 답(키·몸무게) — linkId → 값. 채점에만 쓴다 */
+  transient?: Record<string, unknown> | null;
 };
 
+/** threshold — 답에서 성별 · 거리(km) · 시간을 읽어 기록 결과를 낸다 */
+export function scoreRecord(input: ScoreInput) {
+  const c = input.resolver.cutoffs;
+  if (!c) return null;
+  const flat = flattenItems(input.items);
+  const pick = (linkId: string) => input.answers.find((a) => a.linkId === linkId);
+  const gender = pick(c.gender)?.oids?.[0] ?? null;
+  const distance = pick(c.distance)?.oids?.[0] ?? null;
+  const distItem = flat.find((i) => i.linkId === c.distance);
+  const km = distItem?.options?.find((o) => o.oid === distance)?.value ?? null;
+  const t = Number(pick(c.time)?.value);
+  const body = c.adjust ? (input.transient?.[c.adjust.measure] as Record<string, number> | undefined) : undefined;
+  return resolveRecord(c, {
+    gender,
+    distance,
+    km,
+    seconds: Number.isFinite(t) ? t : null,
+    body: body ?? null,
+  });
+}
+
 export function score(input: ScoreInput): ScoreResult {
+  if (input.resolver?.strategy === "threshold") {
+    const rec = scoreRecord(input);
+    return {
+      code: rec?.code ?? null,
+      ranked: rec ? [{ code: rec.code, score: 100 }] : [],
+      outcomes: [],
+      confidence: null,
+      detail: rec?.detail ?? null,
+    };
+  }
   const flat = flattenItems(input.items);
   const byLink = new Map(flat.map((i) => [i.linkId, i]));
   const answered = new Map(input.answers.map((a) => [a.linkId, a]));
@@ -409,6 +446,9 @@ export function randomAnswers(items: Item[], rnd: () => number): Answer[] {
     } else if (item.type === "integer" && item.scale) {
       const { min, max } = item.scale;
       out.push({ linkId: item.linkId, value: min + Math.floor(rnd() * (max - min + 1)) });
+    } else if (item.type === "duration") {
+      // 5분 ~ 8시간 사이 아무 기록 — 분포 점검용
+      out.push({ linkId: item.linkId, value: 300 + Math.floor(rnd() * 28500) });
     } else if (item.type === "ranking" && item.options) {
       const shuffled = [...item.options].sort(() => rnd() - 0.5);
       out.push({ linkId: item.linkId, oids: shuffled.map((o) => o.oid) });

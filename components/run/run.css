@@ -1,0 +1,147 @@
+/*
+  러닝 기록 응시 화면 — 「선택은 간단하게, 보는 건 화려하게」.
+  한 화면에 하나, 큰 타일, 엄지 하나로 끝나게. 색은 인스타그램 그라디언트.
+  → my-obsidian-vault / 50-Plans/J 러닝 기록 급수.md
+*/
+.run-play {
+  --ig: linear-gradient(100deg, #4f5bd5 0%, #962fbf 30%, #d62976 66%, #fa7e1e 100%);
+  --ig-soft: radial-gradient(120% 80% at 0% 0%, rgba(79, 91, 213, 0.35), transparent 60%),
+    radial-gradient(120% 80% at 100% 100%, rgba(250, 126, 30, 0.28), transparent 60%),
+    radial-gradient(80% 60% at 70% 20%, rgba(214, 41, 118, 0.3), transparent 60%);
+  position: relative;
+  max-width: 560px;
+  margin: 12px auto 40px;
+  min-height: min(82vh, 820px);
+  padding: 18px 20px 28px;
+  border-radius: 28px;
+  background: var(--ig-soft), #120f1c;
+  color: #fff;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  font-family: Pretendard, -apple-system, sans-serif;
+}
+.run-top { display: grid; grid-template-columns: 40px 1fr; align-items: center; gap: 10px; }
+.run-back {
+  width: 40px; height: 40px; border-radius: 50%; border: 0; font-size: 20px;
+  background: rgba(255, 255, 255, 0.1); color: #fff; cursor: pointer;
+}
+.run-back:disabled { opacity: 0.3; cursor: default; }
+.run-dots { display: flex; gap: 6px; }
+.run-dots i { flex: 1; height: 5px; border-radius: 3px; background: rgba(255, 255, 255, 0.16); }
+.run-dots i[data-on="true"] { background: var(--ig); }
+.run-title { grid-column: 1 / -1; font-size: 13px; color: rgba(255, 255, 255, 0.6); font-weight: 600; }
+
+.run-stage {
+  flex: 1; display: flex; flex-direction: column; justify-content: flex-end;
+  padding-top: 26px; animation: run-in 0.35s ease-out;
+}
+@keyframes run-in { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+
+.run-q { margin: 0 0 6px; font-size: 30px; line-height: 1.25; font-weight: 800; letter-spacing: -0.03em; }
+.run-sub { margin: 0 0 18px; font-size: 15px; line-height: 1.55; color: rgba(255, 255, 255, 0.72); }
+.run-fine { margin: 10px 0 0; font-size: 12.5px; color: rgba(255, 255, 255, 0.5); text-align: center; }
+.run-msg { margin: 14px 0 0; padding: 10px 14px; border-radius: 12px; background: rgba(224, 36, 36, 0.18); color: #ffb4b4; font-size: 14px; }
+
+/* ── 큰 타일 ── */
+.run-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+.run-tile {
+  position: relative; min-height: 132px; border-radius: 22px; border: 0; cursor: pointer;
+  background: rgba(255, 255, 255, 0.08); color: #fff;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.12);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+.run-tiles--two .run-tile { min-height: 300px; }
+.run-tile:hover:not(:disabled) { transform: translateY(-2px); background: rgba(255, 255, 255, 0.12); }
+.run-tile:active:not(:disabled) { transform: scale(0.97); }
+.run-tile[data-chosen="true"] { background: var(--ig); box-shadow: 0 12px 30px rgba(214, 41, 118, 0.35); }
+.run-tile-emoji { font-size: 54px; line-height: 1; }
+.run-tiles--two .run-tile-emoji { font-size: 84px; }
+.run-tile-text { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
+.run-tile-sub { font-size: 13px; color: rgba(255, 255, 255, 0.7); font-weight: 600; }
+
+/* ── 기록 ── */
+.run-toggle { display: grid; grid-template-columns: 1fr 1fr; padding: 4px; border-radius: 999px; background: rgba(255, 255, 255, 0.08); }
+.run-toggle button { border: 0; border-radius: 999px; padding: 11px 0; font-size: 15px; font-weight: 700; background: transparent; color: rgba(255, 255, 255, 0.65); cursor: pointer; }
+.run-toggle button[aria-selected="true"] { background: #fff; color: #120f1c; }
+.run-clock { margin: 26px 0 6px; display: flex; justify-content: center; align-items: flex-start; gap: 6px; }
+.run-clock b { font-size: 46px; line-height: 70px; font-weight: 300; color: rgba(255, 255, 255, 0.5); }
+.run-num { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.run-num input {
+  width: 92px; height: 82px; border-radius: 18px; border: 0; text-align: center;
+  font: 800 52px/1 "IBM Plex Mono", ui-monospace, monospace; letter-spacing: -0.04em;
+  background: rgba(255, 255, 255, 0.1); color: #fff; caret-color: #feda75;
+}
+.run-num input:focus { outline: 2px solid #feda75; outline-offset: 2px; }
+.run-num input::placeholder { color: rgba(255, 255, 255, 0.22); }
+.run-num span { font-size: 12.5px; color: rgba(255, 255, 255, 0.55); font-weight: 600; }
+.run-calc { margin: 14px 0 0; text-align: center; font-size: 17px; font-weight: 700; color: #feda75; min-height: 1.4em; }
+
+/* ── 대회 이름 · 키 몸무게 ── */
+.run-text {
+  width: 100%; height: 64px; border-radius: 18px; border: 0; padding: 0 18px;
+  font-size: 22px; font-weight: 700; background: rgba(255, 255, 255, 0.1); color: #fff;
+}
+.run-text:focus { outline: 2px solid #feda75; }
+.run-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.run-chip { border: 0; border-radius: 999px; padding: 8px 14px; font-size: 14px; font-weight: 600; background: rgba(255, 255, 255, 0.1); color: #fff; cursor: pointer; }
+.run-measure { display: grid; gap: 12px; }
+.run-field { display: grid; grid-template-columns: 70px 1fr 36px; align-items: center; gap: 10px; padding: 8px 16px; border-radius: 18px; background: rgba(255, 255, 255, 0.08); }
+.run-field span { font-size: 16px; font-weight: 700; }
+.run-field input { height: 54px; border: 0; background: transparent; color: #fff; font: 800 32px "IBM Plex Mono", monospace; text-align: right; width: 100%; }
+.run-field input:focus { outline: none; }
+.run-field em { font-style: normal; color: rgba(255, 255, 255, 0.6); font-weight: 600; }
+
+/* ── 버튼 ── */
+.run-actions { display: grid; gap: 10px; margin-top: 22px; }
+.run-btn {
+  height: 60px; border-radius: 18px; border: 0; cursor: pointer; font-size: 18px; font-weight: 800;
+  background: rgba(255, 255, 255, 0.12); color: #fff;
+}
+.run-btn--main { background: var(--ig); box-shadow: 0 12px 30px rgba(214, 41, 118, 0.3); }
+.run-btn:disabled { opacity: 0.4; cursor: default; box-shadow: none; }
+.run-link { border: 0; background: none; color: rgba(255, 255, 255, 0.6); font-size: 14.5px; font-weight: 600; text-decoration: underline; cursor: pointer; padding: 6px; }
+
+/* ── 사진 ── */
+.run-photo-hero { display: grid; place-items: center; margin: 4px 0 14px; color: #feda75; }
+.run-photo-hero svg { width: 120px; height: 140px; }
+.run-photo-fit { display: flex; flex-direction: column; align-items: center; }
+.run-fit-stage {
+  position: relative; overflow: hidden; border-radius: 18px; background: #222; touch-action: none; cursor: grab;
+  max-width: 100%;
+}
+.run-fit-stage img { position: absolute; max-width: none; user-select: none; pointer-events: none; }
+.run-fit-guide { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.run-zoom { width: 300px; max-width: 100%; margin-top: 14px; accent-color: #d62976; }
+.run-photo-fit .run-actions { width: 100%; }
+
+/* ── 생성 중 ── */
+.run-gen { position: relative; flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; cursor: pointer; }
+.run-gen-step { margin: 0; font-size: 16px; font-weight: 700; color: rgba(255, 255, 255, 0.75); animation: run-blink 1.1s ease-in-out infinite; }
+@keyframes run-blink { 50% { opacity: 0.45; } }
+.run-gen-clock { margin: 10px 0 20px; font: 800 64px/1 "IBM Plex Mono", monospace; letter-spacing: -0.04em;
+  background: var(--ig); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.run-gen-curve { width: 100%; height: 120px; }
+.run-gen-mark { stroke: #feda75; stroke-width: 0.6; stroke-dasharray: 1.5 1.5; }
+.run-gen-dot {
+  position: absolute; top: calc(50% + 20px); width: 18px; height: 18px; margin-left: -9px; border-radius: 50%;
+  background: #feda75; box-shadow: 0 0 0 6px rgba(254, 218, 117, 0.25), 0 0 24px #feda75;
+  animation: run-dot 1.1s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes run-dot { from { opacity: 0; transform: scale(0.3); } to { opacity: 1; transform: scale(1); } }
+.run-gen-pct { margin: 18px 0 0; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; min-height: 1.3em; animation: run-in 0.4s ease-out; }
+.run-gen-flash { position: absolute; inset: -40px; background: var(--ig); opacity: 0; pointer-events: none; }
+.run-gen[data-phase="2"] .run-gen-flash { animation: run-flash 0.55s ease-out both; }
+@keyframes run-flash { 0% { opacity: 0; transform: translateX(-60%); } 50% { opacity: 0.95; transform: none; } 100% { opacity: 1; background: #fff; } }
+
+@media (max-width: 420px) {
+  .run-play { margin: 0 -8px 24px; border-radius: 22px; padding: 14px 14px 22px; }
+  .run-q { font-size: 26px; }
+  .run-num input { width: 78px; height: 74px; font-size: 44px; }
+  .run-clock b { font-size: 38px; line-height: 62px; }
+  .run-tiles--two .run-tile { min-height: 240px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .run-stage, .run-gen-dot, .run-gen-pct, .run-gen-step { animation: none; }
+}

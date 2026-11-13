@@ -3,7 +3,7 @@
   "mode": "upsert",
   "quiz": {
     "slug": "kids-16type",
-    "title": "나는 어떤 성향일까?",
+    "title": "나의 MBTI는?",
     "tagline": "열두 가지 질문으로 만나는 16가지 성향",
     "category": "personality",
     "ageRange": { "min": 7, "max": 13 },

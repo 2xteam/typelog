@@ -1,0 +1,113 @@
+/*
+ * TypeLog 전용 모양 — 「재밌는 타입 설문」 (2026-11-14 사용자 결정).
+ *
+ * 색은 여기서 정하지 않는다. palette.json 의 apps.typelog 가 원본이고
+ * (myjane 에서 `npm run palette -- --write`), 여기는 모양과 그라디언트 조합만 둔다.
+ *
+ *   인스타그램 그라디언트 · 굵고 경쾌한 고딕 · 둥근 카드 · 고르는 재미(선택지 칩)
+ *   자격증 모양(띠 · 도장)은 러닝 기록 결과에만 쓴다 — 앱 전체의 얼굴이 아니다.
+ *
+ * → my-obsidian-vault / 10-Projects/TypeLog.md
+ */
+
+/* 시트 · 아이브로우 · 헤드라인 · 주 버튼 · 워드마크의 공통 모양은 app/elements.css(생성 파일,
+   원본 myjane/design/elements.css 5번)로 옮겼다 — 형제 사이트가 함께 쓴다. 여기는 TypeLog 에만 있는 것 */
+
+.btn:active:not(:disabled) { transform: scale(0.97); }
+.sheet--dark .pill { background: rgba(255, 255, 255, 0.12); color: var(--gold-on-dark); }
+
+/* 질문지 카드 — 이모지가 주인공. 그라디언트 테두리 사각 안에 */
+.quiz-card {
+  background: var(--bg-card);
+  border: 0;
+  border-radius: 22px;
+  box-shadow: 0 10px 26px rgba(var(--shadow-rgb), 0.08), inset 0 0 0 1px var(--border-subtle);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.quiz-card:hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(var(--shadow-rgb), 0.12), inset 0 0 0 1px var(--border); }
+.quiz-card-emoji {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  font-size: 30px;
+  background:
+    linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+    var(--ig) border-box;
+  border: 2.5px solid transparent;
+  transform: rotate(-4deg);
+}
+.quiz-card:nth-child(even) .quiz-card-emoji { transform: rotate(4deg); }
+.quiz-card-title { font-weight: 900; letter-spacing: -0.02em; }
+
+/* 응시 — 진행 띠 · 선택지 */
+.play-progress-fill { background: var(--ig); }
+.play-option {
+  border: 1.5px solid var(--border-on-dark);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.07);
+  font-weight: 700;
+}
+.play-option[data-chosen="true"] {
+  background: var(--ig);
+  border-color: transparent;
+  box-shadow: 0 10px 24px var(--btn-shadow);
+}
+
+/* 상단 메뉴 */
+.topnav { backdrop-filter: saturate(1.4) blur(10px); }
+
+/* ── 히어로의 선택지 칩 — 「고르는 재미」 를 보여 주는 장식 ── */
+.quiz-chips {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 22px;
+}
+.quiz-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 0 0 1px var(--border-on-dark);
+  color: var(--on-dark);
+  font-size: 14px;
+  font-weight: 700;
+  animation: quiz-float 4s ease-in-out infinite;
+}
+.quiz-chip b {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.16);
+}
+.quiz-chip[data-on="true"] {
+  background: var(--ig);
+  box-shadow: 0 10px 24px var(--btn-shadow);
+}
+.quiz-chip:nth-child(2) { animation-delay: -1s; }
+.quiz-chip:nth-child(3) { animation-delay: -2s; }
+.quiz-chip:nth-child(4) { animation-delay: -3s; }
+@keyframes quiz-float { 50% { transform: translateY(-4px); } }
+@media (prefers-reduced-motion: reduce) { .quiz-chip { animation: none; } }
+
+/* 러닝 기록 결과의 글꼴 변수의 기본값 — 실제 값은 next/font 가 .rr 에 붙인다(components/run/fonts.ts). 없으면 이 대체 글꼴 */
+:root {
+  --rf-sans: "Noto Sans KR", sans-serif;
+  --rf-serif: "Noto Serif KR", serif;
+  --rf-old: "Old Standard TT", serif;
+  --rf-blackletter: "UnifrakturMaguntia", serif;
+  --rf-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --rf-blackhan: "Black Han Sans", sans-serif;
+  --rf-pen: "Nanum Pen Script", cursive;
+  --rf-seal: "Nanum Myeongjo", serif;
+}
+
+

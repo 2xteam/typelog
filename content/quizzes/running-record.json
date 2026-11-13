@@ -1,0 +1,865 @@
+{
+  "$schema": "typelog/quiz/v1",
+  "mode": "upsert",
+  "_note": "러닝 기록 — 기록으로 과속딱지 · 신문 · 자격증을 정한다. 기준은 my-obsidian-vault / 50-Plans/J 러닝 기록 급수.md (2026-11-14)",
+  "quiz": {
+    "slug": "running-record",
+    "title": "나의 러닝 기록은 어떤 타입일까?",
+    "tagline": "내 러닝 기록은 ****입니다 🏃‍♂️💨",
+    "category": "sport",
+    "ageRange": {
+      "min": 19,
+      "max": null
+    },
+    "cover": {
+      "emoji": "⏱️",
+      "imageUrl": null
+    },
+    "order": 205,
+    "shuffle": false,
+    "experience": "running",
+    "disclaimer": null
+  },
+  "outcomes": [],
+  "items": [
+    {
+      "linkId": "gender",
+      "type": "choice",
+      "text": "성별을 골라 주세요",
+      "required": true,
+      "options": [
+        {
+          "oid": "m",
+          "text": "남자",
+          "emoji": "🙋‍♂️"
+        },
+        {
+          "oid": "f",
+          "text": "여자",
+          "emoji": "🙋‍♀️"
+        }
+      ]
+    },
+    {
+      "linkId": "distance",
+      "type": "choice",
+      "text": "어떤 거리를 달렸어요?",
+      "required": true,
+      "options": [
+        {
+          "oid": "5k",
+          "text": "5km",
+          "value": 5
+        },
+        {
+          "oid": "10k",
+          "text": "10km",
+          "value": 10
+        },
+        {
+          "oid": "half",
+          "text": "하프",
+          "value": 21.0975
+        },
+        {
+          "oid": "full",
+          "text": "풀",
+          "value": 42.195
+        }
+      ]
+    },
+    {
+      "linkId": "time",
+      "type": "duration",
+      "text": "기록을 넣어 주세요",
+      "required": true,
+      "distanceFrom": "distance"
+    },
+    {
+      "linkId": "race",
+      "type": "string",
+      "text": "어느 대회에서 낸 기록이에요?",
+      "required": false,
+      "maxLength": 20,
+      "editableAfterFinish": true,
+      "enableWhen": {
+        "resultIn": [
+          "news-front",
+          "news-local"
+        ]
+      }
+    },
+    {
+      "linkId": "body",
+      "type": "measure",
+      "text": "키와 몸무게를 알려 주세요",
+      "required": false,
+      "transient": true,
+      "note": "자격증 급수에 + · − 를 붙이는 데만 쓰고 저장하지 않아요.",
+      "fields": [
+        {
+          "key": "heightCm",
+          "label": "키",
+          "unit": "cm",
+          "min": 120,
+          "max": 220
+        },
+        {
+          "key": "weightKg",
+          "label": "몸무게",
+          "unit": "kg",
+          "min": 30,
+          "max": 200
+        }
+      ]
+    },
+    {
+      "linkId": "runner",
+      "type": "string",
+      "text": "결과에 들어갈 이름",
+      "required": false,
+      "maxLength": 12,
+      "editableAfterFinish": true,
+      "afterFinishOnly": true,
+      "note": "응시 중에는 묻지 않는다. 결과 화면에서 공유하기 전에 넣고 바꾼다(대회 이름과 같다)."
+    }
+  ],
+  "resolver": {
+    "strategy": "threshold",
+    "cutoffs": {
+      "version": "2026-11-14",
+      "gender": "gender",
+      "distance": "distance",
+      "time": "time",
+      "tables": {
+        "m:5k": [
+          {
+            "upTo": 1100,
+            "code": "ticket-suspend"
+          },
+          {
+            "upTo": 1180,
+            "code": "ticket"
+          },
+          {
+            "upTo": 1440,
+            "code": "news-front"
+          },
+          {
+            "upTo": 1729,
+            "code": "news-local"
+          },
+          {
+            "upTo": 1870,
+            "code": "cert-1"
+          },
+          {
+            "upTo": 2010,
+            "code": "cert-2"
+          },
+          {
+            "upTo": 2300,
+            "code": "cert-3"
+          },
+          {
+            "upTo": 2590,
+            "code": "cert-4"
+          },
+          {
+            "code": "cert-5"
+          }
+        ],
+        "m:10k": [
+          {
+            "upTo": 2280,
+            "code": "ticket-suspend"
+          },
+          {
+            "upTo": 2460,
+            "code": "ticket"
+          },
+          {
+            "upTo": 3000,
+            "code": "news-front"
+          },
+          {
+            "upTo": 3599,
+            "code": "news-local"
+          },
+          {
+            "upTo": 3900,
+            "code": "cert-1"
+          },
+          {
+            "upTo": 4200,
+            "code": "cert-2"
+          },
+          {
+            "upTo": 4800,
+            "code": "cert-3"
+          },
+          {
+            "upTo": 5400,
+            "code": "cert-4"
+          },
+          {
+            "code": "cert-5"
+          }
+        ],
+        "m:half": [
+          {
+            "upTo": 5070,
+            "code": "ticket-suspend"
+          },
+          {
+            "upTo": 5430,
+            "code": "ticket"
+          },
+          {
+            "upTo": 6630,
+            "code": "news-front"
+          },
+          {
+            "upTo": 7949,
+            "code": "news-local"
+          },
+          {
+            "upTo": 8610,
+            "code": "cert-1"
+          },
+          {
+            "upTo": 9270,
+            "code": "cert-2"
+          },
+          {
+            "upTo": 10590,
+            "code": "cert-3"
+          },
+          {
+            "upTo": 11910,
+            "code": "cert-4"
+          },
+          {
+            "code": "cert-5"
+          }
+        ],
+        "m:full": [
+          {
+            "upTo": 10560,
+            "code": "ticket-suspend"
+          },
+          {
+            "upTo": 11310,
+            "code": "ticket"
+          },
+          {
+            "upTo": 13800,
+            "code": "news-front"
+          },
+          {
+            "upTo": 16559,
+            "code": "news-local"
+          },
+          {
+            "upTo": 17940,
+            "code": "cert-1"
+          },
+          {
+            "upTo": 19320,
+            "code": "cert-2"
+          },
+          {
+            "upTo": 22080,
+            "code": "cert-3"
+          },
+          {
+            "upTo": 24840,
+            "code": "cert-4"
+          },
+          {
+            "code": "cert-5"
+          }
+        ],
+        "f:5k": [
+          {
+            "upTo": 1260,
+            "code": "ticket-suspend"
+          },
+          {
+            "upTo": 1370,
+            "code": "ticket"
+          },
+          {
+            "upTo": 1640,
+            "code": "news-front"
+          },
+          {
+            "upTo": 1929,
+            "code": "news-local"
+          },
+          {
+            "upTo": 2100,
+            "code": "cert-1"
+          },
+          {
+            "upTo": 2260,
+            "code": "cert-2"
+          },
+          {
+            "upTo": 2580,
+            "code": "cert-3"
+          },
+          {
+            "upTo": 2910,
+            "code": "cert-4"
+          },
+          {
+            "code": "cert-5"
+          }
+        ],
+        "f:10k": [
+          {
+            "upTo": 2640,
+            "code": "ticket-suspend"
+          },
+          {
+            "upTo": 2850,
+            "code": "ticket"
+          },
+          {
+            "upTo": 3420,
+            "code": "news-front"
+          },
+          {
+            "upTo": 4019,
+            "code": "news-local"
+          },
+          {
+            "upTo": 4380,
+            "code": "cert-1"
+          },
+          {
+            "upTo": 4710,
+            "code": "cert-2"
+          },
+          {
+            "upTo": 5370,
+            "code": "cert-3"
+          },
+          {
+            "upTo": 6060,
+            "code": "cert-4"
+          },
+          {
+            "code": "cert-5"
+          }
+        ],
+        "f:half": [
+          {
+            "upTo": 5820,
+            "code": "ticket-suspend"
+          },
+          {
+            "upTo": 6300,
+            "code": "ticket"
+          },
+          {
+            "upTo": 7530,
+            "code": "news-front"
+          },
+          {
+            "upTo": 8879,
+            "code": "news-local"
+          },
+          {
+            "upTo": 9660,
+            "code": "cert-1"
+          },
+          {
+            "upTo": 10380,
+            "code": "cert-2"
+          },
+          {
+            "upTo": 11850,
+            "code": "cert-3"
+          },
+          {
+            "upTo": 13380,
+            "code": "cert-4"
+          },
+          {
+            "code": "cert-5"
+          }
+        ],
+        "f:full": [
+          {
+            "upTo": 12120,
+            "code": "ticket-suspend"
+          },
+          {
+            "upTo": 13140,
+            "code": "ticket"
+          },
+          {
+            "upTo": 15720,
+            "code": "news-front"
+          },
+          {
+            "upTo": 18539,
+            "code": "news-local"
+          },
+          {
+            "upTo": 20160,
+            "code": "cert-1"
+          },
+          {
+            "upTo": 21660,
+            "code": "cert-2"
+          },
+          {
+            "upTo": 24720,
+            "code": "cert-3"
+          },
+          {
+            "upTo": 27870,
+            "code": "cert-4"
+          },
+          {
+            "code": "cert-5"
+          }
+        ]
+      },
+      "floor": {
+        "m:5k": 769,
+        "m:10k": 1584,
+        "m:half": 3451,
+        "m:full": 7235,
+        "f:5k": 834,
+        "f:10k": 1726,
+        "f:half": 3772,
+        "f:full": 7796
+      },
+      "percentile": {
+        "label": "춘천마라톤 완주자 중",
+        "tables": {
+          "m:10k": [
+            [
+              2293,
+              0.5
+            ],
+            [
+              2374,
+              1
+            ],
+            [
+              2540,
+              3
+            ],
+            [
+              2771,
+              10
+            ],
+            [
+              2947,
+              20
+            ],
+            [
+              3173,
+              35
+            ],
+            [
+              3431,
+              55
+            ],
+            [
+              3792,
+              75
+            ],
+            [
+              4293,
+              90
+            ]
+          ],
+          "f:10k": [
+            [
+              2637,
+              0.5
+            ],
+            [
+              2759,
+              1
+            ],
+            [
+              2941,
+              3
+            ],
+            [
+              3191,
+              10
+            ],
+            [
+              3370,
+              20
+            ],
+            [
+              3569,
+              35
+            ],
+            [
+              3870,
+              55
+            ],
+            [
+              4214,
+              75
+            ],
+            [
+              4650,
+              90
+            ]
+          ],
+          "m:half": [
+            [
+              5194,
+              0.5
+            ],
+            [
+              5389,
+              1
+            ],
+            [
+              5748,
+              3
+            ],
+            [
+              6280,
+              10
+            ],
+            [
+              6790,
+              20
+            ],
+            [
+              7158,
+              35
+            ],
+            [
+              7848,
+              55
+            ],
+            [
+              8480,
+              75
+            ],
+            [
+              9572,
+              90
+            ]
+          ],
+          "f:half": [
+            [
+              5854,
+              0.5
+            ],
+            [
+              6151,
+              1
+            ],
+            [
+              6542,
+              3
+            ],
+            [
+              7089,
+              10
+            ],
+            [
+              7459,
+              20
+            ],
+            [
+              7992,
+              35
+            ],
+            [
+              8615,
+              55
+            ],
+            [
+              9245,
+              75
+            ],
+            [
+              10145,
+              90
+            ]
+          ],
+          "m:full": [
+            [
+              10083,
+              0.5
+            ],
+            [
+              10393,
+              1
+            ],
+            [
+              10799,
+              3
+            ],
+            [
+              12037,
+              10
+            ],
+            [
+              12944,
+              20
+            ],
+            [
+              13957,
+              35
+            ],
+            [
+              15232,
+              55
+            ],
+            [
+              16848,
+              75
+            ],
+            [
+              18679,
+              90
+            ]
+          ],
+          "f:full": [
+            [
+              11304,
+              0.5
+            ],
+            [
+              11662,
+              1
+            ],
+            [
+              12383,
+              3
+            ],
+            [
+              13377,
+              10
+            ],
+            [
+              14145,
+              20
+            ],
+            [
+              15058,
+              35
+            ],
+            [
+              16239,
+              55
+            ],
+            [
+              17493,
+              75
+            ],
+            [
+              18956,
+              90
+            ]
+          ]
+        },
+        "via": {
+          "5k": {
+            "key": "10k",
+            "factor": 2.0849,
+            "label": "10km로 환산하면 춘천마라톤 완주자 중"
+          }
+        }
+      },
+      "adjust": {
+        "measure": "body",
+        "base": {
+          "m": 23.0,
+          "f": 21.5
+        },
+        "k": 1.2,
+        "cap": 3.5,
+        "signAt": 1.5,
+        "codes": [
+          "cert-1",
+          "cert-2",
+          "cert-3",
+          "cert-4",
+          "cert-5"
+        ]
+      }
+    }
+  },
+  "resultTypes": [
+    {
+      "code": "ticket-suspend",
+      "name": "러닝 면허 정지",
+      "subtitle": "너무 빨라서 단속반이 출동했어요",
+      "emoji": "🚫",
+      "color": "#e02424",
+      "content": {
+        "summary": "제한속도 5km/h 구간을 바람처럼 지나갔어요. 단속 카메라가 겨우 따라잡았어요.",
+        "strengths": [
+          "춘천마라톤 완주자 맨 앞줄 속도예요",
+          "단속반도 박수 치며 딱지를 뗐어요"
+        ],
+        "cautions": [
+          "빨리 달린 것도 좋지만, 심장도 신호를 지켜요. 몸이 아프면 쉬는 게 먼저예요."
+        ],
+        "funFact": "면허 정지 기간은 푹 쉴 때까지예요."
+      }
+    },
+    {
+      "code": "ticket",
+      "name": "러닝 과속 딱지",
+      "subtitle": "단속 카메라에 찍혔어요",
+      "emoji": "📸",
+      "color": "#e02424",
+      "content": {
+        "summary": "동네 산책 속도로 정해진 구간을 너무 빨리 달렸어요. 과태료는 국밥 한 그릇이에요.",
+        "strengths": [
+          "춘천마라톤 완주자 상위권 속도예요",
+          "찍힌 사진도 꽤 멋있게 나왔어요"
+        ],
+        "cautions": [
+          "빨리 달린 것도 좋지만, 심장도 신호를 지켜요. 몸이 아프면 쉬는 게 먼저예요."
+        ],
+        "funFact": "벌점은 0점이에요. 안전 운행만 부탁해요."
+      }
+    },
+    {
+      "code": "news-front",
+      "name": "신문 1면",
+      "subtitle": "오늘 아침 1면은 당신이에요",
+      "emoji": "📰",
+      "color": "#1d1b18",
+      "content": {
+        "summary": "이 기록이면 1면이에요. 목격자들은 바람이 지나간 줄 알았대요.",
+        "strengths": [
+          "완주자 기록 가운데서도 앞쪽이에요",
+          "기자들이 결승선에서 기다렸어요"
+        ],
+        "cautions": [
+          "빨리 달린 것도 좋지만, 심장도 신호를 지켜요. 몸이 아프면 쉬는 게 먼저예요."
+        ],
+        "funFact": "1면 사진은 본인이 고른 사진으로 실렸어요."
+      }
+    },
+    {
+      "code": "news-local",
+      "name": "신문 사회면",
+      "subtitle": "동네 소식란에 실렸어요",
+      "emoji": "🗞️",
+      "color": "#1d1b18",
+      "content": {
+        "summary": "동네 공원이 술렁였어요. 사회면 한가운데 누가 빨간 펜으로 동그라미를 쳐 놨어요.",
+        "strengths": [
+          "꾸준히 달린 사람의 기록이에요",
+          "산책하던 이웃들이 다 봤어요"
+        ],
+        "cautions": [
+          "빨리 달린 것도 좋지만, 심장도 신호를 지켜요. 몸이 아프면 쉬는 게 먼저예요."
+        ],
+        "funFact": "오려서 냉장고에 붙여 두기 좋은 크기예요."
+      }
+    },
+    {
+      "code": "cert-1",
+      "name": "러닝자격증 1급",
+      "subtitle": "자격증 맨 윗급이에요",
+      "emoji": "🏅",
+      "color": "#962fbf",
+      "content": {
+        "summary": "자격증 맨 윗급이에요. 페이스가 처음부터 끝까지 흔들리지 않았어요.",
+        "strengths": [
+          "기록이 단단해요",
+          "완주 뒤에도 표정이 여유로웠어요"
+        ],
+        "cautions": [
+          "빨리 달린 것도 좋지만, 심장도 신호를 지켜요. 몸이 아프면 쉬는 게 먼저예요."
+        ],
+        "funFact": "1급 자격증 소지자는 국밥집에서 알아봐요."
+      }
+    },
+    {
+      "code": "cert-2",
+      "name": "러닝자격증 2급",
+      "subtitle": "꾸준함이 만든 기록이에요",
+      "emoji": "🎖️",
+      "color": "#962fbf",
+      "content": {
+        "summary": "꾸준히 달린 사람의 기록이에요. 오르막에서도 걷지 않았어요.",
+        "strengths": [
+          "끝까지 페이스를 지켰어요",
+          "다음 대회가 기대돼요"
+        ],
+        "cautions": [
+          "빨리 달린 것도 좋지만, 심장도 신호를 지켜요. 몸이 아프면 쉬는 게 먼저예요."
+        ],
+        "funFact": "2급은 동네 러닝 모임에서 제일 많은 급수예요."
+      }
+    },
+    {
+      "code": "cert-3",
+      "name": "러닝자격증 3급",
+      "subtitle": "동네 공원 대표 러너",
+      "emoji": "🏃",
+      "color": "#d62976",
+      "content": {
+        "summary": "동네 공원 대표 러너예요. 산책하는 강아지들이 얼굴을 알아봐요.",
+        "strengths": [
+          "완주를 해낸 사람이에요",
+          "달리는 즐거움을 알아요"
+        ],
+        "cautions": [
+          "빨리 달린 것도 좋지만, 심장도 신호를 지켜요. 몸이 아프면 쉬는 게 먼저예요."
+        ],
+        "funFact": "3급부터 러닝화 끈이 잘 안 풀린대요."
+      }
+    },
+    {
+      "code": "cert-4",
+      "name": "러닝자격증 4급",
+      "subtitle": "끝까지 간 사람",
+      "emoji": "🐇",
+      "color": "#d62976",
+      "content": {
+        "summary": "토끼처럼 쉬지 않고 끝까지 갔어요. 결승선은 도망가지 않았어요.",
+        "strengths": [
+          "포기하지 않았어요",
+          "완주 메달이 잘 어울려요"
+        ],
+        "cautions": [
+          "빨리 달린 것도 좋지만, 심장도 신호를 지켜요. 몸이 아프면 쉬는 게 먼저예요."
+        ],
+        "funFact": "4급 자격증은 국밥 곱빼기 쿠폰과 같아요."
+      }
+    },
+    {
+      "code": "cert-5",
+      "name": "러닝자격증 5급",
+      "subtitle": "거북이보다는 빨라요",
+      "emoji": "🐢",
+      "color": "#fa7e1e",
+      "content": {
+        "summary": "거북이보다는 빨라요. 그리고 거북이는 이 거리를 완주하지 못해요.",
+        "strengths": [
+          "완주가 곧 기록이에요",
+          "가장 오래 달린 사람이 가장 오래 즐겼어요"
+        ],
+        "cautions": [
+          "빨리 달린 것도 좋지만, 심장도 신호를 지켜요. 몸이 아프면 쉬는 게 먼저예요."
+        ],
+        "funFact": "걸어서 완주해도 완주예요."
+      }
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 import mongoose, { Schema, type Model, type Types } from "mongoose";
 import { defineModel } from "@/lib/model";
 import type { Answer, OutcomeScore } from "@/lib/scoring";
+import type { RecordDetail } from "@/lib/record";
 
 /**
  * 응시 1회 = 답변 배열 + 계산된 결과 스냅샷.
@@ -80,6 +81,8 @@ const AttemptSchema = new Schema(
       },
       outcomes: { type: [OutcomeScoreSchema], default: [] },
       confidence: { type: Number, default: null },
+      /** threshold — 기록 · 페이스 · 상위 % · 체급 보정 (키·몸무게 자체는 남기지 않는다) */
+      detail: { type: Schema.Types.Mixed, default: null },
       engineVersion: { type: Number, default: 1 },
       computedAt: { type: Date, default: null },
       recomputedAt: { type: Date, default: null },
@@ -127,6 +130,7 @@ export type AttemptDoc = {
     ranked: { code: string; score: number }[];
     outcomes: OutcomeScore[];
     confidence: number | null;
+    detail?: RecordDetail | null;
     engineVersion: number;
     computedAt: Date | null;
     recomputedAt: Date | null;

@@ -62,6 +62,8 @@ const QuizSchema = new Schema(
      * 만들었거나 관련된 것처럼 읽히면 안 된다. 없으면 아무것도 그리지 않는다.
      */
     disclaimer: { type: String, default: null },
+    /** 일반 질문지와 다른 화면 — `"running"` (러닝 기록) */
+    experience: { type: String, default: null },
 
     /** draft 에서만 고칠 수 있고, published 가 되면 문항이 잠긴다 */
     status: { type: String, enum: ["draft", "published", "closed"], required: true, default: "draft" },
@@ -109,6 +111,7 @@ export type QuizDoc = {
   ageRange: { min: number | null; max: number | null };
   cover: { emoji: string | null; imageUrl: string | null };
   disclaimer: string | null;
+  experience: "running" | null;
   status: "draft" | "published" | "closed";
   publishedAt: Date | null;
   schedule: { startAt: Date | null; endAt: Date | null; openingNoticeText: string | null };

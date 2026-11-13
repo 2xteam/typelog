@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Sheet } from "@/components/Sheet";
 import { getGuestKey } from "@/lib/guestKey";
 import { useSession } from "@/lib/useSession";
+import { RunResult, type RunPayload } from "@/components/run/RunResult";
 
 /**
  * 결과 화면.
@@ -47,7 +48,7 @@ type Result = {
   outcomes: OutcomeView[];
 };
 type Payload = {
-  quiz: { slug: string; title: string; emoji: string | null; disclaimer: string | null };
+  quiz: { slug: string; title: string; emoji: string | null; disclaimer: string | null; experience?: string | null };
   attemptNo: number;
   result: Result;
   /** 게스트 본인이 볼 때만 온다 → lib/claimToken.ts */
@@ -163,6 +164,25 @@ export function ResultView({
   const signupHref = data.claimToken
     ? `/login?next=${encodeURIComponent(`/results/${attemptId}?claim=${data.claimToken}`)}`
     : `/login?next=${encodeURIComponent(`/results/${attemptId}`)}`;
+
+  /** 러닝 기록 — 과속딱지 · 신문 · 자격증 화면 */
+  if (quiz.experience === "running") {
+    return (
+      <>
+        {isGuest && !bare ? (
+          <Sheet tone="gold" eyebrow="SAVE" headline="가입하면 기록이 쌓여요">
+            <p className="lead">가입하지 않으면 이 기록은 다시 볼 수 없어요.</p>
+            <div style={{ marginTop: 16 }}>
+              <Link className="btn btn--primary" href={signupHref}>
+                가입하고 기록하기 →
+              </Link>
+            </div>
+          </Sheet>
+        ) : null}
+        <RunResult data={data as unknown as RunPayload} bare={bare} />
+      </>
+    );
+  }
 
   return (
     <>

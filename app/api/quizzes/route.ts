@@ -20,10 +20,11 @@ export async function GET() {
   try {
     await connectDB();
     const rows = await getQuizModel()
-      .find({ status: "published" })
+      // 로컬 개발 서버에서만 draft 도 보여 준다 (화면을 다듬는 중) — 배포 환경은 그대로
+      .find({ status: process.env.NODE_ENV === "development" ? { $in: ["published", "draft"] } : "published" })
       .select({
         slug: 1, title: 1, tagline: 1, category: 1, cover: 1, ageRange: 1,
-        disclaimer: 1, estimatedMinutes: 1, items: 1, schedule: 1, order: 1,
+        disclaimer: 1, estimatedMinutes: 1, items: 1, schedule: 1, order: 1, status: 1,
       })
       .sort({ order: 1, title: 1 })
       .lean();

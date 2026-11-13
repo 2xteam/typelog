@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>러닝 과속딱지 — 시안</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=IBM+Plex+Mono:wght@500;700&display=swap" />
+<style>
+  /*
+    러닝 과속딱지 시안 (2026-11-14).
+
+    결과 코드 ticket(남 10km 41:00 이내) · ticket-suspend(38:00 이내, 면허 정지).
+    한 틀에 데이터만 바꿔 그린다 — 아래 render(). 실제 화면도 이렇게 만든다.
+
+    ⚠️ 진짜 고지서처럼 보이면 안 된다 → my-obsidian-vault / 50-Plans/J 러닝 기록 급수.md 「지켜야 할 것」
+      발행처는 가상의 「마이재인 러닝 단속반」. 경찰 마크 · 「경찰청」 · 실제 고지서 양식 · 실제 금액을 쓰지 않는다.
+      과태료는 「국밥 한 그릇」, 하단에 패러디 표기.
+
+    사진 합성 자리 (차량 사진 assets/ticket-car.png 692×469 기준)
+      단속 사진 구도 — (54, 28) 에서 558×313 (앞유리 위 ~ 그릴 아래, 사용자 지정)
+      얼굴 — 중심 (405, 88), 가로 반지름 27 · 세로 32, 앞유리 안으로 잘라 넣는다 (운전석은 사진 오른쪽)
+      배번호 — (290, 380) 92×24, 범퍼 가운데 번호판 자리
+      눈 띠 — 얼굴 찾기의 두 눈 위치를 잇는 선 위, 두께 = 얼굴 높이의 18%. 못 찾으면 중심에서 위로 10
+  */
+  :root {
+    --navy: #14213d; --navy-2: #2b3a5c; --tint: #eef2f8; --line: #c9d2e3;
+    --red: #e02424; --red-ink: #b81c1c; --pink: #fdf0f0;
+    --ink: #16181d; --dim: #5b6170;
+    --hazard: #ffcc00;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 40px; background: #cfd3da; font-family: Pretendard, -apple-system, sans-serif; color: var(--ink);
+    display: flex; flex-direction: column; gap: 60px; align-items: flex-start; word-break: keep-all; }
+  p { margin: 0; }
+  .mono { font-family: "IBM Plex Mono", monospace; }
+
+  /* ── 통지서 종이 ── */
+  .ticket { position: relative; width: 900px; background: #fbfbf9; padding: 44px 36px 26px; overflow: hidden;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,.06); }
+  .ticket::before { /* 위 경고 띠 */
+    content: ""; position: absolute; left: 0; right: 0; top: 0; height: 16px;
+    background: repeating-linear-gradient(-45deg, var(--hazard) 0 18px, #111 18px 36px); }
+
+  .head { display: flex; justify-content: space-between; align-items: center; }
+  .issuer { display: flex; align-items: center; gap: 12px; }
+  .issuer svg { width: 52px; height: 52px; }
+  .issuer .ko { font-size: 21px; font-weight: 800; letter-spacing: -0.02em; color: var(--navy); }
+  .issuer .en { font: 700 11px "IBM Plex Mono"; letter-spacing: .14em; color: var(--dim); }
+  .no { text-align: right; }
+  .no .k { font-size: 12px; color: var(--dim); font-weight: 600; }
+  .no .v { font: 700 17px "IBM Plex Mono"; letter-spacing: .04em; color: var(--navy); }
+
+  .titlebar { margin-top: 18px; display: flex; align-items: center; justify-content: space-between;
+    border-top: 4px solid var(--navy); border-bottom: 1.5px solid var(--navy); padding: 12px 0 10px; }
+  .title { font-family: "Black Han Sans", sans-serif; font-size: 56px; line-height: 1; color: var(--red); letter-spacing: -0.01em; }
+  .title-en { margin-top: 6px; font: 700 13px "IBM Plex Mono"; letter-spacing: .2em; color: var(--navy-2); }
+  /* 제한속도 표지 — 도로 표지 일반형 */
+  .limit-sign { width: 104px; height: 104px; border-radius: 50%; background: #fff; border: 13px solid var(--red);
+    display: grid; place-items: center; box-shadow: 0 0 0 2px #fff, 0 0 0 3px #bbb; }
+  .limit-sign b { font: 700 46px/1 "IBM Plex Mono"; color: #111; letter-spacing: -0.04em; }
+
+  .lead { margin-top: 16px; background: var(--tint); border-left: 5px solid var(--navy); padding: 12px 16px; font-size: 16.5px; line-height: 1.6; color: var(--navy-2); }
+  .lead b { color: var(--ink); }
+
+  /* ── 단속 사진 ── */
+  .sec-h { margin-top: 20px; display: flex; align-items: baseline; gap: 10px; font-size: 15px; font-weight: 800; color: var(--navy); }
+  .sec-h .en { font: 700 11px "IBM Plex Mono"; letter-spacing: .16em; color: var(--dim); }
+  .cam { position: relative; margin-top: 8px; background: #111; overflow: hidden; }
+  .cam.main { height: 464px; }
+  .cam svg.view { display: block; width: 100%; height: 100%; filter: grayscale(1) contrast(1.15) brightness(1.02); }
+  .cam::after { /* 주사선 */
+    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .28;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,.6) 0 1px, transparent 1px 3px); }
+  .hud { position: absolute; left: 0; right: 0; display: flex; justify-content: space-between; padding: 5px 10px;
+    background: rgba(0,0,0,.78); color: #f4f4f4; font: 500 13px "IBM Plex Mono"; letter-spacing: .06em; z-index: 2; }
+  .hud.top { top: 0; } .hud.bot { bottom: 0; }
+  .hud .hot { color: #ff5a5a; font-weight: 700; }
+  .rec { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #ff3b3b; margin-right: 6px; vertical-align: 0; }
+
+  .crops { margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr 1.1fr; gap: 10px; }
+  .crops .cam { height: 158px; margin-top: 0; }
+  .crop-label { position: absolute; left: 0; top: 0; z-index: 2; background: rgba(0,0,0,.78); color: #fff; font: 500 11.5px "IBM Plex Mono"; padding: 3px 8px; letter-spacing: .06em; }
+  /* 스피드건 숫자 */
+  .speed { background: #0d0d0d; color: #ff3b3b; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 158px; position: relative;
+    box-shadow: inset 0 0 30px rgba(255,40,40,.18); }
+  .speed .lab { position: absolute; left: 10px; top: 7px; font: 500 11.5px "IBM Plex Mono"; color: #aaa; letter-spacing: .1em; }
+  .speed .num { font: 700 70px/1 "IBM Plex Mono"; letter-spacing: -0.03em; text-shadow: 0 0 14px rgba(255,59,59,.55); }
+  .speed .unit { font: 700 15px "IBM Plex Mono"; letter-spacing: .14em; color: #ff8080; margin-top: 4px; }
+
+  /* ── 위반 내용 ── */
+  table { margin-top: 8px; width: 100%; border-collapse: collapse; font-size: 15.5px; }
+  th, td { border: 1px solid var(--line); padding: 9px 12px; text-align: left; }
+  th { width: 118px; background: var(--tint); color: var(--navy-2); font-weight: 700; font-size: 14px; }
+  td { font-weight: 600; }
+  td .red { color: var(--red-ink); font-weight: 800; }
+  td .mono { font-weight: 700; }
+
+  /* ── 처분 ── */
+  .verdict { margin-top: 18px; display: grid; grid-template-columns: repeat(3, 1fr); border: 2px solid var(--red); }
+  .verdict > div { padding: 10px 14px; background: var(--pink); }
+  .verdict > div + div { border-left: 1px solid #f2c4c4; }
+  .verdict .k { font-size: 12.5px; font-weight: 700; color: var(--red-ink); }
+  .verdict .v { margin-top: 3px; font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
+  .care { margin-top: 12px; display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 700; color: var(--navy); }
+  .care svg { width: 26px; height: 26px; flex: none; }
+
+  /* ── 떼는 영수증 ── */
+  .tear { margin: 22px -36px 0; padding: 18px 36px 0; border-top: 2px dashed #9aa3b5; position: relative; }
+  .tear .scissor { position: absolute; left: 22px; top: -14px; background: #fbfbf9; padding: 0 6px; font-size: 18px; color: #6b7385; }
+  .stub { display: grid; grid-template-columns: 1fr auto auto; gap: 22px; align-items: center; }
+  .stub-t { font-size: 15px; font-weight: 800; color: var(--navy); }
+  .stub dl { margin: 6px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 2px 14px; font-size: 14px; }
+  .stub dt { color: var(--dim); } .stub dd { margin: 0; font-weight: 700; }
+  .barcode { width: 210px; height: 62px; }
+  .barcode-no { font: 500 11px "IBM Plex Mono"; letter-spacing: .2em; text-align: center; color: var(--dim); margin-top: 2px; }
+  /* 단속반 원형 도장 */
+  .seal { width: 96px; height: 96px; border-radius: 50%; border: 3px solid var(--red); color: var(--red); transform: rotate(-12deg); opacity: .88;
+    display: grid; place-items: center; text-align: center; position: relative; }
+  .seal::before { content: ""; position: absolute; inset: 5px; border-radius: 50%; border: 1.2px solid var(--red); }
+  .seal span { font-size: 13px; font-weight: 800; line-height: 1.25; }
+  .foot { margin-top: 16px; text-align: center; font-size: 12px; color: var(--dim); }
+
+  /* 면허 정지 — 큰 빨간 도장 */
+  .suspend-stamp { position: absolute; z-index: 9; right: 56px; top: 1084px; transform: rotate(-14deg);
+    border: 7px solid var(--red); color: var(--red); padding: 8px 20px 6px; border-radius: 10px; opacity: .86;
+    font-family: "Black Han Sans"; font-size: 64px; line-height: 1; letter-spacing: .04em; mix-blend-mode: multiply;
+    box-shadow: inset 0 0 0 3px #fbfbf9, inset 0 0 0 5px var(--red); }
+  .suspend-stamp small { display: block; font: 700 13px "IBM Plex Mono"; letter-spacing: .3em; text-align: center; margin-top: 4px; }
+
+  /* ═════════ 장면 — 아스팔트 위 통지서 (공유 1080×1080) ═════════ */
+  .scene { position: relative; width: 1080px; height: 1080px; overflow: hidden;
+    background: radial-gradient(ellipse at 20% 0%, rgba(255,255,255,.28) 0%, rgba(255,255,255,0) 45%),
+                radial-gradient(ellipse at 50% 50%, #3a3d42 0%, #232528 70%, #17181a 100%); }
+  .scene::before { /* 아스팔트 결 */ content: ""; position: absolute; inset: 0; opacity: .55; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+  .scene .lane { position: absolute; top: -40px; bottom: -40px; width: 22px; left: 120px; transform: rotate(-7deg);
+    background: repeating-linear-gradient(180deg, #e8c23a 0 120px, transparent 120px 190px); opacity: .9; }
+  .scene .lane.b { left: 152px; }
+  .tilt { position: absolute; left: 50%; top: 52px; transform-origin: 50% 0;
+    transform: translateX(-50%) perspective(2400px) rotateX(18deg) rotateZ(5deg) scale(.72);
+    box-shadow: 0 50px 80px rgba(0,0,0,.55), 0 10px 20px rgba(0,0,0,.3); }
+  .scene-sign { position: absolute; left: 50%; bottom: 40px; transform: translateX(-50%); white-space: nowrap; z-index: 3;
+    color: #fff; background: rgba(224,36,36,.92); padding: 12px 26px; border-radius: 999px; font: 800 22px Pretendard; letter-spacing: -0.01em; }
+</style>
+</head>
+<body>
+
+<!-- 단속 카메라 장면 — 한 번 그리고, 확대 칸은 viewBox 만 바꿔 다시 쓴다 -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="glass" cx="50%" cy="30%" r="80%">
+      <stop offset="0" stop-color="#4a4a4a" /><stop offset="1" stop-color="#151515" />
+    </radialGradient>
+    <linearGradient id="hood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8a8a8a" /><stop offset="1" stop-color="#3a3a3a" />
+    </linearGradient>
+    <radialGradient id="lamp" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#fff" /><stop offset=".35" stop-color="#eee" stop-opacity=".9" /><stop offset="1" stop-color="#fff" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="face" cx="45%" cy="40%" r="65%">
+      <stop offset="0" stop-color="#c9c9c9" /><stop offset="1" stop-color="#8d8d8d" />
+    </radialGradient>
+    <symbol id="cam" viewBox="0 0 692 469">
+      <!-- 사용자가 준 차량 사진을 그대로 쓴다 (사용자 결정 2026-11-14).
+           ⚠️ 출시 전 사용권 확인 — 계획서 「정할 것」. 위에 운전자 얼굴 · 눈 띠 · 배번호만 얹는다 -->
+      <filter id="grain" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="7" />
+        <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .14 0" />
+      </filter>
+      <clipPath id="windshield"><path d="M166 42 H500 L512 134 H150 Z" /></clipPath>
+      <image href="assets/ticket-car.png" width="692" height="469" />
+      <!-- 운전석(사진 오른쪽) 운전자 — 앞유리 안으로만 -->
+      <g clip-path="url(#windshield)">
+        <g transform="translate(405 88) scale(.9)">
+          <path d="M-58 72 C -56 42 -32 28 0 28 C 32 28 56 42 58 72 Z" fill="#4a4a4a" />
+          <rect x="-12" y="26" width="24" height="12" fill="#5a5a5a" />
+          <ellipse cx="0" cy="0" rx="30" ry="35" fill="url(#face)" />
+          <path d="M-30 -10 C -28 -38 28 -40 30 -10 C 22 -24 -22 -24 -30 -10 Z" fill="#363636" />
+          <rect x="-30" y="-20" width="60" height="6" rx="3" fill="#cfcfcf" />
+          <!-- 시험용 얼굴 사진 — 있으면 실루엣 위를 덮는다. 실제 화면은 얼굴 찾기 결과로 자리·크기를 맞춘다 -->
+          <!-- 가장자리를 부드럽게 — 오려 붙인 티가 덜 나게 -->
+          <radialGradient id="facefade"><stop offset=".72" stop-color="#fff" /><stop offset="1" stop-color="#fff" stop-opacity="0" /></radialGradient>
+          <mask id="facemask" maskContentUnits="userSpaceOnUse"><ellipse cx="0" cy="-3" rx="37" ry="45" fill="url(#facefade)" /></mask>
+          <!-- 시험 사진 137×117 — 얼굴 중심 (66, 62) · 눈 높이 52 → 눈이 눈 띠 가운데(y −2)에 오게 0.95 배 -->
+          <image href="assets/face-test.png" x="-63" y="-51" width="130" height="111" preserveAspectRatio="none" mask="url(#facemask)" />
+          <rect x="-40" y="-10" width="80" height="16" fill="#000" />
+        </g>
+        <!-- 유리 너머 — 살짝 어둡게 · 비스듬한 반사 -->
+        <rect x="140" y="40" width="380" height="100" fill="#000" opacity=".3" />
+        <path d="M352 40 L372 40 L330 140 L310 140 Z" fill="#fff" opacity=".07" />
+      </g>
+      <!-- 번호판 자리 = 배번호 -->
+      <rect x="290" y="380" width="92" height="24" rx="2" fill="#dcdcdc" stroke="#111" stroke-width="1.5" />
+      <text x="336" y="397" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-weight="700" font-size="14.5" fill="#111">10K 1114</text>
+      <!-- 얼굴 조준 표시 -->
+      <g stroke="#fff" stroke-width="2" fill="none">
+        <path d="M371 52 h11 M371 52 v11" /><path d="M439 52 h-11 M439 52 v11" />
+        <path d="M371 124 h11 M371 124 v-11" /><path d="M439 124 h-11 M439 124 v-11" />
+      </g>
+      <rect width="692" height="469" filter="url(#grain)" />
+    </symbol>
+  </defs>
+</svg>
+
+<div id="mount"></div>
+
+<script>
+  /* 결과 데이터 — 실제 화면도 이 모양으로 받는다 */
+  const DATA = [
+    { id: "ticket", no: "R-2026-1101-0042", name: "홍길동", when: "2026.11.01 07:42:15", where: "10km 코스 7.2km 지점",
+      limit: 5, speed: "14.9", over: "+9.9", record: "40′12″", pace: "4′01″", rank: "춘천마라톤 완주자 중 상위 1.5%",
+      verdict: [["벌점", "0점"], ["과태료", "국밥 한 그릇"], ["처분", "경고 · 안전 운행"]], suspend: false },
+    { id: "ticket-suspend", no: "R-2026-1101-0007", name: "홍길동", when: "2026.11.01 07:39:02", where: "10km 코스 8.4km 지점",
+      limit: 5, speed: "15.9", over: "+10.9", record: "37′40″", pace: "3′46″", rank: "춘천마라톤 완주자 중 상위 0.5% 이내",
+      verdict: [["벌점", "0점"], ["과태료", "국밥 두 그릇"], ["처분", "러닝 면허 정지"]], suspend: true },
+  ];
+
+  const camView = (vb, extra = "") => `<svg class="view" viewBox="${vb}" preserveAspectRatio="xMidYMid slice"><use href="#cam" width="692" height="469" />${extra}</svg>`;
+  const bars = (n) => Array.from({ length: n }, (_, i) => {
+    const w = [1, 2, 3, 1, 2, 1, 3, 2][(i * 7 + 3) % 8];
+    return `<rect x="${i * 4.4}" y="0" width="${w}" height="62" fill="#111" />`;
+  }).join("");
+
+  function render(d) {
+    return `
+<div class="ticket" id="${d.id}">
+  <div class="head">
+    <div class="issuer">
+      <svg viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="#14213d" /><circle cx="26" cy="28" r="14" fill="none" stroke="#ffcc00" stroke-width="3" />
+        <rect x="23" y="8" width="6" height="6" rx="1" fill="#ffcc00" /><path d="M26 28 L33 21" stroke="#fff" stroke-width="3" stroke-linecap="round" /></svg>
+      <div><p class="ko">마이재인 러닝 단속반</p><p class="en">MYJANE RUNNING PATROL</p></div>
+    </div>
+    <div class="no"><p class="k">통지번호</p><p class="v">${d.no}</p></div>
+  </div>
+
+  <div class="titlebar">
+    <div><p class="title">러닝 과속 단속 통지서</p><p class="title-en">RUNNING SPEED VIOLATION NOTICE</p></div>
+    <div class="limit-sign"><b>${d.limit}</b></div>
+  </div>
+
+  <p class="lead"><b>${d.name}</b> 님, 아래와 같이 <b>너무 빨리 달리신 사실</b>이 단속 카메라에 찍혀 알려 드려요.
+    이 구간 제한속도는 <b>동네 산책 속도 ${d.limit}km/h</b> 예요.</p>
+
+  <p class="sec-h">단속 사진 <span class="en">EVIDENCE</span></p>
+  <div class="cam main">
+    <div class="hud top"><span><i class="rec"></i>RUN-CAM 07 · MYJANE PATROL</span><span>${d.when}</span></div>
+    ${camView("54 28 558 313")}
+    <div class="hud bot"><span>LIMIT 00${d.limit} km/h</span><span class="hot">SPEED ${d.speed.padStart(5, "0")} km/h ▲${d.over}</span></div>
+  </div>
+  <div class="crops">
+    <div class="cam"><span class="crop-label">얼굴 확대 · FACE</span>${camView("353 54 104 60")}</div>
+    <div class="cam"><span class="crop-label">배번호 확대 · BIB</span>${camView("278 368 116 50")}</div>
+    <div class="speed"><span class="lab">MEASURED</span><span class="num">${d.speed}</span><span class="unit">KM/H</span></div>
+  </div>
+
+  <p class="sec-h">위반 내용 <span class="en">DETAILS</span></p>
+  <table>
+    <tr><th>위반자</th><td>${d.name}</td><th>위반 일시</th><td class="mono">${d.when}</td></tr>
+    <tr><th>위반 장소</th><td colspan="3">${d.where}</td></tr>
+    <tr><th>제한 속도</th><td>${d.limit}km/h <span style="color:var(--dim);font-weight:500">(동네 산책)</span></td><th>측정 속도</th><td><span class="red">${d.speed}km/h (${d.over})</span></td></tr>
+    <tr><th>기록</th><td><span class="mono">${d.record}</span> · 1km당 <span class="mono">${d.pace}</span></td><th>순위</th><td>${d.rank}</td></tr>
+  </table>
+
+  <div class="verdict">${d.verdict.map(([k, v]) => `<div><p class="k">${k}</p><p class="v">${v}</p></div>`).join("")}</div>
+  <p class="care"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.4C.9 8.2 3 4.5 6.6 4.5c2.1 0 3.5 1.2 4.4 2.6.9-1.4 2.3-2.6 4.4-2.6 3.6 0 5.7 3.7 4.2 7.1C19.5 16.4 12 21 12 21z" fill="#e02424"/><path d="M5 12h3l1.5-3 2.5 6 1.5-3H19" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    빨리 달린 것도 좋지만, 심장도 신호를 지켜요. ${d.suspend ? "다음 대회까지 푹 쉬어 주세요." : "무리하지 말고 즐겁게 달려요."}</p>
+
+  <div class="tear">
+    <span class="scissor">✂</span>
+    <div class="stub">
+      <div>
+        <p class="stub-t">납부 영수증 <span class="mono" style="font-size:12px;color:var(--dim);letter-spacing:.1em">RECEIPT</span></p>
+        <dl><dt>납부자</dt><dd>${d.name}</dd><dt>납부 금액</dt><dd>${d.verdict[1][1]}</dd><dt>납부처</dt><dd>결승선 앞 국밥집</dd></dl>
+      </div>
+      <div><svg class="barcode" viewBox="0 0 210 62" preserveAspectRatio="none">${bars(47)}</svg><p class="barcode-no">${d.no.replace(/-/g, " ")}</p></div>
+      <div class="seal"><span>마이재인<br/>러닝<br/>단속반</span></div>
+    </div>
+  </div>
+  <p class="foot">이 통지서는 재미로 만든 패러디예요. 실제 과태료 · 벌점과 관계없어요.</p>
+  ${d.suspend ? `<div class="suspend-stamp">면허 정지<small>SUSPENDED</small></div>` : ""}
+</div>`;
+  }
+
+  const mount = document.getElementById("mount");
+  mount.outerHTML = DATA.map(render).join("") + DATA.map((d) => `
+<div class="scene" id="${d.id}-scene"><i class="lane"></i><i class="lane b"></i>
+  <div class="tilt-slot" data-clone="${d.id}"></div>
+  <p class="scene-sign">${d.suspend ? "러닝 면허 정지 먹었어요" : "러닝 과속으로 딱지 떼였어요"}</p>
+</div>`).join("");
+
+  document.querySelectorAll("[data-clone]").forEach((slot) => {
+    const src = document.getElementById(slot.dataset.clone).cloneNode(true);
+    src.removeAttribute("id");
+    src.classList.add("tilt");
+    slot.replaceWith(src);
+  });
+</script>
+</body>
+</html>
