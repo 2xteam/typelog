@@ -54,6 +54,12 @@ export default function LandingPage() {
           </>
         }
       >
+        {/* 고르는 재미 — 실제 질문지의 선택지 모양 그대로 */}
+        <div className="quiz-chips" aria-hidden="true">
+          <span className="quiz-chip"><b>A</b>🦊 혼자가 편해요</span>
+          <span className="quiz-chip" data-on="true"><b>B</b>🐶 다 같이 좋아요</span>
+          <span className="quiz-chip"><b>C</b>🦄 그날 기분 따라</span>
+        </div>
         <div style={{ display: "flex", gap: 10, marginTop: 22, flexWrap: "wrap" }}>
           <Link className="btn btn--primary" href="/types">
             타입 찾아보기 →

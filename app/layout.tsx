@@ -4,6 +4,8 @@ import "./globals.css";
 // .sheet { border-radius: var(--radius-lg) } 를 이겨야 한다.
 // 생성 파일이다: myjane/design/elements.css → npm run elements -- --write
 import "./elements.css";
+/* TypeLog 전용 모양 — 재밌는 타입 설문. 색은 palette.json 의 apps.typelog, 여기는 모양만. 맨 마지막 */
+import "./theme-typelog.css";
 import { ImpersonationBar } from "@/components/ImpersonationBar";
 
 export const metadata: Metadata = {

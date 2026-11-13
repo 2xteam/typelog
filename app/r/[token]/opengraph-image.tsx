@@ -22,10 +22,10 @@ export const alt = "TypeLog — 친구가 나눈 타입";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const INK = "#071c22";
-const PAPER = "#f7fbfb";
-const ACCENT = "#116271";
-const GOLD = "#c9a84c";
+const INK = "#120f1c";
+const PAPER = "#f6f3fb";
+const ACCENT = "#962fbf";
+const GOLD = "#fa7e1e";
 
 export default async function Image({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
@@ -85,7 +85,7 @@ export default async function Image({ params }: { params: Promise<{ token: strin
             width: "100%",
             height: "100%",
             borderRadius: 48,
-            background: `linear-gradient(150deg, ${INK} 0%, #134450 100%)`,
+            background: `linear-gradient(150deg, ${INK} 0%, #2a1238 100%)`,
             color: PAPER,
           }}
         >
