@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>러닝 신문 — 시안</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Noto+Serif+KR:wght@400;600;700;900&display=swap" />
+<style>
+  /*
+    러닝 신문 시안 (2026-11-14) — 미국 종이신문 느낌.
+
+    제호 「The MyJane Journal」 — 가상의 신문. 미국 신문 1면 느낌을 살리되(블랙레터 제호 ·
+    왼쪽 귀퉁이 슬로건 · 두 줄 괘선 · 칸 나눔 · 망점 사진), 실제 신문의 **이름·로고·슬로건 원문**은
+    쓰지 않는다. 슬로건은 비틀어 쓴 패러디 — “All the Miles That Are Fit to Run.”
+    → my-obsidian-vault / 50-Plans/J 러닝 기록 급수.md 「지켜야 할 것」
+
+    두 장:
+      1면(Front Page, A1)   — news-front · 남 10km 41:00~50:00
+      사회면(METRO, A12)     — news-local · 남 10km 50:00~1:00:00
+    각각 평평한 지면(…-flat)과, 탁자 위에 비스듬히 놓인 장면(…-scene, 공유 1080×1080).
+    장면은 평평한 지면을 복제해 기울인다 — 사진도 지면 각도를 그대로 따라간다.
+    실제 구현에서는 사진 틀의 네 꼭짓점 좌표로 캔버스에서 원근 변형해 넣는다.
+  */
+  :root {
+    --paper: #f3eee2; --paper-edge: #e6dfcd;
+    --ink: #1d1b18; --ink-2: #3b3833; --ink-3: #6b665c;
+    --rule: #2a2723;
+    --spot: #b3261e; /* 한 가지 별색 — 단독 딱지 · 펜 동그라미 */
+  }
+  * { box-sizing: border-box; }
+  body { word-break: keep-all; margin: 0; padding: 40px; background: #d8d4cc; font-family: "Noto Serif KR", serif; color: var(--ink);
+    display: flex; flex-direction: column; gap: 60px; align-items: flex-start; }
+  p { margin: 0; }
+
+  /* ── 지면 공통 ── */
+  .paper {
+    position: relative; width: 900px; height: 1260px; overflow: hidden;
+    background: var(--paper); padding: 30px 40px 40px;
+    box-shadow: inset 0 0 120px rgba(150, 120, 60, .18);
+  }
+  /* 신문 용지 결 — 잡음 무늬 */
+  .paper::before { content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 5; opacity: .5; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .40  0 0 0 0 .32  0 0 0 .22 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+  /* 반으로 접힌 자국 */
+  .paper::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 26px; transform: translateY(-50%); pointer-events: none; z-index: 6;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(80,60,30,.10) 46%, rgba(255,255,255,.35) 54%, rgba(0,0,0,0) 100%); }
+
+  .en { font-family: "Old Standard TT", serif; }
+  .rule-thick { border-top: 3px solid var(--rule); }
+  .rule-thin { border-top: 1px solid var(--rule); }
+  .double { border-top: 3px solid var(--rule); border-bottom: 1px solid var(--rule); height: 7px; }
+
+  /* 본문 — 양쪽 맞춤, 단 사이 세로 괘선 */
+  .cols { column-gap: 22px; column-rule: 1px solid rgba(42,39,35,.45); text-align: justify; word-break: keep-all; }
+  .body-text { font-size: 15px; line-height: 1.62; color: var(--ink-2); }
+  .body-text p + p { text-indent: 1em; }
+  .dateline { font-weight: 700; color: var(--ink); }
+
+  /* 망점 사진 */
+  .photo { position: relative; overflow: hidden; background: #cfc9bc; filter: grayscale(1) contrast(1.08); }
+  .photo svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .photo::after { content: ""; position: absolute; inset: 0; mix-blend-mode: multiply; opacity: .55;
+    background-image: radial-gradient(circle, rgba(0,0,0,.55) 0.9px, transparent 1.3px); background-size: 4px 4px; }
+  .photo .hint { position: absolute; left: 0; right: 0; bottom: 12px; text-align: center; font: 600 14px "Noto Serif KR"; color: #4a463f; z-index: 1; }
+  .caption { margin-top: 7px; font-size: 13px; line-height: 1.5; color: var(--ink-3); }
+  .caption b { color: var(--ink); }
+  .credit { float: right; font: italic 11px "Old Standard TT"; color: var(--ink-3); letter-spacing: .04em; }
+
+  /* ═════════ 1면 ═════════ */
+  .topline { display: flex; justify-content: space-between; align-items: center; font: 700 11px "Old Standard TT"; letter-spacing: .14em; color: var(--ink-2); }
+  .mast { display: grid; grid-template-columns: 136px 1fr 136px; gap: 12px; align-items: center; margin-top: 10px; }
+  .ear { border: 1px solid var(--rule); padding: 8px 10px; font-size: 11.5px; line-height: 1.45; text-align: center; color: var(--ink-2); }
+  .ear .k { display: block; font: 700 10px "Old Standard TT"; letter-spacing: .16em; color: var(--ink); margin-bottom: 3px; }
+  .ear.slogan { border: 0; font: italic 700 16px/1.3 "Old Standard TT"; color: var(--ink); }
+  .ear .big { display: block; font: 700 20px "Old Standard TT"; color: var(--ink); }
+  .masthead { text-align: center; font-family: "UnifrakturMaguntia", serif; font-size: 56px; white-space: nowrap; line-height: 1; letter-spacing: .01em; color: var(--ink); }
+  .dateband { margin-top: 10px; padding: 5px 0; border-top: 1px solid var(--rule); border-bottom: 3px double var(--rule);
+    display: flex; justify-content: space-between; font: 700 11.5px "Old Standard TT"; letter-spacing: .12em; }
+
+  .kicker { margin-top: 18px; display: flex; align-items: center; gap: 10px; }
+  .tag { background: var(--spot); color: #fff8ee; font: 700 12px "Old Standard TT"; letter-spacing: .18em; padding: 3px 8px 2px; }
+  .kicker .sec { font: italic 15px "Old Standard TT"; color: var(--ink-2); }
+  .hed { margin-top: 8px; font-size: 58px; font-weight: 900; line-height: 1.12; letter-spacing: -0.035em; word-break: keep-all; }
+  .deck { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--rule); display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .deck p { font-size: 19px; font-weight: 600; line-height: 1.42; letter-spacing: -0.02em; color: var(--ink-2); }
+
+  .lead { margin-top: 16px; display: grid; grid-template-columns: 520px 1fr; gap: 22px; }
+  .lead .photo { height: 410px; }
+  .lead .side { border-left: 1px solid rgba(42,39,35,.45); padding-left: 20px; }
+  .byline { font: italic 13px "Old Standard TT"; letter-spacing: .06em; color: var(--ink-3); margin-bottom: 8px; }
+  .byline b { font-style: normal; letter-spacing: .14em; color: var(--ink); }
+  .dropcap::first-letter { float: left; font-size: 54px; line-height: .9; font-weight: 900; margin: 4px 8px 0 0; color: var(--ink); }
+
+  /* 기록 상자 — 숫자는 여기 모은다 */
+  .factbox { margin-top: 14px; border-top: 3px solid var(--rule); border-bottom: 1px solid var(--rule); padding: 8px 0 6px; }
+  .factbox .t { font: 700 11px "Old Standard TT"; letter-spacing: .18em; }
+  .factbox dl { margin: 6px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; font-size: 14px; }
+  .factbox dt { color: var(--ink-3); }
+  .factbox dd { margin: 0; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+
+  .below { margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--rule); display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0 22px; }
+  .below > div + div { border-left: 1px solid rgba(42,39,35,.45); padding-left: 22px; }
+  .brief-h { font-size: 19px; font-weight: 700; line-height: 1.3; letter-spacing: -0.02em; margin-bottom: 6px; word-break: keep-all; }
+  .brief { font-size: 13.5px; line-height: 1.6; color: var(--ink-2); text-align: justify; }
+  .ad { margin-top: 18px; border: 2px solid var(--rule); outline: 1px solid var(--rule); outline-offset: 3px; padding: 12px 18px;
+    display: flex; justify-content: space-between; align-items: center; }
+  .ad .a1 { font: 700 13px "Old Standard TT"; letter-spacing: .2em; }
+  .ad .a2 { font-size: 22px; font-weight: 900; letter-spacing: -0.03em; }
+  .ad .a3 { font-size: 13px; color: var(--ink-2); text-align: right; line-height: 1.5; }
+  .inside { margin-top: 18px; padding: 6px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+    display: flex; gap: 22px; align-items: baseline; font-size: 13.5px; color: var(--ink-2); }
+  .inside b { font: 700 12px "Old Standard TT"; letter-spacing: .22em; color: var(--ink); }
+  .inside span + span::before { content: "·"; margin-right: 22px; color: var(--ink-3); }
+  .parody { position: absolute; right: 40px; bottom: 14px; font: italic 11px "Old Standard TT"; color: var(--ink-3); z-index: 7; }
+
+  /* ═════════ 사회면 (METRO) ═════════ */
+  .pagehead { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 6px; border-bottom: 3px double var(--rule); }
+  .pagehead .left { display: flex; align-items: baseline; gap: 14px; }
+  .pagehead .pno { font: 700 26px "Old Standard TT"; }
+  .pagehead .secname { font: 700 30px "Old Standard TT"; letter-spacing: .28em; }
+  .pagehead .secko { font-size: 16px; font-weight: 700; color: var(--ink-2); }
+  .pagehead .right { font: 700 11px "Old Standard TT"; letter-spacing: .12em; text-align: right; line-height: 1.6; }
+  .pagehead .right .mini { font-family: "UnifrakturMaguntia"; font-size: 20px; letter-spacing: 0; }
+
+  .metro { margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 0 20px; }
+  .metro > .col + .col { border-left: 1px solid rgba(42,39,35,.45); padding-left: 20px; }
+  .m-hed { font-size: 22px; font-weight: 700; line-height: 1.3; letter-spacing: -0.025em; word-break: keep-all; }
+  .m-hed.lg { font-size: 30px; font-weight: 900; }
+  .m-deck { margin-top: 6px; font-size: 14.5px; font-weight: 600; color: var(--ink-2); line-height: 1.45; }
+  .m-body { margin-top: 8px; font-size: 13.5px; line-height: 1.62; color: var(--ink-2); text-align: justify; word-break: keep-all; }
+  .m-body p + p { text-indent: 1em; }
+  .m-sep { margin: 14px 0; border-top: 1px solid var(--rule); }
+
+  /* 우리 기사 — 가운데 두 칸을 차지. 누가 빨간 펜으로 동그라미 친 것처럼 */
+  .ours { grid-column: 2 / span 2; position: relative; padding: 4px 4px 0; }
+  .ours-grid { margin-top: 10px; display: grid; grid-template-columns: 210px 1fr; gap: 16px; }
+  .ours .photo { height: 270px; }
+  .pen { position: absolute; left: -10px; top: -30px; width: calc(100% + 28px); height: calc(100% + 46px); pointer-events: none; z-index: 8; overflow: visible; }
+  .pen path { fill: none; stroke: var(--spot); stroke-width: 4.5; stroke-linecap: round; opacity: .85; }
+  .pen-note { position: absolute; right: 70px; top: 44px; z-index: 8; transform: rotate(-8deg);
+    font: 400 34px "Nanum Pen Script", "Noto Serif KR", cursive; color: var(--spot); opacity: .9; }
+
+  .weather { border: 1px solid var(--rule); padding: 10px 12px; }
+  .weather .t { font: 700 11px "Old Standard TT"; letter-spacing: .2em; border-bottom: 1px solid var(--rule); padding-bottom: 5px; margin-bottom: 7px; }
+  .weather .row { display: flex; justify-content: space-between; font-size: 13.5px; line-height: 1.8; }
+
+  .classified { margin-top: 22px; border-top: 3px double var(--rule); padding-top: 8px; }
+  .cl-head { font: 700 13px "Old Standard TT"; letter-spacing: .24em; }
+  .cl-head span { font: 600 12px "Noto Serif KR"; letter-spacing: 0; color: var(--ink-3); margin-left: 8px; }
+  .cl-grid { margin-top: 8px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px 16px; }
+  .cl-grid p { border: 1px solid rgba(42,39,35,.5); padding: 7px 9px; font-size: 12.5px; line-height: 1.5; color: var(--ink-2); }
+  .cl-grid b { display: block; font: 700 11px "Old Standard TT", "Noto Serif KR"; letter-spacing: .1em; color: var(--ink); margin-bottom: 2px; }
+
+  /* ═════════ 장면 — 탁자 위 비스듬한 지면 (공유 1080×1080) ═════════ */
+  .scene { position: relative; width: 1080px; height: 1080px; overflow: hidden;
+    background:
+      radial-gradient(ellipse at 50% 40%, rgba(255,255,255,.0) 40%, rgba(0,0,0,.35) 100%),
+      linear-gradient(135deg, #5b4a3a 0%, #4a3b2e 50%, #3d3127 100%); }
+  /* 나뭇결 */
+  .scene::before { content: ""; position: absolute; inset: 0; opacity: .35; mix-blend-mode: overlay;
+    background-image: repeating-linear-gradient(8deg, rgba(255,255,255,.06) 0 2px, rgba(0,0,0,.05) 2px 7px, rgba(255,255,255,.03) 7px 13px); }
+  .tilt { position: absolute; left: 50%; top: 96px; transform-origin: 50% 0;
+    transform: translateX(-50%) perspective(2400px) rotateX(26deg) rotateZ(-7deg) scale(.86);
+    box-shadow: 0 50px 80px rgba(0,0,0,.45), 0 10px 20px rgba(0,0,0,.25); }
+  .scene-sign { position: absolute; left: 50%; bottom: 40px; transform: translateX(-50%); white-space: nowrap; z-index: 3; color: #fff; background: rgba(20,16,12,.82); padding: 12px 24px; border-radius: 999px; font: 600 18px Pretendard, "Noto Serif KR", sans-serif; letter-spacing: .02em; }
+  .scene-sign b { font-family: "UnifrakturMaguntia"; font-weight: 400; font-size: 26px; margin-right: 8px; }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap" />
+</head>
+<body>
+
+<!-- 실루엣 — 사진을 건너뛰었을 때도 이 그림 -->
+<template id="sil">
+  <svg viewBox="0 0 300 300" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <rect width="300" height="300" fill="#bfb8aa" />
+    <circle cx="150" cy="120" r="58" fill="#8d877b" />
+    <path d="M40 300 C40 215 90 185 150 185 C210 185 260 215 260 300 Z" fill="#8d877b" />
+  </svg>
+</template>
+
+<!-- ═══════════════ 1면 ═══════════════ -->
+<div class="paper" id="front-flat">
+  <div class="topline"><span>LATE EDITION</span><span>TODAY'S PACE 4′33″ / KM</span><span>₩1,000</span></div>
+
+  <div class="mast">
+    <div class="ear slogan">“All the Miles<br/>That Are Fit<br/>to Run.”</div>
+    <div class="masthead">The MyJane Journal</div>
+    <div class="ear"><span class="k">WEATHER</span><span class="big">12°C</span>맑음 · 바람 약함</div>
+  </div>
+  <div class="dateband"><span>VOL. I ··· No. 1114</span><span>SEOUL, SATURDAY, NOVEMBER 14, 2026</span><span>A1</span></div>
+
+  <div class="kicker"><span class="tag">EXCLUSIVE</span><span class="sec">Running · 단독</span></div>
+  <h1 class="hed">홍길동, 10km 45분 30초 주파</h1>
+  <div class="deck">
+    <p>1km를 평균 4분 33초에 끊어… 춘천마라톤 완주자 중 상위 9% 기록</p>
+    <p>목격자 “사람이 아니라 바람이 지나간 줄 알았다”</p>
+  </div>
+
+  <div class="lead">
+    <figure style="margin:0">
+      <div class="photo" data-sil><span class="hint">사진이 들어가는 자리</span></div>
+      <p class="caption"><span class="credit">MYJANE / STAFF</span><b>결승선을 통과하는 홍길동 씨.</b> 본인은 “아직 멀었다”는 말만 남겼다.</p>
+    </figure>
+    <div class="side">
+      <p class="byline"><b>BY MYJANE STAFF</b> · 러닝 담당</p>
+      <div class="body-text">
+        <p><span class="dateline">【서울】</span> 11월 1일 오전, 한 러너가 10km를 45분 30초에 달린 사실이 확인됐다. 1km를 평균 4분 33초에 끊은 셈이다.</p>
+        <p>춘천마라톤 10km 완주자 기록과 견주면 상위 9%에 해당한다. 현장을 지켜본 김모(34) 씨는 “운동화 소리가 한참 뒤에 들렸다”고 전했다.</p>
+      </div>
+      <div class="factbox">
+        <p class="t">THE RECORD</p>
+        <dl>
+          <dt>거리</dt><dd>10km</dd>
+          <dt>기록</dt><dd>45′30″</dd>
+          <dt>1km당</dt><dd>4′33″</dd>
+          <dt>시속</dt><dd>13.2km</dd>
+          <dt>춘천 완주자 중</dt><dd>상위 9%</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <div class="below">
+    <div>
+      <p class="brief-h">결승 직후 첫마디는 “물 한 컵만”</p>
+      <p class="brief">홍씨는 취재진의 질문에 답하는 대신 물 한 컵을 받아 들었다. 관계자는 “기록보다 표정이 더 인상적이었다”고 말했다. <i>— A3면에 계속</i></p>
+    </div>
+    <div>
+      <p class="brief-h">측정단 “무리 말고 즐겁게 달리길”</p>
+      <p class="brief">마이재인 러닝 기록 측정단은 이번 기록을 확인하며 “몸이 보내는 신호를 먼저 들으라”고 당부했다. 기록은 다음에도 잴 수 있다.</p>
+    </div>
+    <div>
+      <p class="brief-h">동네 국밥집, 아침부터 줄 서</p>
+      <p class="brief">달리기를 마친 러너들이 몰리며 공원 앞 국밥집이 오전 8시부터 붐볐다. 사장 박모(58) 씨는 “주말마다 이렇다”며 웃었다.</p>
+    </div>
+  </div>
+
+  <div class="inside"><b>INSIDE</b><span>러닝 A3</span><span>동네 소식 A12</span><span>날씨 A12</span><span>생활 광고 A14</span></div>
+  <div class="ad">
+    <div><p class="a1">ADVERTISEMENT</p><p class="a2">당신의 기록은 어느 면에 실릴까?</p></div>
+    <p class="a3">마이재인 러닝 기록<br/>딱지 · 신문 · 자격증</p>
+  </div>
+  <p class="parody">A parody for fun · 재미로 만든 패러디예요</p>
+</div>
+
+<!-- ═══════════════ 사회면 METRO ═══════════════ -->
+<div class="paper" id="local-flat">
+  <div class="pagehead">
+    <div class="left"><span class="pno">A12</span><span class="secname">METRO</span><span class="secko">동네 소식</span></div>
+    <div class="right"><span class="mini">The MyJane Journal</span><br/>SATURDAY, NOVEMBER 14, 2026</div>
+  </div>
+
+  <div class="metro">
+    <!-- 왼쪽 칸 — 다른 기사 -->
+    <div class="col">
+      <p class="m-hed">단지 고양이, 3년째 경비실로 ‘출근’</p>
+      <p class="m-deck">주민들 “사원증 만들어 줘야”</p>
+      <div class="m-body">
+        <p>한 아파트 단지의 고양이가 3년째 매일 아침 7시 경비실 앞에 나타나 화제다. 경비원 최모(66) 씨는 “지각한 적이 한 번도 없다”고 말했다.</p>
+        <p>주민들은 고양이 이름을 두고 투표를 벌이고 있다.</p>
+      </div>
+      <div class="m-sep"></div>
+      <p class="m-hed" style="font-size:18px">편의점 바나나우유 품절… “러너들이 다 사 갔다”</p>
+      <div class="m-body"><p>주말 아침 공원 앞 편의점에서 바나나우유가 오전 9시에 동났다. 점주는 다음 주 물량을 두 배로 늘리겠다고 밝혔다.</p></div>
+    </div>
+
+    <!-- 가운데 두 칸 — 우리 기사 -->
+    <div class="col ours">
+      <svg class="pen" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M48 9 C 140 3, 270 7, 368 5 C 390 6, 396 16, 395 34 C 398 110, 392 200, 394 262 C 395 284, 382 294, 352 293 C 260 297, 140 299, 44 292 C 18 290, 7 280, 7 256 C 3 180, 6 100, 5 30 C 6 14, 18 8, 44 8 C 100 6, 150 12, 196 4" />
+      </svg>
+      <span class="pen-note">나다!!</span>
+      <p class="m-hed lg">동네 공원서 10km 55분 20초 완주</p>
+      <p class="m-deck">1km당 5분 32초… 춘천마라톤 완주자 중 상위 46%<br/>“처음엔 3km만 뛰려 했는데 생각보다 할 만했다”</p>
+      <div class="ours-grid">
+        <figure style="margin:0">
+          <div class="photo" data-sil><span class="hint">사진 자리</span></div>
+          <p class="caption"><b>홍길동 씨.</b> 완주 직후 공원 벤치에서.</p>
+        </figure>
+        <div class="m-body" style="margin-top:0">
+          <p><span class="dateline">【서울】</span> 주말 아침 동네 공원에서 10km를 55분 20초에 완주한 시민이 화제다. 1km를 평균 5분 32초에 달렸다.</p>
+          <p>홍길동 씨는 “끝나고 먹은 국밥이 제일 기억에 남는다”며 웃었다. 산책하던 이모(61) 씨는 “매주 보는 얼굴인데 오늘은 표정이 달랐다”고 전했다.</p>
+          <p>마이재인 러닝 기록 측정단은 “다치지 않고 꾸준히 달리는 게 제일”이라고 덧붙였다.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 오른쪽 칸 — 날씨 · 단신 -->
+    <div class="col">
+      <div class="weather">
+        <p class="t">WEATHER</p>
+        <div class="row"><span>오늘</span><b>맑음 12°</b></div>
+        <div class="row"><span>내일</span><b>구름 10°</b></div>
+        <div class="row"><span>달리기</span><b>좋음</b></div>
+      </div>
+      <div class="m-sep"></div>
+      <p class="m-hed" style="font-size:18px">약수터 물맛, 3주 연속 ‘좋음’</p>
+      <div class="m-body"><p>구청이 매주 공개하는 약수터 수질 검사에서 뒷산 약수터가 3주 연속 ‘좋음’을 받았다.</p></div>
+      <div class="m-sep"></div>
+      <p class="m-hed" style="font-size:18px">[알림] 공원 둘레길 보수</p>
+      <div class="m-body"><p>다음 달 1일부터 2주간 북쪽 구간이 막힌다. 남쪽으로 돌아가면 된다.</p></div>
+    </div>
+  </div>
+
+  <!-- 아래 — 지면을 채우는 다른 기사 -->
+  <div class="rule-thick" style="margin-top:22px"></div>
+  <div class="metro" style="margin-top:12px; grid-template-columns: 2fr 1fr 1fr;">
+    <div class="col">
+      <p class="m-hed" style="font-size:26px">새벽 5시 한강 다리 위, 헤드랜턴 행렬</p>
+      <p class="m-deck">출근 전 달리는 ‘새벽 러닝 모임’ 늘어</p>
+      <div class="m-body cols" style="columns:2">
+        <p>해가 뜨기 전 한강 다리 위로 헤드랜턴 불빛이 줄지어 지나간다. 출근 전에 5~10km를 달리는 새벽 러닝 모임이 늘고 있다.</p>
+        <p>모임을 이끄는 정모(41) 씨는 “처음 오는 분께는 속도보다 대화할 수 있는 페이스를 권한다”고 말했다. 모임은 매주 화·목요일에 열린다.</p>
+        <p>참가자들은 달리기가 끝나면 다리 아래 편의점에서 함께 아침을 먹는다.</p>
+      </div>
+    </div>
+    <div class="col">
+      <p class="m-hed" style="font-size:18px">운동화 끈 묶는 법 강좌, 정원 3배 몰려</p>
+      <div class="m-body"><p>구민회관이 연 ‘풀리지 않는 운동화 끈’ 강좌에 정원의 세 배가 신청했다. 구는 강좌를 한 번 더 열기로 했다.</p></div>
+    </div>
+    <div class="col">
+      <p class="m-hed" style="font-size:18px">분실물 센터에 러닝 장갑 41켤레</p>
+      <div class="m-body"><p>공원 관리소는 지난달 주인을 찾지 못한 장갑이 41켤레라고 밝혔다. 짝이 맞는 건 그중 12켤레뿐이다.</p></div>
+    </div>
+  </div>
+
+  <div class="classified">
+    <p class="cl-head">CLASSIFIEDS <span>생활 광고</span></p>
+    <div class="cl-grid">
+      <p><b>구함</b> 러닝 메이트. 주 3회 새벽, 대화되는 페이스로. 공원 정문 05:30.</p>
+      <p><b>팝니다</b> 운동화 270mm. 300km 달림, 아직 쌩쌩. 끈은 새것.</p>
+      <p><b>분실</b> 왼쪽 무선 이어폰 한 짝. 찾아 주시면 국밥 삽니다.</p>
+      <p><b>알림</b> 다음 주 일요일 둘레길 쓰레기 줍기 달리기. 집게 드려요.</p>
+      <p><b>구함</b> 같이 스트레칭 할 사람. 유연성 무관, 끈기만.</p>
+      <p><b>팝니다</b> 완주 메달 걸이. 메달 12개까지 걸림.</p>
+      <p><b>삽니다</b> 페이스 끝까지 지키는 법. 값은 부르는 대로.</p>
+      <p><b>부탁</b> 노래 크게 틀고 뛰시는 분, 선곡 좋아요. 목록 공유 부탁.</p>
+    </div>
+  </div>
+  <div class="ad">
+    <div><p class="a1">ADVERTISEMENT</p><p class="a2">당신의 기록은 어느 면에 실릴까?</p></div>
+    <p class="a3">마이재인 러닝 기록<br/>딱지 · 신문 · 자격증</p>
+  </div>
+  <p class="parody">A parody for fun · 재미로 만든 패러디예요</p>
+</div>
+
+<!-- ═══════════════ 장면 — 공유 이미지 ═══════════════ -->
+<div class="scene" id="front-scene"><div class="tilt" data-clone="front-flat"></div><p class="scene-sign"><b>The MyJane Journal</b> 1면에 실렸어요</p></div>
+<div class="scene" id="local-scene"><div class="tilt" data-clone="local-flat"></div><p class="scene-sign"><b>The MyJane Journal</b> 사회면에 실렸어요</p></div>
+
+<script>
+  // 실루엣 채우기
+  const sil = document.getElementById("sil").content;
+  document.querySelectorAll("[data-sil]").forEach((el) => el.prepend(sil.cloneNode(true)));
+  // 장면: 평평한 지면을 복제해 기울인다
+  document.querySelectorAll("[data-clone]").forEach((slot) => {
+    const src = document.getElementById(slot.dataset.clone).cloneNode(true);
+    src.removeAttribute("id");
+    slot.replaceWith(Object.assign(src, { className: src.className + " tilt" }));
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>러닝자격증 — 시안</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" />
+<style>
+  /*
+    러닝자격증 시안 (2026-11-14).
+
+    ⚠️ **항목 위치는 레퍼런스(하이트진로 쏘맥자격증)를 그대로 쓴다** — 사용자 지시.
+      상단 띠: 왼쪽 큰 한글 제목 · 오른쪽 영문
+      왼쪽: 큰 사진
+      오른쪽: LICENSE NO. → 항목 넷(라벨 : 값)
+      오른쪽 아래: 증명 문구 → 굵은 회사명 → 그 옆 빨간 사각 도장(글자 세 줄)
+
+    바꾼 것 — 용어는 러닝 용어 · 색은 인스타그램 색 · 회사명은 「마이재인 주식회사」 ·
+    도장은 모양 그대로 글자만 「마이재인주식회사」.
+    → my-obsidian-vault / 50-Plans/J 러닝 기록 급수.md
+  */
+  :root {
+    /* 인스타그램 브랜드 그라디언트 */
+    --ig-blue: #4f5bd5; --ig-purple: #962fbf; --ig-pink: #d62976; --ig-orange: #fa7e1e; --ig-yellow: #feda75;
+    --ink: #1c1c1e; --dim: #6e6e73; --line: #e5e5ea;
+    --seal: #e0272f;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 50px; background: #ececf0; font-family: Pretendard, -apple-system, "Segoe UI", sans-serif; color: var(--ink); }
+
+  /* 플라스틱 카드 — 실물 비율에 가깝게 */
+  .card {
+    position: relative; width: 1000px; height: 620px; overflow: hidden; border-radius: 30px;
+    background: linear-gradient(160deg, #ffffff 0%, #f7f7f9 55%, #efeff3 100%);
+    box-shadow: 0 30px 70px rgba(40, 20, 70, .22), inset 0 0 0 1px rgba(0,0,0,.04);
+    display: grid; grid-template-rows: auto 1fr;
+  }
+  /* 카드 표면 광택 — 장식 */
+  .card::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(115deg, rgba(255,255,255,0) 46%, rgba(255,255,255,.22) 52%, rgba(255,255,255,0) 58%); }
+
+  /* ── 상단 띠 ── */
+  .band {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 112px; padding: 0 44px;
+    background: linear-gradient(100deg, var(--ig-blue) 0%, var(--ig-purple) 30%, var(--ig-pink) 66%, var(--ig-orange) 100%);
+    color: #fff;
+  }
+  .band .ko { font-size: 50px; font-weight: 900; letter-spacing: -0.04em; }
+  .band .en { font-size: 25px; font-weight: 800; letter-spacing: .02em; position: relative; top: 12px; }
+
+  /* ── 본문: 왼쪽 큰 사진 · 오른쪽 항목 ── */
+  .body { display: grid; grid-template-columns: 327px 1fr; gap: 56px; padding: 34px 44px; }
+  .photo {
+    width: 327px; height: 440px; border-radius: 6px; overflow: hidden; position: relative;
+    background: linear-gradient(160deg, #fdf2f8 0%, #f3e8ff 100%);
+  }
+  .photo svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .photo .hint { position: absolute; left: 0; right: 0; bottom: 14px; text-align: center; font-size: 15px; font-weight: 700; color: var(--ig-purple); }
+
+  .info { display: flex; flex-direction: column; }
+  .lic { margin: 6px 0 0; font-size: 17px; font-weight: 800; letter-spacing: .01em; }
+  .lic-no { margin: 6px 0 0 24px; font-size: 28px; letter-spacing: .14em; color: var(--dim); font-variant-numeric: tabular-nums; }
+
+  .rows { margin: 28px 0 0; display: grid; gap: 16px; }
+  .row { display: grid; grid-template-columns: 124px 36px 1fr; align-items: baseline; font-size: 29px; }
+  .row dt { font-weight: 800; display: flex; justify-content: space-between; }
+  .row .colon { font-weight: 800; text-align: center; }
+  .row dd { margin: 0; font-weight: 600; color: var(--ink); }
+  .row dd .sub { display: block; font-size: 23px; color: var(--ink); margin-top: 4px; }
+  /* 급수 — 같은 줄 높이를 지키되 색으로만 눈에 띄게 (레퍼런스 리듬을 깨지 않는다) */
+  .row dd .grade { font-weight: 900; background: linear-gradient(90deg, var(--ig-purple), var(--ig-pink), var(--ig-orange));
+    -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+  /* ── 오른쪽 아래: 증명 문구 · 회사명 · 도장 ── */
+  .proof-wrap { margin-top: auto; display: flex; align-items: flex-end; gap: 14px; }
+  /* 사진과 도장 사이 남은 폭을 다 차지하고 그 안에서 가운데 */
+  .proof { flex: 1 1 auto; text-align: center; margin: 0 -14px 0 -56px; } /* 사진 오른쪽 끝 ~ 도장 왼쪽 끝을 잰다 (본문 gap 56 · 도장 gap 14 포함) */
+  .proof p { margin: 0; font-size: 24px; font-weight: 600; }
+  .proof .co { margin-top: 4px; font-size: 40px; font-weight: 900; letter-spacing: -0.03em; }
+
+  /* 도장 — 레퍼런스처럼 기울이지 않은 빨간 사각, 글자 세 줄 왼쪽 정렬 */
+  .seal {
+    flex: 0 0 auto; width: 104px; height: 104px; border: 3.5px solid var(--seal); border-radius: 6px;
+    color: var(--seal); padding: 6px 7px; display: grid; grid-template-columns: repeat(3, 1fr); align-content: center; justify-items: center;
+    font-size: 26px; font-weight: 800; line-height: 1.12; opacity: .93;
+    margin-bottom: 2px;
+  }
+</style>
+</head>
+<body>
+
+<div class="card" id="license">
+  <div class="band">
+    <span class="ko">마이재인 러닝자격증</span>
+    <span class="en">RUNNING LICENSE</span>
+  </div>
+  <div class="body">
+    <div class="photo" aria-label="사진 자리">
+      <!-- 사진이 들어갈 자리. 실루엣은 사진을 건너뛰었을 때 쓰는 그림이기도 하다 -->
+      <svg viewBox="0 0 300 404" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+        <defs>
+          <linearGradient id="sil" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#962fbf" stop-opacity=".35" />
+            <stop offset="1" stop-color="#d62976" stop-opacity=".35" />
+          </linearGradient>
+        </defs>
+        <circle cx="150" cy="150" r="70" fill="url(#sil)" />
+        <path d="M30 404 C30 300 80 250 150 250 C220 250 270 300 270 404 Z" fill="url(#sil)" />
+      </svg>
+      <span class="hint">사진을 넣어 주세요</span>
+    </div>
+
+    <div class="info">
+      <p class="lic">LICENSE NO.</p>
+      <p class="lic-no">R.U.N 10K 2026 1114037</p>
+
+      <dl class="rows">
+        <div class="row"><dt><span>러</span><span>너</span></dt><span class="colon">:</span><dd>홍길동</dd></div>
+        <div class="row"><dt><span>급</span><span>수</span></dt><span class="colon">:</span><dd><span class="grade">10km 3급 +</span></dd></div>
+        <div class="row"><dt><span>기</span><span>록</span></dt><span class="colon">:</span><dd>52′00″<span class="sub">1km당 5′12″ · 시속 11.5km</span></dd></div>
+        <div class="row"><dt><span>완</span><span>주</span><span>일</span><span>자</span></dt><span class="colon">:</span><dd>2026.11.01</dd></div>
+      </dl>
+
+      <div class="proof-wrap">
+        <div class="proof">
+          <p>러닝자격증을 취득하였음을 증명함</p>
+          <p class="co">마이재인 주식회사</p>
+        </div>
+        <div class="seal"><span>마</span><span>이</span><span>재</span><span>인</span><span>주</span><span>식</span><span>회</span><span>사</span><span>인</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
