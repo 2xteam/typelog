@@ -188,7 +188,7 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
         if (!res.ok || !json.ok) throw new Error(json.error ?? "바꾸지 못했어요.");
         if (linkId === "race") setRace(json.value ?? null);
         else setRunner(json.value ?? null);
-        setMsg(linkId === "race" ? "대회 이름을 바꿨어요. 지면이 새로 조판됐어요." : "이름을 바꿨어요.");
+        setMsg(linkId === "race" ? "🗞️ 대회 이름을 바꿨어요. 지면이 새로 조판됐어요." : "✅ 이름을 바꿨어요.");
       } catch (e) {
         setMsg((e as Error).message);
       } finally {
@@ -247,7 +247,7 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
       a.download = target === "athlete" ? "myjane-athlete-license.png" : `myjane-running-${code}-${style}.png`;
       a.click();
       setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-      setMsg("이미지를 저장했어요.");
+      setMsg("✅ 이미지를 저장했어요. 인스타그램에 올려 보세요 📲");
     } catch (e) {
       setMsg((e as Error).message);
     } finally {
@@ -306,10 +306,10 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
           </span>
         ) : null}
         {v.detail.modifier === "+" ? (
-          <p className="rr-mod">체급 보정 + · 더 무거운 몸을 같은 거리만큼 옮겼어요. 급수에 +를 붙여 드려요.</p>
+          <p className="rr-mod">⚖️ 체급 보정 + · 더 무거운 몸을 같은 거리만큼 옮겼어요. 급수에 +를 붙여 드려요 💪</p>
         ) : v.detail.modifier === "-" ? (
           <p className="rr-mod">
-            체급 보정 − · 가벼운 몸으로 낸 기록이라 보정에서 조금 내려갔어요. 체중을 늘리란 뜻이 아니라, 같은 기록이면 더 무거운
+            ⚖️ 체급 보정 − · 가벼운 몸으로 낸 기록이라 보정에서 조금 내려갔어요. 체중을 늘리란 뜻이 아니라, 같은 기록이면 더 무거운
             쪽이 더 힘든 일을 했다는 계산이에요.
           </p>
         ) : null}
@@ -320,13 +320,12 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
         </ul>
         {t.content.funFact ? <p className="rr-fun">{t.content.funFact}</p> : null}
         <p className="rr-care">
-          <span aria-hidden="true">❤️</span>
-          {t.content.cautions?.[0] ?? "빨리 달린 것도 좋지만, 심장도 신호를 지켜요."}
+          {t.content.cautions?.[0] ?? "🫀 빨리 달린 것도 좋지만, 심장도 신호를 지켜요."}
         </p>
 
         {canEdit ? (
           <div className="rr-fields">
-            <p className="rr-fields-h">공유하기 전에 바꿀 수 있어요</p>
+            <p className="rr-fields-h">✏️ 공유하기 전에 바꿀 수 있어요</p>
             <label className="rr-race">
               <span>이름</span>
               <input
@@ -396,9 +395,9 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
 
       {athlete ? (
         <section className="rr-bonus">
-          <p className="rr-bonus-eyebrow">BONUS · 함께 발급</p>
-          <h2 className="rr-bonus-h">선수자격증도 나왔어요</h2>
-          <p className="rr-bonus-sub">신문에 실릴 만한 기록부터 선수자격증을 함께 드려요.</p>
+          <p className="rr-bonus-eyebrow">🎁 BONUS · 함께 발급</p>
+          <h2 className="rr-bonus-h">🎉 선수자격증도 나왔어요</h2>
+          <p className="rr-bonus-sub">📰 신문에 실릴 만한 기록부터 선수자격증을 함께 드려요 🏅</p>
           <Fit width={1000}>
             <License v={v} athlete />
           </Fit>
@@ -423,7 +422,7 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
       {progress !== null ? (
         <div className="rr-making" role="status" aria-live="polite">
           <div className="rr-making-card">
-            <p className="rr-making-t">이미지를 만드는 중이에요</p>
+            <p className="rr-making-t">🎨 이미지를 만드는 중이에요</p>
             <div className="rr-making-bar" aria-hidden="true">
               <i style={{ width: `${progress}%` }} />
             </div>

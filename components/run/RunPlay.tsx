@@ -349,7 +349,7 @@ function DurationStep({
   return (
     <>
       <h1 className="run-q">{item.text}</h1>
-      <p className="run-sub">{distLabel ? `${distLabel} 기록이에요. ` : ""}둘 중 아는 것 하나만 넣으면 돼요.</p>
+      <p className="run-sub">{distLabel ? `🏃 ${distLabel} 기록이에요. ` : ""}둘 중 아는 것 하나만 넣으면 돼요 👌</p>
       <div className="run-toggle" role="tablist">
         <button type="button" role="tab" aria-selected={mode === "total"} onClick={() => setMode("total")}>
           총 시간
@@ -409,7 +409,7 @@ function RaceStep({
   return (
     <>
       <h1 className="run-q">{item.text}</h1>
-      <p className="run-sub">결과에 대회 이름이 들어가요. 나중에 공유하기 전에도 바꿀 수 있어요.</p>
+      <p className="run-sub">📰 결과에 대회 이름이 들어가요. 나중에 공유하기 전에도 바꿀 수 있어요 ✏️</p>
       <input
         className="run-text"
         value={text}

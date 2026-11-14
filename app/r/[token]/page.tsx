@@ -105,8 +105,8 @@ export default function SharedLanding({ params }: { params: Promise<{ token: str
           <Sheet
             center
             eyebrow="A FRIEND SHARED"
-            headline={`${data.run.name} 님의 러닝 기록이에요`}
-            lead="나의 러닝 기록은 어떤 타입일까요? 기록만 넣으면 바로 나와요."
+            headline={`🏃 ${data.run.name} 님의 러닝 기록이에요`}
+            lead="🤔 나의 러닝 기록은 어떤 타입일까요? 기록만 넣으면 바로 나와요 ⏱️"
           />
         </>
       ) : (

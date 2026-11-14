@@ -87,7 +87,7 @@ export function Generating({
   return (
     <div className="run-gen" data-phase={phase} onClick={() => (skip.current = true)} role="status" aria-live="polite">
       <p className="run-gen-step">
-        {phase === 0 ? "기록 확인 중" : phase === 1 ? "2만 5천 명의 기록과 비교 중" : "발급 중"}
+        {phase === 0 ? "⏱️ 기록 확인 중" : phase === 1 ? "📊 2만 5천 명의 기록과 비교 중" : "✨ 발급 중"}
       </p>
       <p className="run-gen-clock">{formatClock(clock)}</p>
 
@@ -107,10 +107,10 @@ export function Generating({
       {phase >= 1 ? <span className="run-gen-dot" style={{ left: `${x}%` }} /> : null}
 
       <p className="run-gen-pct">
-        {phase >= 1 ? (pct === null ? "완주가 곧 기록이에요" : pct <= 0.5 ? "상위 0.5% 이내" : `상위 ${pct}%`) : " "}
+        {phase >= 1 ? (pct === null ? "🏁 완주가 곧 기록이에요" : pct <= 0.5 ? "🔥 상위 0.5% 이내" : `🔥 상위 ${pct}%`) : " "}
       </p>
       <div className="run-gen-flash" aria-hidden="true" />
-      <p className="run-fine">누르면 바로 넘어가요</p>
+      <p className="run-fine">👆 누르면 바로 넘어가요</p>
     </div>
   );
 }

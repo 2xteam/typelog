@@ -125,8 +125,8 @@ export function PhotoStep({
             <path d="M46 82 q14 12 28 0" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
           </svg>
         </div>
-        <p className="run-sub">얼굴이 잘 보이는 사진이면 더 재밌어요. 본인 사진을 넣어 주세요.</p>
-        <p className="run-fine">사진은 이 기기 안에서만 쓰고 서버로 보내지 않아요.</p>
+        <p className="run-sub">📸 얼굴이 잘 보이는 사진이면 더 재밌어요. 본인 사진을 넣어 주세요 😊</p>
+        <p className="run-fine">🔒 사진은 이 기기 안에서만 쓰고 서버로 보내지 않아요.</p>
         <div className="run-actions">
           <button type="button" className="run-btn run-btn--main" onClick={() => fileRef.current?.click()}>
             사진 고르기
@@ -149,7 +149,7 @@ export function PhotoStep({
   const h = img.height * scale;
   return (
     <div className="run-photo-fit">
-      <p className="run-sub">얼굴을 타원 안에, 눈을 가로선에 맞춰 주세요</p>
+      <p className="run-sub">🙂 얼굴을 타원 안에, 👀 눈을 가로선에 맞춰 주세요</p>
       <div
         className="run-fit-stage"
         style={{ width: VW, height: VH }}
