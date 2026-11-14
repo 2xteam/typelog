@@ -5,7 +5,8 @@
   → my-obsidian-vault / 50-Plans/J 러닝 기록 급수.md
 */
 .rr {
-  --rr-sans: Pretendard, var(--rf-sans), -apple-system, sans-serif;
+  /* 이미지에 담기는 글꼴(next/font 의 Noto Sans KR)을 먼저 — 화면과 저장 이미지가 같게. Pretendard 는 다른 도메인이라 이미지에 못 담는다 */
+  --rr-sans: var(--rf-sans), Pretendard, -apple-system, sans-serif;
   --ig: linear-gradient(100deg, #4f5bd5 0%, #962fbf 30%, #d62976 66%, #fa7e1e 100%);
   max-width: 1040px; margin: 0 auto 48px; color: #1c1c1e;
 }
@@ -23,8 +24,8 @@
   background: linear-gradient(115deg, rgba(255,255,255,0) 46%, rgba(255,255,255,.22) 52%, rgba(255,255,255,0) 58%); }
 .rl-band { display: flex; align-items: center; justify-content: space-between; height: 112px; padding: 0 44px;
   background: linear-gradient(100deg, #4f5bd5 0%, #962fbf 30%, #d62976 66%, #fa7e1e 100%); color: #fff; }
-.rl-ko { font-size: 50px; font-weight: 900; letter-spacing: -0.04em; }
-.rl-en { font-size: 25px; font-weight: 800; letter-spacing: 0.02em; position: relative; top: 12px; }
+.rl-ko { font-size: 50px; font-weight: 900; letter-spacing: -0.04em; white-space: nowrap; }
+.rl-en { font-size: 25px; font-weight: 800; letter-spacing: 0.02em; position: relative; top: 12px; white-space: nowrap; flex-shrink: 0; }
 .rl-body { display: grid; grid-template-columns: 327px 1fr; gap: 56px; padding: 34px 44px; }
 .rl-photo { width: 327px; height: 440px; border-radius: 6px; overflow: hidden; position: relative; background: linear-gradient(160deg, #fdf2f8 0%, #f3e8ff 100%); }
 .rl-photo svg { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -32,18 +33,18 @@
 .rl-info { display: flex; flex-direction: column; }
 .rl-lic { margin: 6px 0 0; font-size: 17px; font-weight: 800; letter-spacing: 0.01em; }
 .rl-lic-no { margin: 6px 0 0 24px; font-size: 28px; letter-spacing: 0.14em; color: #6e6e73; font-variant-numeric: tabular-nums; }
-.rl-rows { margin: 28px 0 0; display: grid; gap: 16px; }
-.rl-row { display: grid; grid-template-columns: 124px 36px 1fr; align-items: baseline; font-size: 29px; }
+.rl-rows { margin: 24px 0 0; display: grid; gap: 12px; }
+.rl-row { display: grid; grid-template-columns: 124px 36px 1fr; align-items: baseline; font-size: 29px; line-height: 1.22; }
 .rl-row dt { font-weight: 800; display: flex; justify-content: space-between; }
 .rl-colon { font-weight: 800; text-align: center; }
 .rl-row dd { margin: 0; font-weight: 600; color: #1c1c1e; }
-.rl-sub { display: block; font-size: 23px; margin-top: 4px; }
+.rl-sub { display: block; font-size: 23px; margin-top: 2px; }
 .rl-grade { font-weight: 900; background: linear-gradient(90deg, #962fbf, #d62976, #fa7e1e);
   -webkit-background-clip: text; background-clip: text; color: transparent; }
 .rl-proof-wrap { margin-top: auto; display: flex; align-items: flex-end; gap: 14px; }
 .rl-proof { flex: 1 1 auto; text-align: center; margin: 0 -14px 0 -56px; }
-.rl-proof p { margin: 0; font-size: 24px; font-weight: 600; }
-.rl-co { margin-top: 4px !important; font-size: 40px !important; font-weight: 900 !important; letter-spacing: -0.03em; }
+.rl-proof p { margin: 0; font-size: 24px; font-weight: 600; line-height: 1.3; }
+.rl-co { margin-top: 2px !important; font-size: 40px !important; font-weight: 900 !important; letter-spacing: -0.03em; line-height: 1.15; }
 .rl-seal {
   /* 도장 — 굵은 명조 · 두꺼운 테두리 · 잉크가 군데군데 덜 묻은 질감 (사용자 2026-11-14) */
   flex: 0 0 auto; width: 114px; height: 114px; border: 6px solid #d8232a; border-radius: 7px; color: #d8232a;

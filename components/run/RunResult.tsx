@@ -119,14 +119,17 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
 
   // 사진 — 이 기기에만 있다
   useEffect(() => {
-    let url: string | null = null;
-    void loadPhoto(data.attemptId).then((blob) => {
-      if (!blob) return;
-      url = URL.createObjectURL(blob);
-      setPhoto(url);
+    /*
+      사진은 data: 주소로 들고 있는다 — blob: 주소면 이미지를 그릴 때 다시 불러와야 하고,
+      아이폰 사파리는 첫 번째로 그릴 때 그걸 놓쳐 사진 없이 저장됐다(2026-11-14).
+    */
+    let alive = true;
+    void loadPhoto(data.attemptId).then(async (blob) => {
+      if (!blob || !alive) return;
+      setPhoto(await blobToDataUrl(blob));
     });
     return () => {
-      if (url) URL.revokeObjectURL(url);
+      alive = false;
     };
   }, [data.attemptId]);
 
@@ -443,7 +446,7 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
             <PhotoStep
               onDone={async (blob) => {
                 await savePhoto(data.attemptId, blob);
-                setPhoto(URL.createObjectURL(blob));
+                setPhoto(await blobToDataUrl(blob));
                 setEditPhoto(false);
               }}
               onSkip={() => setEditPhoto(false)}
@@ -567,4 +570,12 @@ async function embedFontCSS(node: HTMLElement, onProgress?: (k: number) => void)
   await Promise.all(Array.from({ length: 6 }, worker));
   onProgress?.(1);
   return out.join("\n");
+}
+
+function blobToDataUrl(blob: Blob): Promise<string> {
+  return new Promise((resolve) => {
+    const r = new FileReader();
+    r.onload = () => resolve(String(r.result));
+    r.readAsDataURL(blob);
+  });
 }
