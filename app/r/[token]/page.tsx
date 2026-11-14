@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { AppIcon } from "@/components/AppIcon";
 import { Sheet } from "@/components/Sheet";
 import { getGuestKey } from "@/lib/guestKey";
+import { loginUrl, signupUrl } from "@/lib/portal";
 import { SharedLicense } from "@/components/run/SharedLicense";
 import type { RecordDetail } from "@/lib/record";
 
@@ -43,6 +44,8 @@ export default function SharedLanding({ params }: { params: Promise<{ token: str
   const [data, setData] = useState<Shared | null>(null);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  /** 비회원 한 번을 이미 썼다(409) — 가입 · 로그인 버튼을 함께 보여 준다(사용자 2026-11-14) */
+  const [needSignup, setNeedSignup] = useState(false);
 
   useEffect(() => {
     void (async () => {
@@ -64,6 +67,7 @@ export default function SharedLanding({ params }: { params: Promise<{ token: str
     if (!data) return;
     setBusy(true);
     setMsg(null);
+    setNeedSignup(false);
     try {
       const res = await fetch("/api/attempts", {
         method: "POST",
@@ -73,6 +77,7 @@ export default function SharedLanding({ params }: { params: Promise<{ token: str
       const json = await res.json();
       if (!res.ok || !json.ok || !json.attemptId) {
         setMsg(json.error ?? "시작할 수 없어요.");
+        setNeedSignup(res.status === 409);
         return;
       }
       router.push(`/r/${token}/play/${json.attemptId}`);
@@ -181,6 +186,16 @@ export default function SharedLanding({ params }: { params: Promise<{ token: str
         )}
 
         {msg ? <p className="quiz-msg">{msg}</p> : null}
+        {needSignup ? (
+          <div style={{ display: "flex", gap: 10, marginTop: 14, justifyContent: "center", flexWrap: "wrap" }}>
+            <a className="btn btn--primary" href={signupUrl(`/r/${token}`)}>
+              가입하고 다시 하기 →
+            </a>
+            <a className="btn btn--ghost" href={loginUrl(`/r/${token}`)}>
+              이미 회원이면 로그인
+            </a>
+          </div>
+        ) : null}
         {data.quiz.disclaimer ? (
           <p className="result-fineprint">{data.quiz.disclaimer}</p>
         ) : null}
