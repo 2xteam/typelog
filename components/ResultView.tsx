@@ -67,6 +67,9 @@ export function ResultView({
   const [data, setData] = useState<Payload | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [shareMsg, setShareMsg] = useState<string | null>(null);
+  /** 만든 결과 링크 — 복사가 안 됐을 때 손으로 옮기거나 다시 복사하라고 보여 준다 */
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const load = useCallback(async () => {
     const res = await fetch(
@@ -120,39 +123,97 @@ export function ResultView({
     beforeShare.current = fn;
   }, []);
 
-  const share = useCallback(async () => {
+  /**
+   * 「결과 링크 만들기」 — 링크가 만들어지면 **바로 클립보드에 복사**하고 복사됐다고 알린다(사용자 2026-11-14).
+   *
+   * ⚠️ iPhone Safari 는 **누른 그 순간**에만 클립보드 쓰기를 허락한다. 사진 올리기 · 링크 만들기를
+   * 기다린 뒤 writeText 하면 권한이 사라져 실패한다(그래서 전엔 주소만 덩그러니 보였다).
+   * → 누르는 순간 `ClipboardItem` 에 「곧 나올 주소」(Promise)를 담아 쓰기를 시작해 두고,
+   *   안 되면 writeText → textarea 복사 순으로 한 번 더 해 본다. 다 안 되면 링크 상자를 보여 준다.
+   */
+  const share = useCallback(() => {
     setShareMsg(null);
+    setShareUrl(null);
+    setCopied(false);
+    let giveUrl: (u: string) => void = () => {};
+    let noUrl: (e: Error) => void = () => {};
+    const urlReady = new Promise<string>((res, rej) => {
+      giveUrl = res;
+      noUrl = rej;
+    });
+    let early: Promise<boolean> | null = null;
     try {
-      if (beforeShare.current) {
-        setShareMsg("📸 자격증 사진을 올리는 중이에요…");
-        const stop = await beforeShare.current();
-        if (stop) {
-          setShareMsg(stop);
-          return;
-        }
-      }
-      const res = await fetch(`/api/attempts/${attemptId}/share`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ guestKey: getGuestKey() }),
-      });
-      const json = await res.json();
-      if (!res.ok || !json.ok) {
-        setShareMsg(json.error ?? "링크를 만들지 못했어요.");
-        return;
-      }
-      const url = `${window.location.origin}${json.path}`;
-      try {
-        await navigator.clipboard.writeText(url);
-        setShareMsg("링크를 복사했어요. 친구에게 보내 보세요.");
-      } catch {
-        // 클립보드를 못 쓰는 브라우저가 있다. 주소를 보여 주면 손으로 옮길 수 있다
-        setShareMsg(url);
+      if (typeof ClipboardItem !== "undefined" && navigator.clipboard?.write) {
+        early = navigator.clipboard
+          .write([new ClipboardItem({ "text/plain": urlReady.then((u) => new Blob([u], { type: "text/plain" })) })])
+          .then(
+            () => true,
+            () => false,
+          );
       }
     } catch {
-      setShareMsg("네트워크가 불안정해요.");
+      early = null;
     }
+    urlReady.catch(() => {});
+
+    void (async () => {
+      try {
+        if (beforeShare.current) {
+          setShareMsg("📸 자격증 사진을 올리는 중이에요…");
+          const stop = await beforeShare.current();
+          if (stop) {
+            noUrl(new Error(stop));
+            setShareMsg(stop);
+            return;
+          }
+        }
+        setShareMsg("🔗 링크를 만드는 중이에요…");
+        const res = await fetch(`/api/attempts/${attemptId}/share`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ guestKey: getGuestKey() }),
+        });
+        const json = await res.json();
+        if (!res.ok || !json.ok) {
+          noUrl(new Error("fail"));
+          setShareMsg(json.error ?? "링크를 만들지 못했어요.");
+          return;
+        }
+        const url = `${window.location.origin}${json.path}`;
+        giveUrl(url);
+        let ok = early ? await early : false;
+        if (!ok) ok = await copyText(url);
+        setShareUrl(url);
+        setCopied(ok);
+        setShareMsg(ok ? "✅ 링크를 복사했어요! 친구에게 붙여넣어 보내 보세요 📋" : "👇 아래 링크를 복사해서 친구에게 보내 주세요.");
+      } catch {
+        noUrl(new Error("network"));
+        setShareMsg("네트워크가 불안정해요.");
+      }
+    })();
   }, [attemptId]);
+
+  /** 링크 상자의 「복사」 — 직접 누른 것이라 어느 브라우저에서도 된다 */
+  const copyAgain = useCallback(async () => {
+    if (!shareUrl) return;
+    const ok = await copyText(shareUrl);
+    setCopied(ok);
+    setShareMsg(ok ? "✅ 링크를 복사했어요! 친구에게 붙여넣어 보내 보세요 📋" : "링크를 길게 눌러 복사해 주세요.");
+  }, [shareUrl]);
+
+  const shareBox = shareMsg ? (
+    <div className="share-done" data-ok={copied ? "true" : undefined} role="status" aria-live="polite">
+      <p className="share-done-msg">{shareMsg}</p>
+      {shareUrl ? (
+        <div className="share-done-link">
+          <input readOnly value={shareUrl} onFocus={(e) => e.currentTarget.select()} aria-label="결과 링크" />
+          <button type="button" className="btn btn--ghost" onClick={() => void copyAgain()}>
+            {copied ? "다시 복사" : "복사"}
+          </button>
+        </div>
+      ) : null}
+    </div>
+  ) : null;
 
   if (msg) {
     return (
@@ -213,7 +274,7 @@ export function ResultView({
               </>
             ) : null}
           </div>
-          {shareMsg ? <p className="quiz-msg">{shareMsg}</p> : null}
+          {shareBox}
           {!bare ? (
             <p className="result-fineprint">
               🔗 결과 링크로는 나의 러닝 자격증이 보여요(자격증 사진이 함께 올라가요). 📰 신문 · 📸 딱지는 위의 이미지 저장 · 공유하기로 직접 나눠 주세요.
@@ -348,10 +409,34 @@ export function ResultView({
             </>
           ) : null}
         </div>
-        {shareMsg ? <p className="quiz-msg">{shareMsg}</p> : null}
+        {shareBox}
         {/* 그 브랜드가 만들었거나 관련된 것처럼 읽히면 안 된다 */}
         {quiz.disclaimer ? <p className="result-fineprint">{quiz.disclaimer}</p> : null}
       </Sheet>
     </>
   );
+}
+
+/** 글자를 클립보드에 — 되면 true. 안 되는 브라우저는 textarea 를 골라 복사한다 */
+async function copyText(text: string): Promise<boolean> {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, text.length);
+      const ok = document.execCommand("copy");
+      ta.remove();
+      return ok;
+    } catch {
+      return false;
+    }
+  }
 }

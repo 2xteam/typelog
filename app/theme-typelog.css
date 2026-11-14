@@ -115,3 +115,15 @@
 /* 공유 화면 맨 위 TypeLog — 하단 myjane 워드마크와 같은 패턴(.myjane-mark), 조금 크게 */
 .shared-brand { font-family: Pretendard, -apple-system, sans-serif; }
 .shared-wordmark { font-size: 1.45rem; letter-spacing: -0.04em; }
+
+/* 결과 링크 — 만들면 바로 복사, 복사됐다는 문구와 링크 상자 */
+.share-done { margin: 16px auto 0; max-width: 520px; padding: 14px 16px; border-radius: 16px;
+  background: var(--bg-card); border: 1.5px solid var(--accent-subtle); text-align: center; animation: share-pop 0.35s ease-out both; }
+.share-done[data-ok] { border-color: var(--success); background: var(--success-subtle); }
+.share-done-msg { margin: 0; font-size: 15px; font-weight: 800; color: var(--text-primary); word-break: keep-all; }
+.share-done-link { display: flex; gap: 8px; margin-top: 10px; }
+.share-done-link input { flex: 1; min-width: 0; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--input-border);
+  background: var(--input-bg); font-size: 13px; color: var(--text-secondary); }
+.share-done-link .btn { flex-shrink: 0; padding-inline: 16px; }
+@keyframes share-pop { from { opacity: 0; transform: translateY(6px) scale(0.98); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .share-done { animation: none; } }
