@@ -180,6 +180,27 @@ export function ResultView({
           </Sheet>
         ) : null}
         <RunResult data={data as unknown as RunPayload} bare={bare} />
+        {/* 다른 질문지와 같은 마무리 — 결과 링크로 들어온 사람은 가입 없이 해 볼 수 있다 */}
+        <Sheet center eyebrow="AGAIN" headline={bare ? "다른 타입도 궁금하죠?" : "다시 해볼까요?"}>
+          <div style={{ display: "flex", gap: 10, marginTop: 18, justifyContent: "center", flexWrap: "wrap" }}>
+            <Link className="btn btn--primary" href="/types">
+              {bare ? "타입로그 둘러보기 →" : "다른 것도 해보기 →"}
+            </Link>
+            {!isGuest ? (
+              <>
+                <button type="button" className="btn btn--ghost" onClick={() => void share()}>
+                  결과 링크 만들기
+                </button>
+                {!bare ? (
+                  <Link className="btn btn--ghost" href="/records">
+                    내 기록 보기
+                  </Link>
+                ) : null}
+              </>
+            ) : null}
+          </div>
+          {shareMsg ? <p className="quiz-msg">{shareMsg}</p> : null}
+        </Sheet>
       </>
     );
   }

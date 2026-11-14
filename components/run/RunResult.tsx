@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { getGuestKey } from "@/lib/guestKey";
 import { loadPhoto, savePhoto } from "@/lib/runPhoto";
@@ -227,6 +226,26 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
     [style],
   );
 
+  const saveImage = useCallback(async (target: "main" | "athlete" = "main") => {
+    setBusy(true);
+    setMsg(null);
+    setProgress(0);
+    try {
+      const blob = await render(target);
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = target === "athlete" ? "myjane-athlete-license.png" : `myjane-running-${code}-${style}.png`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+      setMsg("이미지를 저장했어요.");
+    } catch (e) {
+      setMsg((e as Error).message);
+    } finally {
+      setBusy(false);
+      setProgress(null);
+    }
+  }, [render, code, style]);
+
   const shareImage = useCallback(async (target: "main" | "athlete" = "main") => {
     setBusy(true);
     setMsg(null);
@@ -249,27 +268,6 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
     }
   }, [render, code]);
 
-  const copyLink = useCallback(async () => {
-    setMsg(null);
-    try {
-      const res = await fetch(`/api/attempts/${data.attemptId}/share`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ guestKey: getGuestKey() }),
-      });
-      const json = await res.json();
-      if (!res.ok || !json.ok) throw new Error(json.error ?? "링크를 만들지 못했어요.");
-      const url = `${window.location.origin}${json.path}`;
-      try {
-        await navigator.clipboard.writeText(url);
-        setMsg("링크를 복사했어요. 링크로 보면 사진 없이 보여요.");
-      } catch {
-        setMsg(url);
-      }
-    } catch (e) {
-      setMsg((e as Error).message);
-    }
-  }, [data.attemptId]);
 
   if (!v || !data.result.type) {
     return <p className="rr-msg">결과를 그릴 수 없어요.</p>;
@@ -374,24 +372,14 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
           <button type="button" className="rr-btn rr-btn--main" disabled={busy} onClick={() => void shareImage()}>
             공유하기
           </button>
-          <button type="button" className="rr-btn" onClick={() => void copyLink()}>
-            링크 복사
+          <button type="button" className="rr-btn" disabled={busy} onClick={() => void saveImage()}>
+            이미지 저장
           </button>
           {!bare ? (
             <button type="button" className="rr-btn" onClick={() => setEditPhoto(true)}>
               {photo ? "사진 바꾸기" : "사진 넣기"}
             </button>
           ) : null}
-          <button
-            type="button"
-            className="rr-btn"
-            onClick={() => {
-              setFx(kind);
-              setFxKey((k) => k + 1);
-            }}
-          >
-            다시 보기
-          </button>
         </div>
         {msg ? <p className="rr-msg">{msg}</p> : null}
       </div>
@@ -408,19 +396,14 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
             <button type="button" className="rr-btn rr-btn--main" disabled={busy} onClick={() => void shareImage("athlete")}>
               선수자격증 공유하기
             </button>
+            <button type="button" className="rr-btn" disabled={busy} style={{ gridColumn: "1 / -1" }} onClick={() => void saveImage("athlete")}>
+              선수자격증 이미지 저장
+            </button>
           </div>
         </section>
       ) : null}
 
-      {/* 맨 아래 — 선수자격증이 함께 나와도 그 아래에 둔다(사용자 2026-11-14) */}
       <div className="rr-after">
-        {!bare ? (
-          <div className="rr-actions">
-            <Link className="rr-btn" href="/types" style={{ gridColumn: "1 / -1" }}>
-              다른 것도 해보기 →
-            </Link>
-          </div>
-        ) : null}
         <p className="rr-disclaimer">
           {data.quiz.disclaimer ? `${data.quiz.disclaimer} · ` : ""}
           {distLabel(v.detail)} 기준표 {v.detail.version}
