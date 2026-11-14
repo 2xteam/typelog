@@ -4,6 +4,7 @@ import { notFound, serverError } from "@/lib/auth";
 import { getQuizModel } from "@/models/Quiz";
 import { getResultTypeModel } from "@/models/ResultType";
 import { getAttemptModel } from "@/models/Attempt";
+import { getUserModel } from "@/models/User";
 import { canStart } from "@/lib/schedule";
 import { ageLabel } from "@/lib/ageRange";
 import { flattenItems } from "@/lib/scoring";
@@ -30,7 +31,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
     await connectDB();
     const attempt = await getAttemptModel()
       .findOne({ "share.token": token, "share.isPublic": true, status: "completed" })
-      .select({ quizId: 1, result: 1 })
+      .select({ quizId: 1, result: 1, answers: 1, owner: 1, attemptNo: 1, completedAt: 1 })
       .lean();
     if (!attempt) return notFound("없는 링크예요.");
     // 링크를 연 횟수 — 공유 성과(admin). 기다리지 않는다
@@ -50,8 +51,32 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
     const check = canStart(quiz.schedule);
     const open = quiz.status === "published" && check.ok;
 
+    /**
+     * 러닝 기록 — 결과 링크로는 **자격증만** 보여 준다(사용자 2026-11-14).
+     * 신문 · 딱지는 본인 화면에서만 보고 이미지로 직접 나눈다. 신문 이상이면 선수자격증.
+     * 사진은 본인 기기에만 있으므로 여기엔 없다(실루엣).
+     */
+    let run: Record<string, unknown> | null = null;
+    if (quiz.experience === "running" && attempt.result?.detail) {
+      const ans = (id: string) => (attempt.answers ?? []).find((a) => a.linkId === id)?.value as string | null | undefined;
+      let name = ans("runner") ?? null;
+      if (!name && attempt.owner?.kind === "user" && attempt.owner.userId) {
+        const u = await getUserModel().findById(attempt.owner.userId).select({ nickname: 1 }).lean();
+        name = (u as { nickname?: string | null } | null)?.nickname ?? null;
+      }
+      run = {
+        attemptId: String(attempt._id),
+        attemptNo: attempt.attemptNo ?? 1,
+        code: attempt.result.code,
+        detail: attempt.result.detail,
+        completedAt: attempt.completedAt ?? null,
+        name: name || "러너",
+      };
+    }
+
     return NextResponse.json({
       ok: true,
+      run,
       quiz: {
         slug: quiz.slug,
         title: quiz.title,

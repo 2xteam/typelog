@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { EYE_Y, FACE_H, FACE_OVAL, FACE_W, readImage } from "@/lib/runPhoto";
+import { EYE_Y, FACE_H, FACE_OVAL, FACE_W, WIDE_FACE, WIDE_H, WIDE_W, readImage } from "@/lib/runPhoto";
 
 /**
  * ⑤ 사진 — 얼굴 사진 한 장을 골라 **틀에 맞춘다.**
@@ -19,7 +19,8 @@ export function PhotoStep({
   onDone,
   onSkip,
 }: {
-  onDone: (blob: Blob) => void;
+  /** 얼굴 크롭(자격증 · 딱지) · 넓은 가로 사진(신문) */
+  onDone: (blob: Blob, wide: Blob | null) => void;
   onSkip: () => void;
 }) {
   const fileRef = useRef<HTMLInputElement>(null);
@@ -97,15 +98,38 @@ export function PhotoStep({
     ctx.translate(FACE_W / 2 + pos.x / VIEW, FACE_H / 2 + pos.y / VIEW);
     ctx.scale(k, k);
     ctx.drawImage(img, -img.width / 2, -img.height / 2);
-    c.toBlob(
-      (blob) => {
-        setBusy(false);
-        if (blob) onDone(blob);
-        else setMsg("사진을 만들지 못했어요. 다시 해 볼까요?");
-      },
-      "image/jpeg",
-      0.88,
-    );
+
+    /*
+      넓은 가로 사진 — 얼굴 타원 중심이 가리키는 원본 사진의 점(P)을 (WIDE_FACE.cx, cy) 에 두고,
+      얼굴 높이(타원 지름 540)가 WIDE_FACE.h 가 되게 줄인다. 원본 바깥은 바탕색.
+    */
+    const ox = FACE_W / 2 + pos.x / VIEW;
+    const oy = FACE_H / 2 + pos.y / VIEW;
+    const px = img.width / 2 + (FACE_OVAL.cx - ox) / k;
+    const py = img.height / 2 + (FACE_OVAL.cy - oy) / k;
+    const kw = k * (WIDE_FACE.h / (FACE_OVAL.ry * 2));
+    const w = document.createElement("canvas");
+    w.width = WIDE_W;
+    w.height = WIDE_H;
+    const wc = w.getContext("2d")!;
+    wc.fillStyle = "#d9d4cc";
+    wc.fillRect(0, 0, WIDE_W, WIDE_H);
+    // 사진이 칸보다 작으면 바깥이 비므로 — 같은 사진을 꽉 차게 흐리게 깔아 둔다(흐림을 못 하는 브라우저는 그냥 깐다)
+    const cover = Math.max(WIDE_W / img.width, WIDE_H / img.height) * 1.15;
+    wc.save();
+    wc.filter = "blur(28px) brightness(0.9)";
+    wc.drawImage(img, (WIDE_W - img.width * cover) / 2, (WIDE_H - img.height * cover) / 2, img.width * cover, img.height * cover);
+    wc.restore();
+    wc.translate(WIDE_FACE.cx, WIDE_FACE.cy);
+    wc.scale(kw, kw);
+    wc.drawImage(img, -px, -py);
+
+    const toBlob = (cv: HTMLCanvasElement) =>
+      new Promise<Blob | null>((resolve) => cv.toBlob((b) => resolve(b), "image/jpeg", 0.88));
+    const [blob, wide] = await Promise.all([toBlob(c), toBlob(w)]);
+    setBusy(false);
+    if (blob) onDone(blob, wide);
+    else setMsg("사진을 만들지 못했어요. 다시 해 볼까요?");
   }, [img, pos, scale, onDone]);
 
   if (!img || !url) {

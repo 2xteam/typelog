@@ -51,7 +51,7 @@ function kindOf(code: string): Kind {
 }
 
 /** 고정 크기 시안을 화면 폭에 맞춰 줄인다 */
-function Fit({ width, children }: { width: number; children: React.ReactNode }) {
+export function Fit({ width, children }: { width: number; children: React.ReactNode }) {
   const outer = useRef<HTMLDivElement>(null);
   const inner = useRef<HTMLDivElement>(null);
   const [box, setBox] = useState({ scale: 1, h: 0 });
@@ -92,6 +92,7 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
   const detail = data.result.detail;
   const kind = kindOf(code);
   const [photo, setPhoto] = useState<string | null>(null);
+  const [photoWide, setPhotoWide] = useState<string | null>(null);
   const [race, setRace] = useState<string | null>(
     (data.answers.find((a) => a.linkId === "race")?.value as string | null) ?? null,
   );
@@ -127,6 +128,10 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
       if (!blob || !alive) return;
       setPhoto(await blobToDataUrl(blob));
     });
+    void loadPhoto(data.attemptId, "wide").then(async (blob) => {
+      if (!blob || !alive) return;
+      setPhotoWide(await blobToDataUrl(blob));
+    });
     return () => {
       alive = false;
     };
@@ -158,9 +163,10 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
             race,
             completedAt: data.result.completedAt ? new Date(data.result.completedAt) : new Date(),
             photo,
+            photoWide,
           }
         : null,
-    [data, code, detail, race, runner, photo],
+    [data, code, detail, race, runner, photo, photoWide],
   );
 
   /** 결과에 들어가는 글자 하나 고치기 — 러너 이름 · 대회 이름 (editableAfterFinish 문항) */
@@ -430,9 +436,10 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
           <div className="run-stage">
             <h1 className="run-q">사진을 넣어 주세요</h1>
             <PhotoStep
-              onDone={async (blob) => {
-                await savePhoto(data.attemptId, blob);
+              onDone={async (blob, wide) => {
+                await savePhoto(data.attemptId, blob, wide);
                 setPhoto(await blobToDataUrl(blob));
+                setPhotoWide(wide ? await blobToDataUrl(wide) : null);
                 setEditPhoto(false);
               }}
               onSkip={() => setEditPhoto(false)}

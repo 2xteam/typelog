@@ -15,6 +15,14 @@ export const FACE_H = 720;
 export const FACE_OVAL = { cx: 300, cy: 330, rx: 210, ry: 270 };
 export const EYE_Y = 300;
 
+/**
+ * 넓게 잡은 가로 사진 — 신문 사진 칸용(사용자 2026-11-14 「얼굴만이 아니라 더 크게」).
+ * 같은 사진에서 얼굴 타원 중심이 (600, 380) 에 오고, 얼굴 높이가 화면의 약 38% 가 되게 넓힌다.
+ */
+export const WIDE_W = 1200;
+export const WIDE_H = 900;
+export const WIDE_FACE = { cx: 600, cy: 380, h: 340 };
+
 const DB = "typelog-run";
 const STORE = "photos";
 
@@ -37,18 +45,23 @@ async function tx<T>(mode: IDBTransactionMode, fn: (s: IDBObjectStore) => IDBReq
 }
 
 /** 응시 1건의 사진. 같은 기기에서 다시 볼 때 보인다 */
-export async function savePhoto(attemptId: string, blob: Blob) {
+export async function savePhoto(attemptId: string, blob: Blob, wide?: Blob | null) {
   try {
     await tx("readwrite", (s) => s.put(blob, attemptId));
     await tx("readwrite", (s) => s.put(blob, "latest"));
+    if (wide) {
+      await tx("readwrite", (s) => s.put(wide, `${attemptId}:wide`));
+      await tx("readwrite", (s) => s.put(wide, "latest:wide"));
+    }
   } catch {
     /* 저장소를 못 쓰는 브라우저(사생활 보호 창 등) — 이번 화면에서만 쓴다 */
   }
 }
 
-export async function loadPhoto(attemptId: string): Promise<Blob | null> {
+export async function loadPhoto(attemptId: string, kind: "face" | "wide" = "face"): Promise<Blob | null> {
   try {
-    return ((await tx("readonly", (s) => s.get(attemptId))) as Blob | undefined) ?? null;
+    const key = kind === "wide" ? `${attemptId}:wide` : attemptId;
+    return ((await tx("readonly", (s) => s.get(key))) as Blob | undefined) ?? null;
   } catch {
     return null;
   }

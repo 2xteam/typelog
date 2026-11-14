@@ -14,6 +14,8 @@ export type RunView = {
   completedAt: Date;
   /** 얼굴 사진 (이 기기에만 있다) — 없으면 실루엣 */
   photo: string | null;
+  /** 넓게 잡은 가로 사진 — 신문용. 없으면 얼굴 사진 */
+  photoWide?: string | null;
 };
 
 export const DIST_LABEL: Record<string, string> = { "5k": "5km", "10k": "10km", half: "하프", full: "풀" };

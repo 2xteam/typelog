@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { AppIcon } from "@/components/AppIcon";
 import { Sheet } from "@/components/Sheet";
 import { getGuestKey } from "@/lib/guestKey";
+import { SharedLicense } from "@/components/run/SharedLicense";
+import type { RecordDetail } from "@/lib/record";
 
 /**
  * 공유 링크 첫 화면 — 친구가 받은 링크를 열면 여기다.
@@ -31,6 +33,8 @@ type Shared = {
   open: boolean;
   notice: string | null;
   friend: { name: string; subtitle: string | null; emoji: string } | null;
+  /** 러닝 기록 — 자격증으로 보여 준다 */
+  run?: { attemptId: string; attemptNo: number; code: string; detail: RecordDetail; completedAt: string | null; name: string } | null;
 };
 
 export default function SharedLanding({ params }: { params: Promise<{ token: string }> }) {
@@ -95,39 +99,51 @@ export default function SharedLanding({ params }: { params: Promise<{ token: str
         <span>TypeLog</span>
       </div>
 
-      <Sheet
-        tone="dark"
-        center
-        eyebrow="A FRIEND SHARED"
-        /**
-         * 타입 이름을 문장에 끼우지 않고 **헤드라인으로 세운다.**
-         *
-         * "친구는 {이름}이 나왔어요" 처럼 쓰면 조사가 걸린다. 한글 이름은
-         * 받침으로 이/가를 고를 수 있지만 로마자 이름은 한글 표기에 따라
-         * 갈린다 — Ryan(라이언)은 "이", Chloe(클로이)는 "가" 다. 표기를
-         * 코드가 추측할 수 없으니 조사가 필요 없는 문장으로 쓴다.
-         */
-        headline={
-          data.friend ? (
-            <>
-              <span
-                style={{ fontSize: "1.6em", display: "block", marginBottom: 8 }}
-                aria-hidden="true"
-              >
-                {data.friend.emoji}
-              </span>
-              {data.friend.name}
-            </>
-          ) : (
-            "친구가 타입을 나눠 줬어요"
-          )
-        }
-        lead={data.friend ? (data.friend.subtitle ?? "친구가 나눈 타입이에요") : null}
-      >
-        <p className="result-summary" style={{ textAlign: "center" }}>
-          나는 어떤 타입일까요? 지금 해볼 수 있어요.
-        </p>
-      </Sheet>
+      {data.run ? (
+        <>
+          <SharedLicense run={data.run} />
+          <Sheet
+            center
+            eyebrow="A FRIEND SHARED"
+            headline={`${data.run.name} 님의 러닝 기록이에요`}
+            lead="나의 러닝 기록은 어떤 타입일까요? 기록만 넣으면 바로 나와요."
+          />
+        </>
+      ) : (
+        <Sheet
+          tone="dark"
+          center
+          eyebrow="A FRIEND SHARED"
+          /**
+           * 타입 이름을 문장에 끼우지 않고 **헤드라인으로 세운다.**
+           *
+           * "친구는 {이름}이 나왔어요" 처럼 쓰면 조사가 걸린다. 한글 이름은
+           * 받침으로 이/가를 고를 수 있지만 로마자 이름은 한글 표기에 따라
+           * 갈린다 — Ryan(라이언)은 "이", Chloe(클로이)는 "가" 다. 표기를
+           * 코드가 추측할 수 없으니 조사가 필요 없는 문장으로 쓴다.
+           */
+          headline={
+            data.friend ? (
+              <>
+                <span
+                  style={{ fontSize: "1.6em", display: "block", marginBottom: 8 }}
+                  aria-hidden="true"
+                >
+                  {data.friend.emoji}
+                </span>
+                {data.friend.name}
+              </>
+            ) : (
+              "친구가 타입을 나눠 줬어요"
+            )
+          }
+          lead={data.friend ? (data.friend.subtitle ?? "친구가 나눈 타입이에요") : null}
+        >
+          <p className="result-summary" style={{ textAlign: "center" }}>
+            나는 어떤 타입일까요? 지금 해볼 수 있어요.
+          </p>
+        </Sheet>
+      )}
 
       <Sheet center eyebrow="TRY IT" headline={data.quiz.title}>
         <p className="lead">{data.quiz.tagline}</p>

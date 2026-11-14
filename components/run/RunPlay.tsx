@@ -207,8 +207,8 @@ export function RunPlay({
           <>
             <h1 className="run-q">사진을 넣어 주세요</h1>
             <PhotoStep
-              onDone={async (blob) => {
-                await savePhoto(attemptId, blob);
+              onDone={async (blob, wide) => {
+                await savePhoto(attemptId, blob, wide);
                 go(1);
               }}
               onSkip={() => go(1)}

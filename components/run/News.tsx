@@ -10,9 +10,10 @@ import { formatPrime } from "@/lib/record";
 function Photo({ v, hint }: { v: RunView; hint: string }) {
   return (
     <div className="rn-photo">
-      {v.photo ? (
+      {v.photoWide || v.photo ? (
+        // 넓게 잡은 가로 사진을 먼저 — 얼굴 크롭은 신문 칸에서 얼굴만 꽉 차 보였다
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={v.photo} alt="" />
+        <img src={v.photoWide ?? v.photo ?? ""} alt="" />
       ) : (
         <>
           <svg viewBox="0 0 300 300" preserveAspectRatio="xMidYMax slice" aria-hidden="true">

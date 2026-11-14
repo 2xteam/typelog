@@ -200,6 +200,11 @@ export function ResultView({
             ) : null}
           </div>
           {shareMsg ? <p className="quiz-msg">{shareMsg}</p> : null}
+          {!bare ? (
+            <p className="result-fineprint">
+              결과 링크로는 자격증이 보여요. 신문 · 딱지는 위의 이미지 저장 · 공유하기로 직접 나눠 주세요.
+            </p>
+          ) : null}
         </Sheet>
       </>
     );
