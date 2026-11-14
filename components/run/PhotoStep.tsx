@@ -123,7 +123,7 @@ export function PhotoStep({
         <p className="run-fine">사진은 이 기기 안에서만 쓰고 서버로 보내지 않아요.</p>
         <div className="run-actions">
           <button type="button" className="run-btn run-btn--main" onClick={() => fileRef.current?.click()}>
-            앨범에서 고르기
+            사진 고르기
           </button>
           <button type="button" className="run-btn" onClick={() => camRef.current?.click()}>
             지금 찍기

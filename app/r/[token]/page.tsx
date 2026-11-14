@@ -64,7 +64,7 @@ export default function SharedLanding({ params }: { params: Promise<{ token: str
       const res = await fetch("/api/attempts", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ slug: data.quiz.slug, guestKey: getGuestKey() }),
+        body: JSON.stringify({ slug: data.quiz.slug, guestKey: getGuestKey(), viaToken: token }),
       });
       const json = await res.json();
       if (!res.ok || !json.ok || !json.attemptId) {

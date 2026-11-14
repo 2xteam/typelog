@@ -53,6 +53,17 @@ export async function POST(req: Request) {
       quizId: attempt.quizId,
     });
 
+    /**
+     * 공유 링크로 와서 한 기록이면 「전환」을 남긴다. 계정이 링크로 시작한 뒤에 만들어졌으면
+     * 가입(signup), 이미 있던 계정이면 로그인(login). 1분 여유를 둔다(시계 차이).
+     */
+    let conversion: { kind: "signup" | "login"; userId: string; at: Date } | null = null;
+    if (attempt.via?.at) {
+      const created = guard.viewer.doc.createdAt ? new Date(guard.viewer.doc.createdAt) : null;
+      const isNew = !!created && created.getTime() >= new Date(attempt.via.at).getTime() - 60_000;
+      conversion = { kind: isNew ? "signup" : "login", userId, at: new Date() };
+    }
+
     await Attempt.updateOne(
       { _id: attempt._id },
       {
@@ -60,6 +71,7 @@ export async function POST(req: Request) {
           "owner.kind": "user",
           "owner.userId": userId,
           attemptNo: already + 1,
+          ...(conversion ? { conversion } : {}),
         },
         // 게스트일 때만 있던 것들은 지운다. TTL 이 남아 있으면 회원 기록이 사라진다
         $unset: { "owner.guestKey": "", expiresAt: "" },

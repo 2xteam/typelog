@@ -33,6 +33,8 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
       .select({ quizId: 1, result: 1 })
       .lean();
     if (!attempt) return notFound("없는 링크예요.");
+    // 링크를 연 횟수 — 공유 성과(admin). 기다리지 않는다
+    void getAttemptModel().updateOne({ _id: attempt._id }, { $inc: { "share.viewCount": 1 } }).exec();
 
     const quiz = await getQuizModel().findById(attempt.quizId).lean();
     if (!quiz) return notFound("질문지가 사라졌어요.");

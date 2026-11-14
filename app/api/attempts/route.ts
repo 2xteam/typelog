@@ -26,9 +26,9 @@ const GUEST_TTL_DAYS = 30;
  */
 export async function POST(req: Request) {
   try {
-    let body: { slug?: string; guestKey?: string };
+    let body: { slug?: string; guestKey?: string; viaToken?: string };
     try {
-      body = (await req.json()) as { slug?: string; guestKey?: string };
+      body = (await req.json()) as { slug?: string; guestKey?: string; viaToken?: string };
     } catch {
       return badRequest("잘못된 요청이에요.");
     }
@@ -88,7 +88,25 @@ export async function POST(req: Request) {
       expiresAt = new Date(Date.now() + GUEST_TTL_DAYS * 24 * 60 * 60 * 1000);
     }
 
+    /** 공유 링크로 들어와 시작했으면 누구의 링크인지 남긴다 — 공유 성과(admin) */
+    let via: { token: string; sharerUserId: string | null; sharerAttemptId: string; at: Date } | undefined;
+    const viaToken = typeof body.viaToken === "string" ? body.viaToken.trim() : "";
+    if (viaToken.length >= 16) {
+      const src = await Attempt.findOne({ "share.token": viaToken, "share.isPublic": true })
+        .select({ owner: 1 })
+        .lean();
+      if (src) {
+        via = {
+          token: viaToken,
+          sharerUserId: src.owner?.kind === "user" ? (src.owner.userId ?? null) : null,
+          sharerAttemptId: String(src._id),
+          at: new Date(),
+        };
+      }
+    }
+
     const created = await Attempt.create({
+      ...(via ? { via } : {}),
       owner,
       quizId: quiz._id,
       quizSlug: quiz.slug,

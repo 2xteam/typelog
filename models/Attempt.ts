@@ -88,6 +88,31 @@ const AttemptSchema = new Schema(
       recomputedAt: { type: Date, default: null },
     },
 
+    /**
+     * 공유 링크로 들어와 시작한 응시 — 누구의 링크였나. 공유 성과(admin)의 원본이다.
+     * `conversion` 은 이 게스트 기록이 계정으로 옮겨진 순간(결과 화면 → 가입/로그인).
+     * 계정이 링크를 연 뒤에 만들어졌으면 `signup`, 이미 있던 계정이면 `login`.
+     */
+    via: {
+      type: new Schema(
+        {
+          token: String,
+          sharerUserId: { type: String, default: null, index: true },
+          sharerAttemptId: { type: String, default: null },
+          at: { type: Date, default: Date.now },
+        },
+        { _id: false },
+      ),
+      default: undefined,
+    },
+    conversion: {
+      type: new Schema(
+        { kind: { type: String, enum: ["signup", "login"] }, userId: String, at: Date },
+        { _id: false },
+      ),
+      default: undefined,
+    },
+
     share: {
       token: { type: String, default: null, index: true },
       isPublic: { type: Boolean, default: false },
@@ -136,6 +161,8 @@ export type AttemptDoc = {
     recomputedAt: Date | null;
   };
   share: { token: string | null; isPublic: boolean; viewCount: number };
+  via?: { token: string; sharerUserId: string | null; sharerAttemptId: string | null; at: Date };
+  conversion?: { kind: "signup" | "login"; userId: string; at: Date };
   expiresAt?: Date;
 };
 
