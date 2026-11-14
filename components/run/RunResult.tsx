@@ -198,33 +198,23 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
       await document.fonts?.ready;
       // 글꼴은 직접 골라 넣는다 — 라이브러리에 맡기면 다른 도메인 CSS 를 읽다 SecurityError 가 난다
       const fontEmbedCSS = await embedFontCSS(node);
-      const blob =
+      const opts =
         target === "main" && style === "desk"
-          ? await toBlob(node, { width: 1080, height: 1080, pixelRatio: 1, fontEmbedCSS })
-          : await toBlob(node, { pixelRatio: 2, fontEmbedCSS });
+          ? { width: 1080, height: 1080, pixelRatio: 1, fontEmbedCSS }
+          : { pixelRatio: 2, fontEmbedCSS };
+      /*
+        사파리(아이폰)는 첫 번째로 그릴 때 글꼴 · 사진을 덜 불러온 채 그린다(html-to-image 의 알려진 문제).
+        한 번 미리 그려 불러 두고, 두 번째 것을 쓴다 (사용자 2026-11-14 「이상하게 저장」).
+      */
+      const ua = navigator.userAgent;
+      if (/Safari/.test(ua) && !/Chrome|CriOS|Android/.test(ua)) await toBlob(node, opts);
+      const blob =
+        await toBlob(node, opts);
       if (!blob) throw new Error("이미지를 만들지 못했어요.");
       return blob;
     },
     [style],
   );
-
-  const saveImage = useCallback(async (target: "main" | "athlete" = "main") => {
-    setBusy(true);
-    setMsg("이미지를 만드는 중이에요…");
-    try {
-      const blob = await render(target);
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = target === "athlete" ? `myjane-athlete-license.png` : `myjane-running-${code}-${style}.png`;
-      a.click();
-      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-      setMsg("이미지를 저장했어요. 인스타그램에서 이 사진을 골라 올려 주세요.");
-    } catch (e) {
-      setMsg((e as Error).message);
-    } finally {
-      setBusy(false);
-    }
-  }, [render, code, style]);
 
   const shareImage = useCallback(async (target: "main" | "athlete" = "main") => {
     setBusy(true);
@@ -236,7 +226,7 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
         await navigator.share({ files: [file] });
         setMsg(null);
       } else {
-        setMsg("이 브라우저는 바로 공유가 안 돼요. 「이미지 저장」 뒤 인스타그램에서 올려 주세요.");
+        setMsg("이 브라우저는 바로 공유가 안 돼요. 휴대폰 브라우저에서 열어 공유해 주세요.");
       }
     } catch (e) {
       if ((e as Error).name !== "AbortError") setMsg((e as Error).message);
@@ -371,9 +361,6 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
           <button type="button" className="rr-btn rr-btn--main" disabled={busy} onClick={() => void shareImage()}>
             공유하기
           </button>
-          <button type="button" className="rr-btn" disabled={busy} onClick={() => void saveImage()}>
-            이미지 저장
-          </button>
           <button type="button" className="rr-btn" onClick={() => void copyLink()}>
             링크 복사
           </button>
@@ -412,9 +399,6 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
           <div className="rr-actions">
             <button type="button" className="rr-btn rr-btn--main" disabled={busy} onClick={() => void shareImage("athlete")}>
               선수자격증 공유하기
-            </button>
-            <button type="button" className="rr-btn" disabled={busy} style={{ gridColumn: "1 / -1" }} onClick={() => void saveImage("athlete")}>
-              선수자격증 저장
             </button>
           </div>
         </section>
@@ -495,6 +479,23 @@ async function embedFontCSS(node: HTMLElement): Promise<string> {
       .filter(Boolean),
   );
 
+  // 실제로 쓰인 (글꼴, 굵기) — 한글 글꼴은 굵기마다 조각이 백 개 가까이라, 안 쓰는 굵기를 빼면 몇 배 가벼워진다
+  const used = new Set<string>();
+  for (const el of [node, ...Array.from(node.querySelectorAll<HTMLElement>("*"))]) {
+    const st = getComputedStyle(el);
+    const fam = st.fontFamily.split(",")[0]?.trim().replace(/^['"]|['"]$/g, "");
+    if (fam) used.add(`${fam}|${st.fontWeight}`);
+  }
+  const weightUsed = (family: string, weight: string) => {
+    // @font-face 의 굵기는 "400" 또는 "100 900" 처럼 범위일 수 있다
+    const [lo, hi] = weight.split(/\s+/).map((w) => (w === "normal" ? 400 : w === "bold" ? 700 : Number(w)));
+    return [...used].some((u) => {
+      const [f, w] = u.split("|");
+      const n = Number(w);
+      return f === family && n >= lo && n <= (hi ?? lo);
+    });
+  };
+
   const out: string[] = [];
   for (const sheet of Array.from(document.styleSheets)) {
     if (sheet.href && new URL(sheet.href, location.href).origin !== location.origin) continue;
@@ -508,6 +509,7 @@ async function embedFontCSS(node: HTMLElement): Promise<string> {
       if (!(rule instanceof CSSFontFaceRule)) continue;
       const family = rule.style.getPropertyValue("font-family").replace(/^['"]|['"]$/g, "");
       if (!families.has(family)) continue;
+      if (!weightUsed(family, rule.style.getPropertyValue("font-weight") || "400")) continue;
       if (!covers(rule.style.getPropertyValue("unicode-range"))) continue;
       const src = rule.style.getPropertyValue("src");
       const url = /url\(["']?([^"')]+)["']?\)/.exec(src)?.[1];

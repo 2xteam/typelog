@@ -471,12 +471,23 @@ function MeasureStep({
           </label>
         ))}
       </div>
+      {/*
+        건너뛰기가 위, 저장이 아래(사용자 2026-11-14). 휴대폰에서 키보드가 떠 있을 때 버튼을 누르면
+        입력칸이 포커스를 잃어 키보드가 내려가고 화면이 움직여 첫 탭이 빗나갔다 —
+        누르는 순간(pointerdown) 포커스를 빼앗지 않게 막는다.
+      */}
       <div className="run-actions">
-        <button type="button" className="run-btn run-btn--main" disabled={!complete} onClick={() => onNext(parsed)}>
-          다음
-        </button>
-        <button type="button" className="run-btn" onClick={() => onNext({})}>
+        <button type="button" className="run-btn" onPointerDown={(e) => e.preventDefault()} onClick={() => onNext({})}>
           건너뛰기
+        </button>
+        <button
+          type="button"
+          className="run-btn run-btn--main"
+          disabled={!complete}
+          onPointerDown={(e) => e.preventDefault()}
+          onClick={() => onNext(parsed)}
+        >
+          저장
         </button>
       </div>
     </>
