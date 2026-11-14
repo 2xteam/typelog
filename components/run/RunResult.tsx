@@ -392,11 +392,6 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
           >
             다시 보기
           </button>
-          {!bare ? (
-            <Link className="rr-btn" href="/types" style={{ gridColumn: "1 / -1" }}>
-              다른 것도 해보기 →
-            </Link>
-          ) : null}
         </div>
         {msg ? <p className="rr-msg">{msg}</p> : null}
       </div>
@@ -417,7 +412,15 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
         </section>
       ) : null}
 
+      {/* 맨 아래 — 선수자격증이 함께 나와도 그 아래에 둔다(사용자 2026-11-14) */}
       <div className="rr-after">
+        {!bare ? (
+          <div className="rr-actions">
+            <Link className="rr-btn" href="/types" style={{ gridColumn: "1 / -1" }}>
+              다른 것도 해보기 →
+            </Link>
+          </div>
+        ) : null}
         <p className="rr-disclaimer">
           {data.quiz.disclaimer ? `${data.quiz.disclaimer} · ` : ""}
           {distLabel(v.detail)} 기준표 {v.detail.version}
