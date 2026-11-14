@@ -15,13 +15,7 @@ export const FACE_H = 720;
 export const FACE_OVAL = { cx: 300, cy: 330, rx: 210, ry: 270 };
 export const EYE_Y = 300;
 
-/**
- * 넓게 잡은 가로 사진 — 신문 사진 칸용(사용자 2026-11-14 「얼굴만이 아니라 더 크게」).
- * 같은 사진에서 얼굴 타원 중심이 (600, 380) 에 오고, 얼굴 높이가 화면의 약 38% 가 되게 넓힌다.
- */
-export const WIDE_W = 1200;
-export const WIDE_H = 900;
-export const WIDE_FACE = { cx: 600, cy: 380, h: 340 };
+/** 신문 사진은 올린 사진 원본(긴 변 1600)을 따로 저장해 칸에 꽉 맞춰 쓴다 → savePhoto 의 wide */
 
 const DB = "typelog-run";
 const STORE = "photos";

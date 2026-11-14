@@ -26,6 +26,8 @@ import "./run.css";
 
 export type RunPayload = {
   attemptId: string;
+  /** 본인 기록인가 — 게스트도 본인이면 true */
+  isOwner?: boolean;
   attemptNo: number;
   ownerName?: string | null;
   quiz: { slug: string; title: string; disclaimer: string | null };
@@ -91,6 +93,8 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
   const code = data.result.code ?? "";
   const detail = data.result.detail;
   const kind = kindOf(code);
+  /** 고칠 수 있나 — 본인이면(로그인하지 않은 게스트도). 서버가 모르면 예전처럼 공유 화면이 아닐 때 */
+  const canEdit = data.isOwner ?? !bare;
   const [photo, setPhoto] = useState<string | null>(null);
   const [photoWide, setPhotoWide] = useState<string | null>(null);
   const [race, setRace] = useState<string | null>(
@@ -320,7 +324,7 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
           {t.content.cautions?.[0] ?? "빨리 달린 것도 좋지만, 심장도 신호를 지켜요."}
         </p>
 
-        {!bare ? (
+        {canEdit ? (
           <div className="rr-fields">
             <p className="rr-fields-h">공유하기 전에 바꿀 수 있어요</p>
             <label className="rr-race">
@@ -381,7 +385,7 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
           <button type="button" className="rr-btn" disabled={busy} onClick={() => void saveImage()}>
             이미지 저장
           </button>
-          {!bare ? (
+          {canEdit ? (
             <button type="button" className="rr-btn" onClick={() => setEditPhoto(true)}>
               {photo ? "사진 바꾸기" : "사진 넣기"}
             </button>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { EYE_Y, FACE_H, FACE_OVAL, FACE_W, WIDE_FACE, WIDE_H, WIDE_W, readImage } from "@/lib/runPhoto";
+import { EYE_Y, FACE_H, FACE_OVAL, FACE_W, readImage } from "@/lib/runPhoto";
 
 /**
  * ⑤ 사진 — 얼굴 사진 한 장을 골라 **틀에 맞춘다.**
@@ -100,29 +100,11 @@ export function PhotoStep({
     ctx.drawImage(img, -img.width / 2, -img.height / 2);
 
     /*
-      넓은 가로 사진 — 얼굴 타원 중심이 가리키는 원본 사진의 점(P)을 (WIDE_FACE.cx, cy) 에 두고,
-      얼굴 높이(타원 지름 540)가 WIDE_FACE.h 가 되게 줄인다. 원본 바깥은 바탕색.
+      신문 사진 — 올린 사진 원본 그대로(긴 변 1600 으로 줄인 것). 신문 칸에서 가로나 세로를 꽉 맞추고
+      벗어나는 곳은 잘린다(object-fit: cover). 얼굴 기준으로 다시 자르지 않는다(사용자 2026-11-14 —
+      보통은 얼굴만이 아니라 큰 사진을 넣는다).
     */
-    const ox = FACE_W / 2 + pos.x / VIEW;
-    const oy = FACE_H / 2 + pos.y / VIEW;
-    const px = img.width / 2 + (FACE_OVAL.cx - ox) / k;
-    const py = img.height / 2 + (FACE_OVAL.cy - oy) / k;
-    const kw = k * (WIDE_FACE.h / (FACE_OVAL.ry * 2));
-    const w = document.createElement("canvas");
-    w.width = WIDE_W;
-    w.height = WIDE_H;
-    const wc = w.getContext("2d")!;
-    wc.fillStyle = "#d9d4cc";
-    wc.fillRect(0, 0, WIDE_W, WIDE_H);
-    // 사진이 칸보다 작으면 바깥이 비므로 — 같은 사진을 꽉 차게 흐리게 깔아 둔다(흐림을 못 하는 브라우저는 그냥 깐다)
-    const cover = Math.max(WIDE_W / img.width, WIDE_H / img.height) * 1.15;
-    wc.save();
-    wc.filter = "blur(28px) brightness(0.9)";
-    wc.drawImage(img, (WIDE_W - img.width * cover) / 2, (WIDE_H - img.height * cover) / 2, img.width * cover, img.height * cover);
-    wc.restore();
-    wc.translate(WIDE_FACE.cx, WIDE_FACE.cy);
-    wc.scale(kw, kw);
-    wc.drawImage(img, -px, -py);
+    const w = img;
 
     const toBlob = (cv: HTMLCanvasElement) =>
       new Promise<Blob | null>((resolve) => cv.toBlob((b) => resolve(b), "image/jpeg", 0.88));

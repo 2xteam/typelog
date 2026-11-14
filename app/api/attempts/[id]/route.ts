@@ -73,7 +73,9 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     if (!attempt) return notFound("없는 기록이에요.");
 
     const shared = attempt.share?.isPublic === true;
-    if (!shared && !(await own(req, attempt as AttemptDoc, guestKey))) {
+    /** 본인인가 — 공유 링크 화면(/r/…)에서도 본인이면 사진 · 이름을 고칠 수 있어야 한다(게스트 포함) */
+    const mine = await own(req, attempt as AttemptDoc, guestKey);
+    if (!shared && !mine) {
       return forbidden("이 기록은 볼 수 없어요.");
     }
 
@@ -86,6 +88,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       attemptId: String(attempt._id),
       attemptNo: attempt.attemptNo,
       status: attempt.status,
+      isOwner: mine,
       shuffleSeed: attempt.shuffleSeed,
       quiz: {
         slug: quiz.slug,
