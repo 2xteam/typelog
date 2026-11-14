@@ -20,10 +20,16 @@ export function License({ v, athlete = false }: { v: RunView; athlete?: boolean 
   const d = v.detail;
   const grade = certGrade(v.code);
   const word = athlete ? "선수자격증" : "러닝자격증";
+  /** 발급처 — 선수자격증만 바꿀 수 있다(사용자 2026-11-14). 러닝자격증은 늘 「마이재인」 */
+  const brand = (athlete && v.issuer?.trim()) || "마이재인";
+  const sealChars = `${brand}주식회사인`.split("");
+  const sealCols = Math.max(3, Math.ceil(Math.sqrt(sealChars.length)));
   return (
     <div className="rl-card">
       <div className="rl-band">
-        <span className="rl-ko">마이재인 {word}</span>
+        <span className="rl-ko">
+          {brand} {word}
+        </span>
         <span className="rl-en">{athlete ? "ATHLETE LICENSE" : "RUNNING LICENSE"}</span>
       </div>
       <div className="rl-body">
@@ -78,10 +84,17 @@ export function License({ v, athlete = false }: { v: RunView; athlete?: boolean 
           <div className="rl-proof-wrap">
             <div className="rl-proof">
               <p>{word}을 취득하였음을 증명함</p>
-              <p className="rl-co">마이재인 주식회사</p>
+              <p className="rl-co">{brand} 주식회사</p>
             </div>
-            <div className="rl-seal">
-              {"마이재인주식회사인".split("").map((c, i) => (
+            <div
+              className="rl-seal"
+              style={
+                sealCols > 3
+                  ? { gridTemplateColumns: `repeat(${sealCols}, 1fr)`, fontSize: Math.round((29 * 3) / sealCols) }
+                  : undefined
+              }
+            >
+              {sealChars.map((c, i) => (
                 <span key={i}>{c}</span>
               ))}
             </div>

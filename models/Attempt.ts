@@ -113,6 +113,12 @@ const AttemptSchema = new Schema(
       default: undefined,
     },
 
+    /**
+     * 결과 화면에서 본인이 꾸미는 값 — 점수와 무관하다. 문항이 아니므로 공개된 질문지에도 더할 수 있다.
+     * `issuer`: 선수자격증의 발급처(기본 「마이재인」). 결과 링크의 자격증에도 쓰인다.
+     */
+    custom: { type: Schema.Types.Mixed, default: undefined },
+
     share: {
       token: { type: String, default: null, index: true },
       isPublic: { type: Boolean, default: false },
@@ -161,6 +167,7 @@ export type AttemptDoc = {
     recomputedAt: Date | null;
   };
   share: { token: string | null; isPublic: boolean; viewCount: number };
+  custom?: { issuer?: string | null } | null;
   via?: { token: string; sharerUserId: string | null; sharerAttemptId: string | null; at: Date };
   conversion?: { kind: "signup" | "login"; userId: string; at: Date };
   expiresAt?: Date;

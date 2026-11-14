@@ -89,6 +89,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       attemptNo: attempt.attemptNo,
       status: attempt.status,
       isOwner: mine,
+      custom: attempt.custom ?? null,
       shuffleSeed: attempt.shuffleSeed,
       quiz: {
         slug: quiz.slug,
@@ -215,6 +216,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       finish?: boolean;
       /** 저장하지 않는 답(키·몸무게) — 채점에만 쓴다 */
       transient?: Record<string, unknown>;
+      /** 결과 화면에서 꾸미는 값 — 선수자격증 발급처 등 */
+      custom?: { issuer?: unknown };
     };
     try {
       body = await req.json();
@@ -233,6 +236,13 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     if (!quizDoc) return notFound("질문지가 사라졌어요.");
     const allItems = flattenItems((quizDoc.items ?? []) as Item[]);
     const target = body.answer?.linkId ? allItems.find((i) => i.linkId === body.answer!.linkId) : null;
+
+    // 결과 꾸미기 — 끝난 기록에서 본인만. 점수와 무관하다
+    if (attempt.status === "completed" && body.custom && "issuer" in body.custom) {
+      const issuer = cleanLine(body.custom.issuer, 8) || null;
+      await Attempt.updateOne({ _id: oid }, { $set: { "custom.issuer": issuer } });
+      return NextResponse.json({ ok: true, custom: { issuer } });
+    }
 
     if (attempt.status === "completed") {
       /**

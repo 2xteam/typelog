@@ -14,7 +14,7 @@ import "./result.css";
 export function SharedLicense({
   run,
 }: {
-  run: { attemptId: string; attemptNo: number; code: string; detail: RecordDetail; completedAt: string | null; name: string };
+  run: { attemptId: string; attemptNo: number; code: string; detail: RecordDetail; completedAt: string | null; name: string; issuer?: string | null };
 }) {
   const v = {
     attemptId: run.attemptId,
@@ -25,6 +25,7 @@ export function SharedLicense({
     race: null,
     completedAt: run.completedAt ? new Date(run.completedAt) : new Date(),
     photo: null,
+    issuer: run.issuer ?? null,
   };
   return (
     <div className={`rr ${runFontVars}`} style={{ marginBottom: 18 }}>

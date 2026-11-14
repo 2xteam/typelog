@@ -34,7 +34,7 @@ type Shared = {
   notice: string | null;
   friend: { name: string; subtitle: string | null; emoji: string } | null;
   /** 러닝 기록 — 자격증으로 보여 준다 */
-  run?: { attemptId: string; attemptNo: number; code: string; detail: RecordDetail; completedAt: string | null; name: string } | null;
+  run?: { attemptId: string; attemptNo: number; code: string; detail: RecordDetail; completedAt: string | null; name: string; issuer?: string | null } | null;
 };
 
 export default function SharedLanding({ params }: { params: Promise<{ token: string }> }) {

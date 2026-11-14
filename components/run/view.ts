@@ -16,6 +16,8 @@ export type RunView = {
   photo: string | null;
   /** 넓게 잡은 가로 사진 — 신문용. 없으면 얼굴 사진 */
   photoWide?: string | null;
+  /** 선수자격증 발급처 — 없으면 「마이재인」 */
+  issuer?: string | null;
 };
 
 export const DIST_LABEL: Record<string, string> = { "5k": "5km", "10k": "10km", half: "하프", full: "풀" };

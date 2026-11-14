@@ -349,3 +349,9 @@
   transition: width 0.25s ease; }
 .rr-making-n { margin: 10px 0 0; font-size: 14px; font-weight: 800; color: #7a2399; font-variant-numeric: tabular-nums; }
 .rr-making-sub { margin: 6px 0 0; font-size: 12.5px; color: #6b6676; }
+
+/* 선수자격증 발급처 바꾸기 */
+.rr-issuer { max-width: 640px; margin: 0 auto 18px; }
+.rr-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.rr-chip { border: 1.5px solid #e2dcec; background: #fff; border-radius: 999px; padding: 7px 14px; font-size: 14px; font-weight: 700; color: #555; cursor: pointer; }
+.rr-chip[data-on="true"] { border-color: transparent; background: #1c1c1e; color: #fff; }

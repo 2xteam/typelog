@@ -31,7 +31,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
     await connectDB();
     const attempt = await getAttemptModel()
       .findOne({ "share.token": token, "share.isPublic": true, status: "completed" })
-      .select({ quizId: 1, result: 1, answers: 1, owner: 1, attemptNo: 1, completedAt: 1 })
+      .select({ quizId: 1, result: 1, answers: 1, owner: 1, attemptNo: 1, completedAt: 1, custom: 1 })
       .lean();
     if (!attempt) return notFound("없는 링크예요.");
     // 링크를 연 횟수 — 공유 성과(admin). 기다리지 않는다
@@ -71,6 +71,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
         detail: attempt.result.detail,
         completedAt: attempt.completedAt ?? null,
         name: name || "러너",
+        issuer: (attempt.custom as { issuer?: string | null } | undefined)?.issuer ?? null,
       };
     }
 
