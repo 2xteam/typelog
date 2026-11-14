@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
-import { notFound, serverError } from "@/lib/auth";
+import { getViewer, notFound, serverError } from "@/lib/auth";
 import { getQuizModel } from "@/models/Quiz";
 import { getResultTypeModel } from "@/models/ResultType";
 import { getAttemptModel } from "@/models/Attempt";
@@ -23,7 +23,7 @@ export const dynamic = "force-dynamic";
  * 로그인 없이 열린다. 그래서 **응시자를 알 수 있는 것은 아무것도 담지 않는다.**
  * → my-obsidian-vault / 10-Projects/TypeLog.md
  */
-export async function GET(_req: Request, { params }: { params: Promise<{ token: string }> }) {
+export async function GET(req: Request, { params }: { params: Promise<{ token: string }> }) {
   try {
     const { token } = await params;
     if (!token || token.length < 16) return notFound("없는 링크예요.");
@@ -92,6 +92,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
         disclaimer: quiz.disclaimer ?? null,
       },
       open,
+      guestUsed: await guestAlreadyPlayed(req, quiz._id),
       notice: check.ok ? null : check.reason === "before_start" ? check.notice : "지금은 할 수 없어요.",
       friend: type
         ? { name: type.name, subtitle: type.subtitle ?? null, emoji: type.emoji }
@@ -100,4 +101,18 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
   } catch (err) {
     return serverError(err);
   }
+}
+
+/**
+ * 이 비회원이 이 질문지를 이미 한 번 했나 — 했으면 공유 화면이 처음부터 「가입하지 않으면 한 번만…」 과
+ * 가입 · 로그인 버튼을 보여 준다(누른 뒤 409 를 받기 전에, 사용자 2026-11-14).
+ * 규칙은 POST /api/attempts 와 같다: 로그인했으면 해당 없음, 개발 환경은 몇 번이든.
+ */
+async function guestAlreadyPlayed(req: Request, quizId: unknown): Promise<boolean> {
+  if (process.env.NODE_ENV === "development") return false;
+  const guestKey = new URL(req.url).searchParams.get("guestKey");
+  if (!guestKey) return false;
+  if (await getViewer(req)) return false;
+  const n = await getAttemptModel().countDocuments({ "owner.guestKey": guestKey, quizId });
+  return n > 0;
 }

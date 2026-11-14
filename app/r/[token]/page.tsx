@@ -32,6 +32,8 @@ type Shared = {
     disclaimer: string | null;
   };
   open: boolean;
+  /** 비회원 한 번을 이미 썼나 — 그러면 처음부터 가입 안내 */
+  guestUsed?: boolean;
   notice: string | null;
   friend: { name: string; subtitle: string | null; emoji: string } | null;
   /** 러닝 기록 — 자격증으로 보여 준다 */
@@ -50,13 +52,18 @@ export default function SharedLanding({ params }: { params: Promise<{ token: str
   useEffect(() => {
     void (async () => {
       try {
-        const res = await fetch(`/api/shared/${encodeURIComponent(token)}`);
+        const res = await fetch(`/api/shared/${encodeURIComponent(token)}?guestKey=${encodeURIComponent(getGuestKey())}`);
         const json = await res.json();
         if (!res.ok || !json.ok) {
           setMsg(json.error ?? "없는 링크예요.");
           return;
         }
         setData(json);
+        // 비회원 한 번을 이미 썼으면 처음부터 안내 + 가입 버튼
+        if (json.guestUsed) {
+          setMsg("가입하지 않으면 한 번만 해볼 수 있어요. 가입하면 다시 할 수 있어요.");
+          setNeedSignup(true);
+        }
       } catch {
         setMsg("네트워크가 불안정해요.");
       }
@@ -168,7 +175,7 @@ export default function SharedLanding({ params }: { params: Promise<{ token: str
           <span className="pill">가입 없이 한 번</span>
         </div>
 
-        {data.open ? (
+        {data.open && !needSignup ? (
           <div style={{ marginTop: 20 }}>
             <button
               type="button"
@@ -179,7 +186,7 @@ export default function SharedLanding({ params }: { params: Promise<{ token: str
               {busy ? "여는 중…" : "나도 해보기 →"}
             </button>
           </div>
-        ) : (
+        ) : needSignup ? null : (
           <p className="quiz-card-notice" style={{ marginTop: 16 }}>
             {data.notice ?? "지금은 할 수 없어요."}
           </p>
