@@ -73,6 +73,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
         name: name || "러너",
         issuer: (attempt.custom as { issuer?: string | null } | undefined)?.issuer ?? null,
         photoUrl: (attempt.custom as { photoUrl?: string | null } | undefined)?.photoUrl ?? null,
+        holo: (attempt.custom as { holo?: string | null } | undefined)?.holo ?? null,
       };
     }
 

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { isHolo } from "@/components/run/holo";
 import mongoose from "mongoose";
 import { connectDB } from "@/lib/db";
 import { badRequest, forbidden, getViewer, notFound, serverError } from "@/lib/auth";
@@ -89,7 +90,9 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       attemptNo: attempt.attemptNo,
       status: attempt.status,
       isOwner: mine,
-      custom: attempt.custom ? { issuer: attempt.custom.issuer ?? null, photoUrl: attempt.custom.photoUrl ?? null } : null,
+      custom: attempt.custom
+        ? { issuer: attempt.custom.issuer ?? null, photoUrl: attempt.custom.photoUrl ?? null, holo: attempt.custom.holo ?? null }
+        : null,
       shared: attempt.share?.isPublic === true,
       shuffleSeed: attempt.shuffleSeed,
       quiz: {
@@ -218,7 +221,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       /** 저장하지 않는 답(키·몸무게) — 채점에만 쓴다 */
       transient?: Record<string, unknown>;
       /** 결과 화면에서 꾸미는 값 — 선수자격증 발급처 등 */
-      custom?: { issuer?: unknown };
+      custom?: { issuer?: unknown; holo?: unknown };
     };
     try {
       body = await req.json();
@@ -239,10 +242,16 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     const target = body.answer?.linkId ? allItems.find((i) => i.linkId === body.answer!.linkId) : null;
 
     // 결과 꾸미기 — 끝난 기록에서 본인만. 점수와 무관하다
-    if (attempt.status === "completed" && body.custom && "issuer" in body.custom) {
-      const issuer = cleanLine(body.custom.issuer, 9) || null;
-      await Attempt.updateOne({ _id: oid }, { $set: { "custom.issuer": issuer } });
-      return NextResponse.json({ ok: true, custom: { issuer } });
+    if (attempt.status === "completed" && body.custom && ("issuer" in body.custom || "holo" in body.custom)) {
+      const set: Record<string, string | null> = {};
+      const out: { issuer?: string | null; holo?: string } = {};
+      if ("issuer" in body.custom) out.issuer = set["custom.issuer"] = cleanLine(body.custom.issuer, 9) || null;
+      if ("holo" in body.custom) {
+        if (!isHolo(body.custom.holo)) return badRequest("없는 홀로그램 무늬예요.");
+        out.holo = set["custom.holo"] = body.custom.holo;
+      }
+      await Attempt.updateOne({ _id: oid }, { $set: set });
+      return NextResponse.json({ ok: true, custom: out });
     }
 
     if (attempt.status === "completed") {

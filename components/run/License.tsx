@@ -1,4 +1,8 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 import { formatPrime } from "@/lib/record";
+import { DEFAULT_HOLO, HOLO_MASK, isHolo } from "./holo";
 import { certGrade, dateDot, DIST_CODE, distLabel, mmdd, modifierMark, pacePrime, serial, type RunView } from "./view";
 
 /**
@@ -18,6 +22,40 @@ const ATHLETE_LEVEL: Record<string, string> = {
 
 export function License({ v, athlete = false }: { v: RunView; athlete?: boolean }) {
   const d = v.detail;
+  /**
+   * 홀로그램 — 운전면허증 표면처럼(사용자 2026-11-14).
+   * 화면에 들어오면 무지개빛이 한 번 비스듬히 쓸고 지나가고, 그 뒤엔 무늬가 아주 옅게 깔려 있다.
+   * 누르면 한 번 더 지나간다. 저장 이미지(.rr-export)에는 옅은 무늬만 남고 지나가는 빛은 없다.
+   */
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [holo, setHolo] = useState(0);
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el || el.closest(".rr-export")) return;
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setHolo((n) => n || 1);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.5 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  /** 무늬 — 고르면 바뀌면서 빛이 다시 지나간다(처음 그릴 때는 그대로) */
+  const holoKind = isHolo(v.holo) ? v.holo : DEFAULT_HOLO;
+  const firstKind = useRef(true);
+  useEffect(() => {
+    if (firstKind.current) {
+      firstKind.current = false;
+      return;
+    }
+    if (cardRef.current?.closest(".rr-export")) return;
+    setHolo((n) => n + 1);
+  }, [holoKind]);
   const grade = certGrade(v.code);
   const word = athlete ? "선수자격증" : "러닝자격증";
   /** 발급처 — 결과를 받은 사람 누구나 바꿀 수 있다(러닝자격증 · 선수자격증 모두, 사용자 2026-11-14) */
@@ -35,7 +73,18 @@ export function License({ v, athlete = false }: { v: RunView; athlete?: boolean 
   const bandFont = n <= 5 ? 50 : n <= 7 ? 44 : 38;
   const coFont = n <= 5 ? 40 : n <= 7 ? 34 : 29;
   return (
-    <div className="rl-card">
+    <div
+      ref={cardRef}
+      className="rl-card"
+      data-holo={holo ? "on" : undefined}
+      data-replay={holo > 1 ? "" : undefined}
+      style={{ ["--holo-mask" as string]: HOLO_MASK[holoKind] }}
+      onClick={() => {
+        if (!holo) return;
+        // 다시 지나가게 — 요소를 새로 그린다(key)
+        setHolo((n) => n + 1);
+      }}
+    >
       <div className="rl-band">
         <span className="rl-ko" style={bandFont !== 50 ? { fontSize: bandFont } : undefined}>
           {brand} {word}
@@ -113,6 +162,13 @@ export function License({ v, athlete = false }: { v: RunView; athlete?: boolean 
           </div>
         </div>
       </div>
+      <div className="rl-holo" key={`h${holo}`} aria-hidden="true" />
+      {holo ? (
+        <div className="rl-holo-pass" key={holo} aria-hidden="true">
+          <div className="rl-holo-sweep" />
+          <div className="rl-holo-glint" />
+        </div>
+      ) : null}
     </div>
   );
 }

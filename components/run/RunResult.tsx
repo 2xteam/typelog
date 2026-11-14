@@ -10,6 +10,7 @@ import { NewsFront, NewsLocal } from "./News";
 import { Ticket } from "./Ticket";
 import { PhotoStep } from "./PhotoStep";
 import { distLabel, pctText, type RunView } from "./view";
+import { DEFAULT_HOLO, HOLO_IDS, HOLO_LABEL, isHolo, type HoloId } from "./holo";
 import "./result.css";
 import "./run.css";
 
@@ -28,7 +29,7 @@ export type RunPayload = {
   attemptId: string;
   /** 결과 링크가 이미 있나 — 있으면 사진을 바꿀 때 다시 올린다 */
   shared?: boolean;
-  custom?: { issuer?: string | null; photoUrl?: string | null } | null;
+  custom?: { issuer?: string | null; photoUrl?: string | null; holo?: string | null } | null;
   /** 본인 기록인가 — 게스트도 본인이면 true */
   isOwner?: boolean;
   attemptNo: number;
@@ -49,6 +50,17 @@ export type RunPayload = {
 };
 
 type Kind = "cert" | "news-front" | "news-local" | "ticket" | "ticket-suspend";
+
+/**
+ * 정체성은 **러닝 자격증**이다(사용자 2026-11-14). 신문 · 딱지는 선수자격증에 딸려 오는 덤 —
+ * 그래도 보는 재미가 커서 화면 맨 위에 크게 둔다. 그 위에 「덤」 표를 붙인다.
+ */
+const BONUS_TAG: Record<string, string> = {
+  "ticket-suspend": "🎁 덤 · 러닝 면허 정지도 받았어요",
+  ticket: "🎁 덤 · 과속 딱지도 끊겼어요",
+  "news-front": "🎁 덤 · 신문 1면에도 실렸어요",
+  "news-local": "🎁 덤 · 신문 사회면에도 실렸어요",
+};
 
 /** 선수자격증 발급처 추천어 — 누르면 바로 바뀐다 */
 const ISSUER_CHIPS = ["마이재인", "동네마실"];
@@ -124,6 +136,8 @@ export function RunResult({
   /** 선수자격증 발급처 — 기본 「마이재인」 */
   const [issuer, setIssuer] = useState<string | null>(data.custom?.issuer ?? null);
   const [issuerDraft, setIssuerDraft] = useState(data.custom?.issuer ?? "");
+  /** 자격증 홀로그램 무늬 */
+  const [holoKind, setHoloKind] = useState<HoloId>(isHolo(data.custom?.holo) ? data.custom.holo : DEFAULT_HOLO);
   /** 신문 이상이면 선수자격증도 준다 */
   const athlete = kind !== "cert";
   const [fx, setFx] = useState<Kind | null>(null);
@@ -205,9 +219,10 @@ export function RunResult({
             photo,
             photoWide,
             issuer,
+            holo: holoKind,
           }
         : null,
-    [data, code, detail, race, runner, photo, photoWide, issuer],
+    [data, code, detail, race, runner, photo, photoWide, issuer, holoKind],
   );
 
   /** 결과에 들어가는 글자 하나 고치기 — 러너 이름 · 대회 이름 (editableAfterFinish 문항) */
@@ -259,6 +274,45 @@ export function RunResult({
     });
     return () => registerBeforeShare(null);
   }, [registerBeforeShare, uploadPhoto, saveField, runnerDraft, runner, data.ownerName]);
+
+  /** 홀로그램 무늬 바꾸기 — 화면은 바로 바뀌고 저장은 뒤에서 */
+  const saveHolo = useCallback(
+    async (id: HoloId) => {
+      const prev = holoKind;
+      setHoloKind(id);
+      try {
+        const res = await fetch(`/api/attempts/${data.attemptId}`, {
+          method: "PATCH",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ guestKey: getGuestKey(), custom: { holo: id } }),
+        });
+        const json = await res.json();
+        if (!res.ok || !json.ok) throw new Error(json.error ?? "홀로그램을 저장하지 못했어요.");
+      } catch (e) {
+        setHoloKind(prev);
+        setMsg((e as Error).message);
+      }
+    },
+    [data.attemptId, holoKind],
+  );
+  const holoPicker = canEdit ? (
+    <div className="rr-holo-pick" role="radiogroup" aria-label="홀로그램 무늬">
+      <span className="rr-chips-h">✨ 홀로그램 무늬를 골라 보세요</span>
+      {HOLO_IDS.map((id) => (
+        <button
+          key={id}
+          type="button"
+          role="radio"
+          aria-checked={holoKind === id}
+          className="rr-chip"
+          data-on={holoKind === id}
+          onClick={() => void saveHolo(id)}
+        >
+          {HOLO_LABEL[id]}
+        </button>
+      ))}
+    </div>
+  ) : null;
 
   /** 선수자격증 발급처 바꾸기 */
   const saveIssuer = useCallback(
@@ -374,6 +428,7 @@ export function RunResult({
 
   return (
     <div className={`rr ${runFontVars}`}>
+      {BONUS_TAG[code] ? <p className="rr-bonus-tag">{BONUS_TAG[code]}</p> : null}
       <div className="rr-stagewrap rr-reveal" data-fx={fx ?? undefined} key={fxKey}>
         <div className="rr-dim" aria-hidden="true" />
         <div className="rr-flash" aria-hidden="true" />
@@ -381,6 +436,7 @@ export function RunResult({
           <Artwork kind={kind} v={v} />
         </Fit>
       </div>
+      {kind === "cert" ? holoPicker : null}
 
       <div className="rr-after">
         <p className="rr-name">
@@ -537,13 +593,14 @@ export function RunResult({
 
       {athlete ? (
         <section className="rr-bonus">
-          <p className="rr-bonus-eyebrow">🎁 BONUS · 함께 발급</p>
-          <h2 className="rr-bonus-h">🎉 선수자격증도 나왔어요</h2>
-          <p className="rr-bonus-sub">📰 신문에 실릴 만한 기록부터 선수자격증을 함께 드려요 🏅</p>
+          <p className="rr-bonus-eyebrow">🏅 MY LICENSE · 나의 러닝 자격증</p>
+          <h2 className="rr-bonus-h">🎉 {t.name}이 나왔어요</h2>
+          <p className="rr-bonus-sub">📰 신문에 실릴 만한 기록이면 선수자격증을 드려요. 신문 · 딱지는 덤이에요 🎁</p>
 
           <Fit width={1000}>
             <License v={v} athlete />
           </Fit>
+          {holoPicker}
           <div className="rr-actions">
             <button type="button" className="rr-btn rr-btn--main" disabled={busy} onClick={() => void shareImage("athlete")}>
               선수자격증 공유하기

@@ -216,7 +216,7 @@ export function ResultView({
           {shareMsg ? <p className="quiz-msg">{shareMsg}</p> : null}
           {!bare ? (
             <p className="result-fineprint">
-              🔗 결과 링크로는 자격증이 보여요(자격증 사진이 함께 올라가요). 📰 신문 · 📸 딱지는 위의 이미지 저장 · 공유하기로 직접 나눠 주세요.
+              🔗 결과 링크로는 나의 러닝 자격증이 보여요(자격증 사진이 함께 올라가요). 🎁 덤으로 받은 📰 신문 · 📸 딱지는 위의 이미지 저장 · 공유하기로 직접 나눠 주세요.
             </p>
           ) : null}
         </Sheet>

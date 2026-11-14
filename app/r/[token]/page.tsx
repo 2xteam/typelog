@@ -34,7 +34,7 @@ type Shared = {
   notice: string | null;
   friend: { name: string; subtitle: string | null; emoji: string } | null;
   /** 러닝 기록 — 자격증으로 보여 준다 */
-  run?: { attemptId: string; attemptNo: number; code: string; detail: RecordDetail; completedAt: string | null; name: string; issuer?: string | null; photoUrl?: string | null } | null;
+  run?: { attemptId: string; attemptNo: number; code: string; detail: RecordDetail; completedAt: string | null; name: string; issuer?: string | null; photoUrl?: string | null; holo?: string | null } | null;
 };
 
 export default function SharedLanding({ params }: { params: Promise<{ token: string }> }) {
@@ -108,8 +108,8 @@ export default function SharedLanding({ params }: { params: Promise<{ token: str
           <Sheet
             center
             eyebrow="A FRIEND SHARED"
-            headline={`🏃 ${data.run.name} 님의 러닝 기록이에요`}
-            lead="🤔 나의 러닝 기록은 어떤 타입일까요? 기록만 넣으면 바로 나와요 ⏱️"
+            headline={`🏅 ${data.run.name} 님의 러닝 자격증이에요`}
+            lead="🤔 나의 러닝 자격증은 몇급일까요? 기록만 넣으면 바로 발급돼요 ⏱️"
           />
         </>
       ) : (

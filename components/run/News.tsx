@@ -130,9 +130,9 @@ export function NewsFront({ v }: { v: RunView }) {
           </p>
         </div>
         <div>
-          <p className="rn-brief-h">측정단 “무리 말고 즐겁게 달리길”</p>
+          <p className="rn-brief-h">심사단 “무리 말고 즐겁게 달리길”</p>
           <p className="rn-brief">
-            마이재인 러닝 기록 측정단은 이번 기록을 확인하며 “몸이 보내는 신호를 먼저 들으라”고 당부했다. 기록은 다음에도 잴 수 있다.
+            마이재인 러닝 자격 심사단은 이번 기록을 확인하며 “몸이 보내는 신호를 먼저 들으라”고 당부했다. 기록은 다음에도 잴 수 있다.
           </p>
         </div>
         <div>
@@ -152,12 +152,12 @@ export function NewsFront({ v }: { v: RunView }) {
       <div className="rn-ad">
         <div>
           <p className="rn-a1">ADVERTISEMENT</p>
-          <p className="rn-a2">당신의 기록은 어느 면에 실릴까?</p>
+          <p className="rn-a2">당신의 러닝 자격증은 몇급일까?</p>
         </div>
         <p className="rn-a3">
-          마이재인 러닝 기록
+          마이재인 러닝 자격증
           <br />
-          딱지 · 신문 · 자격증
+          자격증 · 덤으로 신문 · 딱지
         </p>
       </div>
       <p className="rn-parody">{PARODY}</p>
@@ -226,7 +226,7 @@ export function NewsLocal({ v }: { v: RunView }) {
               <p>
                 {v.name} 씨는 “끝나고 먹은 국밥이 제일 기억에 남는다”며 웃었다. 산책하던 이모(61) 씨는 “매주 보는 얼굴인데 오늘은 표정이 달랐다”고 전했다.
               </p>
-              <p>마이재인 러닝 기록 측정단은 “다치지 않고 꾸준히 달리는 게 제일”이라고 덧붙였다.</p>
+              <p>마이재인 러닝 자격 심사단은 “다치지 않고 꾸준히 달리는 게 제일”이라고 덧붙였다.</p>
             </div>
           </div>
         </div>
@@ -285,12 +285,12 @@ export function NewsLocal({ v }: { v: RunView }) {
       <div className="rn-ad">
         <div>
           <p className="rn-a1">ADVERTISEMENT</p>
-          <p className="rn-a2">당신의 기록은 어느 면에 실릴까?</p>
+          <p className="rn-a2">당신의 러닝 자격증은 몇급일까?</p>
         </div>
         <p className="rn-a3">
-          마이재인 러닝 기록
+          마이재인 러닝 자격증
           <br />
-          딱지 · 신문 · 자격증
+          자격증 · 덤으로 신문 · 딱지
         </p>
       </div>
       <p className="rn-parody">{PARODY}</p>

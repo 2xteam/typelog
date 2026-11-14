@@ -18,6 +18,8 @@ export type RunView = {
   photoWide?: string | null;
   /** 선수자격증 발급처 — 없으면 「마이재인」 */
   issuer?: string | null;
+  /** 자격증 홀로그램 무늬 — holo.ts 의 HOLO_IDS. 없으면 꽃무늬 */
+  holo?: string | null;
 };
 
 export const DIST_LABEL: Record<string, string> = { "5k": "5km", "10k": "10km", half: "하프", full: "풀" };
