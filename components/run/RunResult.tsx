@@ -221,7 +221,7 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
         if (!res.ok || !json.ok) throw new Error(json.error ?? "바꾸지 못했어요.");
         setIssuer(json.custom?.issuer ?? null);
         setIssuerDraft(json.custom?.issuer ?? "");
-        setMsg("🏷️ 선수자격증 발급처를 바꿨어요.");
+        setMsg("🏷️ 자격증 발급처를 바꿨어요.");
       } catch (e) {
         setMsg((e as Error).message);
       } finally {
@@ -395,6 +395,42 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
                 </button>
               </label>
             ) : null}
+            <label className="rr-race">
+              <span>발급처</span>
+              <input
+                value={issuerDraft}
+                maxLength={8}
+                placeholder="마이재인"
+                onChange={(e) => setIssuerDraft(e.target.value)}
+              />
+              <button
+                type="button"
+                className="rr-btn"
+                disabled={busy || issuerDraft.trim() === (issuer ?? "")}
+                onClick={() => void saveIssuer(issuerDraft)}
+              >
+                바꾸기
+              </button>
+            </label>
+            <div className="rr-chips">
+              <span className="rr-chips-h">🏷️ 자격증 발급처 추천</span>
+              {ISSUER_CHIPS.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  className="rr-chip"
+                  data-on={(issuer ?? "마이재인") === c}
+                  disabled={busy}
+                  onClick={() => {
+                    setIssuerDraft(c === "마이재인" ? "" : c);
+                    void saveIssuer(c === "마이재인" ? "" : c);
+                  }}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+
           </div>
         ) : null}
 
@@ -431,45 +467,7 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
           <p className="rr-bonus-eyebrow">🎁 BONUS · 함께 발급</p>
           <h2 className="rr-bonus-h">🎉 선수자격증도 나왔어요</h2>
           <p className="rr-bonus-sub">📰 신문에 실릴 만한 기록부터 선수자격증을 함께 드려요 🏅</p>
-          {canEdit ? (
-            <div className="rr-fields rr-issuer">
-              <p className="rr-fields-h">🏷️ 발급처 이름을 바꿀 수 있어요 (8자까지)</p>
-              <label className="rr-race">
-                <span>발급처</span>
-                <input
-                  value={issuerDraft}
-                  maxLength={8}
-                  placeholder="마이재인"
-                  onChange={(e) => setIssuerDraft(e.target.value)}
-                />
-                <button
-                  type="button"
-                  className="rr-btn"
-                  disabled={busy || issuerDraft.trim() === (issuer ?? "")}
-                  onClick={() => void saveIssuer(issuerDraft)}
-                >
-                  바꾸기
-                </button>
-              </label>
-              <div className="rr-chips">
-                {ISSUER_CHIPS.map((c) => (
-                  <button
-                    key={c}
-                    type="button"
-                    className="rr-chip"
-                    data-on={(issuer ?? "마이재인") === c}
-                    disabled={busy}
-                    onClick={() => {
-                      setIssuerDraft(c === "마이재인" ? "" : c);
-                      void saveIssuer(c === "마이재인" ? "" : c);
-                    }}
-                  >
-                    {c}
-                  </button>
-                ))}
-              </div>
-            </div>
-          ) : null}
+
           <Fit width={1000}>
             <License v={v} athlete />
           </Fit>

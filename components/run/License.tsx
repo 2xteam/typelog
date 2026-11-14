@@ -20,8 +20,8 @@ export function License({ v, athlete = false }: { v: RunView; athlete?: boolean 
   const d = v.detail;
   const grade = certGrade(v.code);
   const word = athlete ? "선수자격증" : "러닝자격증";
-  /** 발급처 — 선수자격증만 바꿀 수 있다(사용자 2026-11-14). 러닝자격증은 늘 「마이재인」 */
-  const brand = (athlete && v.issuer?.trim()) || "마이재인";
+  /** 발급처 — 결과를 받은 사람 누구나 바꿀 수 있다(러닝자격증 · 선수자격증 모두, 사용자 2026-11-14) */
+  const brand = v.issuer?.trim() || "마이재인";
   const sealChars = `${brand}주식회사인`.split("");
   const sealCols = Math.max(3, Math.ceil(Math.sqrt(sealChars.length)));
   return (
