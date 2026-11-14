@@ -157,7 +157,7 @@ export function NewsFront({ v }: { v: RunView }) {
         <p className="rn-a3">
           마이재인 러닝 자격증
           <br />
-          자격증 · 덤으로 신문 · 딱지
+          자격증 · 신문 · 딱지
         </p>
       </div>
       <p className="rn-parody">{PARODY}</p>
@@ -290,7 +290,7 @@ export function NewsLocal({ v }: { v: RunView }) {
         <p className="rn-a3">
           마이재인 러닝 자격증
           <br />
-          자격증 · 덤으로 신문 · 딱지
+          자격증 · 신문 · 딱지
         </p>
       </div>
       <p className="rn-parody">{PARODY}</p>

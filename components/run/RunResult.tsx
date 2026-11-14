@@ -52,14 +52,15 @@ export type RunPayload = {
 type Kind = "cert" | "news-front" | "news-local" | "ticket" | "ticket-suspend";
 
 /**
- * 정체성은 **러닝 자격증**이다(사용자 2026-11-14). 신문 · 딱지는 선수자격증에 딸려 오는 덤 —
- * 그래도 보는 재미가 커서 화면 맨 위에 크게 둔다. 그 위에 「덤」 표를 붙인다.
+ * 정체성은 **러닝 자격증**이다(사용자 2026-11-14). 신문 · 딱지는 선수자격증과 함께 나오는 것 —
+ * 그래도 보는 재미가 커서 화면 맨 위에 크게 둔다. 그 위에 작은 표를 붙인다.
+ * ⚠️ 「덤」 이라는 말은 쓰지 않는다(사용자 2026-11-14).
  */
 const BONUS_TAG: Record<string, string> = {
-  "ticket-suspend": "🎁 덤 · 러닝 면허 정지도 받았어요",
-  ticket: "🎁 덤 · 과속 딱지도 끊겼어요",
-  "news-front": "🎁 덤 · 신문 1면에도 실렸어요",
-  "news-local": "🎁 덤 · 신문 사회면에도 실렸어요",
+  "ticket-suspend": "🚨 러닝 면허 정지도 받았어요",
+  ticket: "📸 과속 딱지도 끊겼어요",
+  "news-front": "📰 신문 1면에도 실렸어요",
+  "news-local": "🗞️ 신문 사회면에도 실렸어요",
 };
 
 /** 선수자격증 발급처 추천어 — 누르면 바로 바뀐다 */
@@ -595,7 +596,7 @@ export function RunResult({
         <section className="rr-bonus">
           <p className="rr-bonus-eyebrow">🏅 MY LICENSE · 나의 러닝 자격증</p>
           <h2 className="rr-bonus-h">🎉 {t.name}이 나왔어요</h2>
-          <p className="rr-bonus-sub">📰 신문에 실릴 만한 기록이면 선수자격증을 드려요. 신문 · 딱지는 덤이에요 🎁</p>
+          <p className="rr-bonus-sub">📰 신문에 실릴 만한 기록이면 선수자격증을 드려요 🏅</p>
 
           <Fit width={1000}>
             <License v={v} athlete />

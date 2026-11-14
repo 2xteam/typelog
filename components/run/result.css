@@ -403,7 +403,7 @@
 .rr-holo-pick .rr-chip[data-on="true"] { background: linear-gradient(100deg, #4f5bd5 0%, #962fbf 30%, #d62976 66%, #fa7e1e 100%); color: #fff; }
 @media (prefers-reduced-motion: reduce) { .rl-holo-pass { display: none; } .rl-holo { animation: none !important; } }
 
-/* 신문 · 딱지 위 「덤」 표 — 정체성은 자격증, 이건 덤 */
+/* 신문 · 딱지 위 작은 표 — 정체성은 자격증, 신문 · 딱지는 함께 나오는 것 */
 .rr-bonus-tag { display: table; margin: 0 auto 14px; padding: 7px 16px; border-radius: 999px;
   background: #fff; border: 1.5px solid #ead9f3; color: #962fbf; font-size: 14px; font-weight: 800; }
 
