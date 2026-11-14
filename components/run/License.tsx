@@ -22,12 +22,22 @@ export function License({ v, athlete = false }: { v: RunView; athlete?: boolean 
   const word = athlete ? "선수자격증" : "러닝자격증";
   /** 발급처 — 결과를 받은 사람 누구나 바꿀 수 있다(러닝자격증 · 선수자격증 모두, 사용자 2026-11-14) */
   const brand = v.issuer?.trim() || "마이재인";
-  const sealChars = `${brand}주식회사인`.split("");
-  const sealCols = Math.max(3, Math.ceil(Math.sqrt(sealChars.length)));
+  /**
+   * 도장은 3×3 아홉 칸을 채운다 — 발급처 글자 수에 따라 뒤에 붙는 말이 달라진다(사용자 2026-11-14).
+   * 9자 발급처만 · 8자 +인 · 7자 +회사 · 6자 +회사인 · 5자 +주식회사 · 4자 이하 +주식회사인
+   */
+  const brandChars = Array.from(brand);
+  const SEAL_TAIL: Record<number, string> = { 9: "", 8: "인", 7: "회사", 6: "회사인", 5: "주식회사" };
+  const sealChars = [...brandChars, ...Array.from(SEAL_TAIL[brandChars.length] ?? "주식회사인")].slice(0, 9);
+  const sealCols = 3;
+  /** 발급처가 길면 띠 제목 · 회사명 글자를 줄인다 — 카드 밖으로 넘치지 않게 */
+  const n = brandChars.length;
+  const bandFont = n <= 5 ? 50 : n <= 7 ? 44 : 38;
+  const coFont = n <= 5 ? 40 : n <= 7 ? 34 : 29;
   return (
     <div className="rl-card">
       <div className="rl-band">
-        <span className="rl-ko">
+        <span className="rl-ko" style={bandFont !== 50 ? { fontSize: bandFont } : undefined}>
           {brand} {word}
         </span>
         <span className="rl-en">{athlete ? "ATHLETE LICENSE" : "RUNNING LICENSE"}</span>
@@ -84,7 +94,9 @@ export function License({ v, athlete = false }: { v: RunView; athlete?: boolean 
           <div className="rl-proof-wrap">
             <div className="rl-proof">
               <p>{word}을 취득하였음을 증명함</p>
-              <p className="rl-co">{brand} 주식회사</p>
+              <p className="rl-co" style={coFont !== 40 ? { fontSize: coFont, whiteSpace: "nowrap" } : { whiteSpace: "nowrap" }}>
+                {brand} 주식회사
+              </p>
             </div>
             <div
               className="rl-seal"

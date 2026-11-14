@@ -239,7 +239,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
     // 결과 꾸미기 — 끝난 기록에서 본인만. 점수와 무관하다
     if (attempt.status === "completed" && body.custom && "issuer" in body.custom) {
-      const issuer = cleanLine(body.custom.issuer, 8) || null;
+      const issuer = cleanLine(body.custom.issuer, 9) || null;
       await Attempt.updateOne({ _id: oid }, { $set: { "custom.issuer": issuer } });
       return NextResponse.json({ ok: true, custom: { issuer } });
     }

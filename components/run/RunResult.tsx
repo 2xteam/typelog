@@ -366,6 +366,12 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
                 maxLength={12}
                 placeholder="러너"
                 onChange={(e) => setRunnerDraft(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.nativeEvent.isComposing) {
+                    e.preventDefault();
+                    if (!busy) void saveField("runner", runnerDraft);
+                  }
+                }}
               />
               <button
                 type="button"
@@ -384,6 +390,12 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
                   maxLength={20}
                   placeholder="예: 춘천마라톤"
                   onChange={(e) => setRaceDraft(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.nativeEvent.isComposing) {
+                    e.preventDefault();
+                    if (!busy) void saveField("race", raceDraft);
+                  }
+                }}
                 />
                 <button
                   type="button"
@@ -399,9 +411,15 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
               <span>발급처</span>
               <input
                 value={issuerDraft}
-                maxLength={8}
+                maxLength={9}
                 placeholder="마이재인"
                 onChange={(e) => setIssuerDraft(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.nativeEvent.isComposing) {
+                    e.preventDefault();
+                    if (!busy) void saveIssuer(issuerDraft);
+                  }
+                }}
               />
               <button
                 type="button"
