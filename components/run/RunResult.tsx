@@ -109,6 +109,8 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [editPhoto, setEditPhoto] = useState(false);
+  /** 공유 이미지를 만드는 중 — 0~100. null 이면 덮개를 그리지 않는다 */
+  const [progress, setProgress] = useState<number | null>(null);
   /** 저장 · 공유 이미지 모양 — 책상 위에 놓인 장면 / 화면 그대로 */
   const [chosenStyle, setStyle] = useState<"desk" | "flat">("desk");
   /** 자격증은 반듯한 판만 받는다 — 책상 위(기울인) 판이 없다 (사용자 결정 2026-11-14) */
@@ -197,7 +199,10 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
       const { toBlob } = await import("html-to-image");
       await document.fonts?.ready;
       // 글꼴은 직접 골라 넣는다 — 라이브러리에 맡기면 다른 도메인 CSS 를 읽다 SecurityError 가 난다
-      const fontEmbedCSS = await embedFontCSS(node);
+      // 진행률 — 글꼴 받기 0~70 · 그리기 70~100 (사파리는 두 번 그린다)
+      setProgress(3);
+      const fontEmbedCSS = await embedFontCSS(node, (k) => setProgress(3 + Math.round(k * 67)));
+      setProgress(72);
       const opts =
         target === "main" && style === "desk"
           ? { width: 1080, height: 1080, pixelRatio: 1, fontEmbedCSS }
@@ -207,9 +212,12 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
         한 번 미리 그려 불러 두고, 두 번째 것을 쓴다 (사용자 2026-11-14 「이상하게 저장」).
       */
       const ua = navigator.userAgent;
-      if (/Safari/.test(ua) && !/Chrome|CriOS|Android/.test(ua)) await toBlob(node, opts);
-      const blob =
+      if (/Safari/.test(ua) && !/Chrome|CriOS|Android/.test(ua)) {
         await toBlob(node, opts);
+        setProgress(86);
+      }
+      const blob = await toBlob(node, opts);
+      setProgress(100);
       if (!blob) throw new Error("이미지를 만들지 못했어요.");
       return blob;
     },
@@ -218,7 +226,8 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
 
   const shareImage = useCallback(async (target: "main" | "athlete" = "main") => {
     setBusy(true);
-    setMsg("이미지를 만드는 중이에요…");
+    setMsg(null);
+    setProgress(0);
     try {
       const blob = await render(target);
       const file = new File([blob], target === "athlete" ? "myjane-athlete-license.png" : `myjane-running-${code}.png`, { type: "image/png" });
@@ -233,6 +242,7 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
       else setMsg(null);
     } finally {
       setBusy(false);
+      setProgress(null);
     }
   }, [render, code]);
 
@@ -381,7 +391,7 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
           </button>
           {!bare ? (
             <Link className="rr-btn" href="/types" style={{ gridColumn: "1 / -1" }}>
-              다른 기록 재기
+              다른 것도 해보기 →
             </Link>
           ) : null}
         </div>
@@ -410,6 +420,21 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
           {distLabel(v.detail)} 기준표 {v.detail.version}
         </p>
       </div>
+
+      {progress !== null ? (
+        <div className="rr-making" role="status" aria-live="polite">
+          <div className="rr-making-card">
+            <p className="rr-making-t">이미지를 만드는 중이에요</p>
+            <div className="rr-making-bar" aria-hidden="true">
+              <i style={{ width: `${progress}%` }} />
+            </div>
+            <p className="rr-making-n">
+              {progress}% · {progress < 70 ? "글꼴을 담는 중" : progress < 100 ? "그리는 중" : "거의 다 됐어요"}
+            </p>
+            <p className="rr-making-sub">보통 2~5초 걸려요. 휴대폰에서는 조금 더 걸릴 수 있어요.</p>
+          </div>
+        </div>
+      ) : null}
 
       {editPhoto ? (
         <div className="run-play" style={{ position: "fixed", inset: 0, margin: 0, maxWidth: "none", borderRadius: 0, zIndex: 60, overflow: "auto" }}>
@@ -457,7 +482,7 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
  * 구글 폰트)의 cssRules 는 브라우저가 막아 SecurityError 가 난다(2026-11-14). 한글 글꼴은
  * 조각이 백 개 가까이라 다 넣으면 수 MB 가 되므로 쓰인 글자로 거른다.
  */
-async function embedFontCSS(node: HTMLElement): Promise<string> {
+async function embedFontCSS(node: HTMLElement, onProgress?: (k: number) => void): Promise<string> {
   const chars = new Set([...(node.textContent ?? ""), ..."0123456789:′″.,%+−-/ABCDEFGHIJKLMNOPQRSTUVWXYZ"]);
   const codes = [...chars].map((c) => c.codePointAt(0) ?? 0);
   const covers = (range: string) =>
@@ -496,7 +521,8 @@ async function embedFontCSS(node: HTMLElement): Promise<string> {
     });
   };
 
-  const out: string[] = [];
+  // 먼저 받을 조각을 모으고, 받으면서 진행률을 알린다
+  const jobs: { rule: CSSFontFaceRule; src: string; url: URL }[] = [];
   for (const sheet of Array.from(document.styleSheets)) {
     if (sheet.href && new URL(sheet.href, location.href).origin !== location.origin) continue;
     let rules: CSSRuleList;
@@ -514,18 +540,31 @@ async function embedFontCSS(node: HTMLElement): Promise<string> {
       const src = rule.style.getPropertyValue("src");
       const url = /url\(["']?([^"')]+)["']?\)/.exec(src)?.[1];
       if (!url) continue;
+      jobs.push({ rule, src, url: new URL(url, sheet.href ?? location.href) });
+    }
+  }
+  const out: string[] = [];
+  let done = 0;
+  // 몇 개씩 나란히 받는다 — 하나씩 받으면 휴대폰에서 느리다
+  const queue = [...jobs];
+  const worker = async () => {
+    for (let job = queue.shift(); job; job = queue.shift()) {
       try {
-        const blob = await (await fetch(new URL(url, sheet.href ?? location.href))).blob();
+        const blob = await (await fetch(job.url)).blob();
         const data = await new Promise<string>((resolve) => {
           const r = new FileReader();
           r.onload = () => resolve(String(r.result));
           r.readAsDataURL(blob);
         });
-        out.push(rule.cssText.replace(src, `url(${data})`));
+        out.push(job.rule.cssText.replace(job.src, `url(${data})`));
       } catch {
         /* 그 조각 하나 없이 그린다 */
       }
+      done += 1;
+      onProgress?.(jobs.length ? done / jobs.length : 1);
     }
-  }
+  };
+  await Promise.all(Array.from({ length: 6 }, worker));
+  onProgress?.(1);
   return out.join("\n");
 }

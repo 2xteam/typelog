@@ -65,13 +65,19 @@
 .run-toggle { display: grid; grid-template-columns: 1fr 1fr; padding: 4px; border-radius: 999px; background: rgba(255, 255, 255, 0.08); }
 .run-toggle button { border: 0; border-radius: 999px; padding: 11px 0; font-size: 15px; font-weight: 700; background: transparent; color: rgba(255, 255, 255, 0.65); cursor: pointer; }
 .run-toggle button[aria-selected="true"] { background: #fff; color: #120f1c; }
-.run-clock { margin: 26px 0 6px; display: flex; justify-content: center; align-items: flex-start; gap: 6px; }
-.run-clock b { font-size: 46px; line-height: 70px; font-weight: 300; color: rgba(255, 255, 255, 0.5); }
-.run-num { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+/*
+  기록 입력 — 칸 크기에 글자를 맞춘다. 아이폰에서 92px 칸에 52px 코딩 글꼴(응시 화면에는 로드되지 않아
+  더 넓은 대체 글꼴)이 들어가 「0(」 「4:」 처럼 잘렸다(2026-11-14). 숫자 폭이 일정한 Pretendard 로.
+*/
+.run-clock { margin: 26px 0 6px; display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: start; gap: 6px; }
+.run-clock--pace { grid-template-columns: 1fr auto 1fr auto; max-width: 300px; margin-left: auto; margin-right: auto; }
+.run-clock b { font-size: clamp(30px, 8vw, 44px); line-height: clamp(64px, 18vw, 82px); font-weight: 300; color: rgba(255, 255, 255, 0.5); }
+.run-num { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0; }
 .run-num input {
-  width: 92px; height: 82px; border-radius: 18px; border: 0; text-align: center;
-  font: 800 52px/1 "IBM Plex Mono", ui-monospace, monospace; letter-spacing: -0.04em;
-  background: rgba(255, 255, 255, 0.1); color: #fff; caret-color: #feda75;
+  width: 100%; max-width: 104px; height: clamp(64px, 18vw, 82px); border-radius: 18px; border: 0; padding: 0; text-align: center;
+  font-family: Pretendard, -apple-system, sans-serif; font-weight: 800; font-size: clamp(30px, 9vw, 46px); line-height: 1;
+  font-variant-numeric: tabular-nums; letter-spacing: -0.02em;
+  background: rgba(255, 255, 255, 0.1); color: #fff; caret-color: #feda75; -webkit-appearance: none; appearance: none;
 }
 .run-num input:focus { outline: 2px solid #feda75; outline-offset: 2px; }
 .run-num input::placeholder { color: rgba(255, 255, 255, 0.22); }
@@ -138,8 +144,6 @@
 @media (max-width: 420px) {
   .run-play { margin: 0 -8px 24px; border-radius: 22px; padding: 14px 14px 22px; }
   .run-q { font-size: 26px; }
-  .run-num input { width: 78px; height: 74px; font-size: 44px; }
-  .run-clock b { font-size: 38px; line-height: 62px; }
   .run-tiles--two .run-tile { min-height: 240px; }
 }
 @media (prefers-reduced-motion: reduce) {

@@ -336,3 +336,15 @@
 .rr-style span { font-size: 13px; font-weight: 700; color: #777; margin-right: 4px; }
 .rr-style button { border: 1.5px solid #e2dcec; background: #fff; border-radius: 999px; padding: 8px 14px; font-size: 14px; font-weight: 700; color: #555; cursor: pointer; }
 .rr-style button[aria-checked="true"] { border-color: transparent; background: #1c1c1e; color: #fff; }
+
+/* 공유 이미지를 만드는 중 — 화면을 덮는 안내 · 진행 막대 */
+.rr-making { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 24px;
+  background: rgba(18, 15, 28, 0.72); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.rr-making-card { width: min(360px, 100%); padding: 24px 22px; border-radius: 22px; background: #fff; text-align: center;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.35); font-family: var(--rr-sans); }
+.rr-making-t { margin: 0; font-size: 18px; font-weight: 900; letter-spacing: -0.02em; color: #1c1c1e; }
+.rr-making-bar { margin: 18px 0 0; height: 10px; border-radius: 999px; background: #efe9f7; overflow: hidden; }
+.rr-making-bar i { display: block; height: 100%; border-radius: 999px; background: var(--ig);
+  transition: width 0.25s ease; }
+.rr-making-n { margin: 10px 0 0; font-size: 14px; font-weight: 800; color: #7a2399; font-variant-numeric: tabular-nums; }
+.rr-making-sub { margin: 6px 0 0; font-size: 12.5px; color: #6b6676; }

@@ -368,7 +368,7 @@ function DurationStep({
           <NumBox value={s} onChange={setS} label="초" max={59} innerRef={sRef} />
         </div>
       ) : (
-        <div className="run-clock">
+        <div className="run-clock run-clock--pace">
           <NumBox value={pm} onChange={setPm} label="분" max={59} onFull={() => psRef.current?.focus()} />
           <b>′</b>
           <NumBox value={ps} onChange={setPs} label="초" max={59} innerRef={psRef} />
