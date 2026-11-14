@@ -26,7 +26,9 @@ import "./run.css";
 
 export type RunPayload = {
   attemptId: string;
-  custom?: { issuer?: string | null } | null;
+  /** 결과 링크가 이미 있나 — 있으면 사진을 바꿀 때 다시 올린다 */
+  shared?: boolean;
+  custom?: { issuer?: string | null; photoUrl?: string | null } | null;
   /** 본인 기록인가 — 게스트도 본인이면 true */
   isOwner?: boolean;
   attemptNo: number;
@@ -93,7 +95,16 @@ function Artwork({ kind, v }: { kind: Kind; v: RunView }) {
 const WIDTH: Record<Kind, number> = { cert: 1000, "news-front": 900, "news-local": 900, ticket: 900, "ticket-suspend": 900 };
 
 
-export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boolean }) {
+export function RunResult({
+  data,
+  bare = false,
+  registerBeforeShare,
+}: {
+  data: RunPayload;
+  bare?: boolean;
+  /** 「결과 링크 만들기」 직전에 부를 일 — 자격증 사진을 올린다 */
+  registerBeforeShare?: (fn: (() => Promise<string | void>) | null) => void;
+}) {
   const code = data.result.code ?? "";
   const detail = data.result.detail;
   const kind = kindOf(code);
@@ -127,6 +138,24 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
   /** 자격증은 반듯한 판만 받는다 — 책상 위(기울인) 판이 없다 (사용자 결정 2026-11-14) */
   const style = kind === "cert" ? "flat" : chosenStyle;
   const exportRef = useRef<HTMLDivElement>(null);
+
+  /** 자격증 사진(얼굴 크롭 JPEG)을 올린다 — 결과 링크의 자격증에 보이게 */
+  const uploadPhoto = useCallback(
+    async (blob?: Blob | null) => {
+      const b = blob ?? (await loadPhoto(data.attemptId));
+      if (!b) return;
+      const res = await fetch(`/api/attempts/${data.attemptId}/photo?guestKey=${encodeURIComponent(getGuestKey())}`, {
+        method: "POST",
+        headers: { "content-type": "image/jpeg" },
+        body: b,
+      });
+      if (!res.ok) throw new Error("자격증 사진을 올리지 못했어요. 링크에는 사진 없이 보여요.");
+    },
+    [data.attemptId],
+  );
+  /** 이번 화면에서 이미 올렸나 — 같은 사진을 두 번 올리지 않는다 */
+  const photoUploaded = useRef(!!data.custom?.photoUrl);
+  const runnerInput = useRef<HTMLInputElement>(null);
 
   // 사진 — 이 기기에만 있다
   useEffect(() => {
@@ -205,6 +234,31 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
     },
     [data.attemptId],
   );
+
+  /**
+   * 「결과 링크 만들기」 직전 — 링크로 보는 사람에게 보일 것을 챙긴다(사용자 2026-11-14).
+   *   1 이름: 적어 두고 「바꾸기」를 안 눌렀으면 저장한다. 아무 이름도 없으면 멈추고 이름 칸으로 보낸다
+   *     (비회원이 이름 없이 링크를 만들면 「러너 님」 으로 나갔다)
+   *   2 사진: 자격증 사진을 올린다(이미 올렸으면 건너뛴다)
+   */
+  useEffect(() => {
+    if (!registerBeforeShare) return;
+    registerBeforeShare(async () => {
+      const draft = runnerDraft.trim();
+      if (draft && draft !== (runner ?? data.ownerName ?? "").trim()) {
+        await saveField("runner", draft);
+      } else if (!draft && !runner?.trim() && !data.ownerName?.trim()) {
+        runnerInput.current?.scrollIntoView({ block: "center", behavior: "smooth" });
+        runnerInput.current?.focus({ preventScroll: true });
+        return "✏️ 결과 링크에 보일 이름을 먼저 적어 주세요.";
+      }
+      if (photoUploaded.current) return;
+      await uploadPhoto()
+        .then(() => (photoUploaded.current = true))
+        .catch(() => {});
+    });
+    return () => registerBeforeShare(null);
+  }, [registerBeforeShare, uploadPhoto, saveField, runnerDraft, runner, data.ownerName]);
 
   /** 선수자격증 발급처 바꾸기 */
   const saveIssuer = useCallback(
@@ -362,6 +416,7 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
             <label className="rr-race">
               <span>이름</span>
               <input
+                ref={runnerInput}
                 value={runnerDraft}
                 maxLength={12}
                 placeholder="러너"
@@ -529,6 +584,11 @@ export function RunResult({ data, bare = false }: { data: RunPayload; bare?: boo
             <PhotoStep
               onDone={async (blob, wide) => {
                 await savePhoto(data.attemptId, blob, wide);
+                // 결과 링크가 이미 있으면 링크의 자격증 사진도 바꾼다
+                if (data.shared || photoUploaded.current)
+                  void uploadPhoto(blob)
+                    .then(() => (photoUploaded.current = true))
+                    .catch(() => {});
                 setPhoto(await blobToDataUrl(blob));
                 setPhotoWide(wide ? await blobToDataUrl(wide) : null);
                 setEditPhoto(false);

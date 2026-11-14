@@ -14,7 +14,7 @@ import "./result.css";
 export function SharedLicense({
   run,
 }: {
-  run: { attemptId: string; attemptNo: number; code: string; detail: RecordDetail; completedAt: string | null; name: string; issuer?: string | null };
+  run: { attemptId: string; attemptNo: number; code: string; detail: RecordDetail; completedAt: string | null; name: string; issuer?: string | null; photoUrl?: string | null };
 }) {
   const v = {
     attemptId: run.attemptId,
@@ -24,7 +24,7 @@ export function SharedLicense({
     name: run.name,
     race: null,
     completedAt: run.completedAt ? new Date(run.completedAt) : new Date(),
-    photo: null,
+    photo: run.photoUrl ?? null,
     issuer: run.issuer ?? null,
   };
   return (

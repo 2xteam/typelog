@@ -34,7 +34,7 @@ type Shared = {
   notice: string | null;
   friend: { name: string; subtitle: string | null; emoji: string } | null;
   /** 러닝 기록 — 자격증으로 보여 준다 */
-  run?: { attemptId: string; attemptNo: number; code: string; detail: RecordDetail; completedAt: string | null; name: string; issuer?: string | null } | null;
+  run?: { attemptId: string; attemptNo: number; code: string; detail: RecordDetail; completedAt: string | null; name: string; issuer?: string | null; photoUrl?: string | null } | null;
 };
 
 export default function SharedLanding({ params }: { params: Promise<{ token: string }> }) {
@@ -96,7 +96,10 @@ export default function SharedLanding({ params }: { params: Promise<{ token: str
     <>
       <div className="shared-brand">
         <AppIcon size={36} />
-        <span>TypeLog</span>
+        {/* 하단 myjane 워드마크와 같은 모양 — 앞은 짙게, 뒤는 그라디언트 */}
+        <span className="myjane-mark shared-wordmark">
+          type<span>log</span>
+        </span>
       </div>
 
       {data.run ? (

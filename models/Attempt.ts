@@ -167,7 +167,7 @@ export type AttemptDoc = {
     recomputedAt: Date | null;
   };
   share: { token: string | null; isPublic: boolean; viewCount: number };
-  custom?: { issuer?: string | null } | null;
+  custom?: { issuer?: string | null; photoUrl?: string | null; photoKey?: string | null } | null;
   via?: { token: string; sharerUserId: string | null; sharerAttemptId: string | null; at: Date };
   conversion?: { kind: "signup" | "login"; userId: string; at: Date };
   expiresAt?: Date;

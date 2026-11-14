@@ -62,7 +62,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
       let name = ans("runner") ?? null;
       if (!name && attempt.owner?.kind === "user" && attempt.owner.userId) {
         const u = await getUserModel().findById(attempt.owner.userId).select({ nickname: 1 }).lean();
-        name = (u as { nickname?: string | null } | null)?.nickname ?? null;
+        name = (u as { nickname?: string | null } | null)?.nickname?.trim() || null;
       }
       run = {
         attemptId: String(attempt._id),
@@ -72,6 +72,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
         completedAt: attempt.completedAt ?? null,
         name: name || "러너",
         issuer: (attempt.custom as { issuer?: string | null } | undefined)?.issuer ?? null,
+        photoUrl: (attempt.custom as { photoUrl?: string | null } | undefined)?.photoUrl ?? null,
       };
     }
 

@@ -89,7 +89,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       attemptNo: attempt.attemptNo,
       status: attempt.status,
       isOwner: mine,
-      custom: attempt.custom ?? null,
+      custom: attempt.custom ? { issuer: attempt.custom.issuer ?? null, photoUrl: attempt.custom.photoUrl ?? null } : null,
+      shared: attempt.share?.isPublic === true,
       shuffleSeed: attempt.shuffleSeed,
       quiz: {
         slug: quiz.slug,
@@ -143,7 +144,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       /** 러닝 기록 — 자격증의 「러너」 칸. 회원이면 닉네임 */
       if (quiz.experience === "running" && attempt.owner.kind === "user" && attempt.owner.userId) {
         const u = await getUserModel().findById(attempt.owner.userId).select({ nickname: 1 }).lean();
-        body.ownerName = (u as { nickname?: string | null } | null)?.nickname ?? null;
+        body.ownerName = (u as { nickname?: string | null } | null)?.nickname?.trim() || null;
       }
 
       body.result = {

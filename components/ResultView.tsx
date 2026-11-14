@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Sheet } from "@/components/Sheet";
 import { getGuestKey } from "@/lib/guestKey";
 import { useSession } from "@/lib/useSession";
@@ -114,9 +114,23 @@ export function ResultView({
     })();
   }, [session.status, load]);
 
+  /** 러닝 기록 — 링크를 만들기 직전에 자격증 사진을 올린다(RunResult 가 채운다) */
+  const beforeShare = useRef<(() => Promise<string | void>) | null>(null);
+  const registerBeforeShare = useCallback((fn: (() => Promise<string | void>) | null) => {
+    beforeShare.current = fn;
+  }, []);
+
   const share = useCallback(async () => {
     setShareMsg(null);
     try {
+      if (beforeShare.current) {
+        setShareMsg("📸 자격증 사진을 올리는 중이에요…");
+        const stop = await beforeShare.current();
+        if (stop) {
+          setShareMsg(stop);
+          return;
+        }
+      }
       const res = await fetch(`/api/attempts/${attemptId}/share`, {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -179,7 +193,7 @@ export function ResultView({
             </div>
           </Sheet>
         ) : null}
-        <RunResult data={data as unknown as RunPayload} bare={bare} />
+        <RunResult data={data as unknown as RunPayload} bare={bare} registerBeforeShare={registerBeforeShare} />
         {/* 다른 질문지와 같은 마무리 — 결과 링크로 들어온 사람은 가입 없이 해 볼 수 있다 */}
         <Sheet center eyebrow="AGAIN" headline={bare ? "다른 타입도 궁금하죠?" : "다시 해볼까요?"}>
           <div style={{ display: "flex", gap: 10, marginTop: 18, justifyContent: "center", flexWrap: "wrap" }}>
@@ -202,7 +216,7 @@ export function ResultView({
           {shareMsg ? <p className="quiz-msg">{shareMsg}</p> : null}
           {!bare ? (
             <p className="result-fineprint">
-              🔗 결과 링크로는 자격증이 보여요. 📰 신문 · 📸 딱지는 위의 이미지 저장 · 공유하기로 직접 나눠 주세요.
+              🔗 결과 링크로는 자격증이 보여요(자격증 사진이 함께 올라가요). 📰 신문 · 📸 딱지는 위의 이미지 저장 · 공유하기로 직접 나눠 주세요.
             </p>
           ) : null}
         </Sheet>

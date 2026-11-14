@@ -111,3 +111,7 @@
 }
 
 
+
+/* 공유 화면 맨 위 TypeLog — 하단 myjane 워드마크와 같은 패턴(.myjane-mark), 조금 크게 */
+.shared-brand { font-family: Pretendard, -apple-system, sans-serif; }
+.shared-wordmark { font-size: 1.45rem; letter-spacing: -0.04em; }
