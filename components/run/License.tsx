@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { formatPrime } from "@/lib/record";
 import { DEFAULT_HOLO, HOLO_MASK, isHolo } from "./holo";
-import { certGrade, dateDot, DIST_CODE, distLabel, mmdd, modifierMark, pacePrime, serial, type RunView } from "./view";
+import { ATHLETE_LEVEL, certGrade, dateDot, DIST_CODE, distLabel, mmdd, modifierMark, pacePrime, serial, type RunView } from "./view";
 
 /**
  * 자격증 — 레퍼런스(쏘맥자격증)의 항목 위치를 그대로 쓴다. 색은 인스타그램.
@@ -13,12 +13,7 @@ import { certGrade, dateDot, DIST_CODE, distLabel, mmdd, modifierMark, pacePrime
  * 선수자격증 — 신문 이상(1면 · 사회면 · 딱지 · 면허 정지)을 받은 사람에게 결과 아래 함께 준다
  * (사용자 결정 2026-11-14). 모양은 같고 띠 · 급수 · 증명 문구만 다르다.
  */
-const ATHLETE_LEVEL: Record<string, string> = {
-  "ticket-suspend": "특급",
-  ticket: "1급",
-  "news-front": "2급",
-  "news-local": "3급",
-};
+// 급수 표는 view.ts 에 있다 — admin 목록도 같은 값을 쓴다
 
 export function License({ v, athlete = false }: { v: RunView; athlete?: boolean }) {
   const d = v.detail;

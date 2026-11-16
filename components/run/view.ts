@@ -78,6 +78,14 @@ export function mmdd(d: Date) {
   return `${pad(d.getMonth() + 1)}${pad(d.getDate())}`;
 }
 
+/** 선수자격증 급수 — 신문 이상 결과의 코드 → 급 (사용자 결정 2026-11-14) */
+export const ATHLETE_LEVEL: Record<string, string> = {
+  "ticket-suspend": "특급",
+  ticket: "1급",
+  "news-front": "2급",
+  "news-local": "3급",
+};
+
 /** 자격증 급수 — cert-3 → 3 */
 export function certGrade(code: string) {
   const n = Number(code.replace("cert-", ""));
