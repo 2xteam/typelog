@@ -25,6 +25,11 @@ export type RecordDetail = {
   percentileLabel: string | null;
   /** 체급 보정 — 자격증에만 */
   modifier: "+" | "-" | null;
+  /**
+   * 현상수배 — 말도 안 되는 기록(사용자 2026-11-17). 등급(code)은 그대로 두고 **맨 위 그림만** 수배 전단이 된다.
+   * 2026-11-17 전 기록에는 없다(undefined).
+   */
+  wanted?: "fast" | "slow" | null;
 };
 
 export type RecordInput = {
@@ -40,10 +45,33 @@ export function tableKey(gender: string, distance: string) {
   return `${gender}:${distance}`;
 }
 
-/** 세계기록보다 빠른가 — 받지 않는다 */
+/** 세계기록보다 빠른가 — 예전엔 받지 않았고, 2026-11-17 부터는 현상수배(빠름)로 보낸다 */
 export function tooFast(c: Cutoffs, gender: string, distance: string, seconds: number) {
   const floor = c.floor?.[tableKey(gender, distance)];
   return typeof floor === "number" && seconds < floor;
+}
+
+/** 1km당 이보다 느리면 현상수배(느림) — 8분(사용자 2026-11-17) */
+export const WANTED_SLOW_PACE = 8 * 60;
+
+/**
+ * 현상수배 판정(사용자 2026-11-17).
+ *
+ *  - 빠름: 맨 윗급(면허 정지) 구간의 **빠른 쪽 절반**. 사용자 말로는 「최상위가 상위 10% 면 그 절반인 상위 5%」.
+ *    백분율 표가 상위 0.5% 에서 끝나 그 안을 가를 수 없어서 **시간으로** 반을 가른다 —
+ *    세계기록(floor)과 면허 정지 경계(upTo)의 가운데보다 빠르면 수배. 세계기록보다 빠른 값도 여기.
+ *    예) 남자 10km 세계기록 26:24 · 면허 정지 38:00 → 32:12 이하
+ *  - 느림: 1km당 8분보다 느리면(시속 7.5km 미만). 예) 10km 1:20:00 초과
+ * 등급은 표대로 두고 이 값만 더한다 — 자격증은 그대로 받는다(사용자 2026-11-17).
+ */
+export function wantedFor(c: Cutoffs, gender: string, distance: string, seconds: number, km: number): "fast" | "slow" | null {
+  if (km > 0 && seconds / km > WANTED_SLOW_PACE) return "slow";
+  const key = tableKey(gender, distance);
+  const floor = c.floor?.[key];
+  const top = (c.tables[key] ?? []).find((b) => b.code === "ticket-suspend")?.upTo;
+  if (typeof floor === "number" && seconds < floor) return "fast";
+  if (typeof floor === "number" && typeof top === "number" && seconds <= floor + (top - floor) / 2) return "fast";
+  return null;
 }
 
 export function codeFor(c: Cutoffs, gender: string, distance: string, seconds: number) {
@@ -134,6 +162,7 @@ export function resolveRecord(
       percentile,
       percentileLabel: label,
       modifier: modifierFor(c, gender, code, input.body),
+      wanted: wantedFor(c, gender, distance, seconds, km),
     },
   };
 }

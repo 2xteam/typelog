@@ -8,6 +8,9 @@ import { runFontVars } from "./fonts";
 import { License } from "./License";
 import { NewsFront, NewsLocal } from "./News";
 import { Ticket } from "./Ticket";
+import { Prescription } from "./Prescription";
+import { Wanted, WANTED_SUMMARY } from "./Wanted";
+import "./extra.css";
 import { PhotoStep } from "./PhotoStep";
 import { distLabel, pctText, type RunView } from "./view";
 import { DEFAULT_HOLO, HOLO_IDS, HOLO_LABEL, isHolo, type HoloId } from "./holo";
@@ -50,13 +53,28 @@ export type RunPayload = {
 };
 
 type Kind = "cert" | "news-front" | "news-local" | "ticket" | "ticket-suspend";
+/**
+ * 맨 위 그림 — 등급과 따로 정한다(사용자 2026-11-17).
+ *   러닝자격증(1~5급) → 복약 지도 처방전 · 선수자격증 → 신문 · 딱지 · 말도 안 되는 기록 → 현상수배
+ * 자격증은 모두 아래 「나의 러닝 자격증」 칸에서 받는다.
+ */
+type Top = "rx" | "news-front" | "news-local" | "ticket" | "ticket-suspend" | "wanted-fast" | "wanted-slow";
+
+function topOf(code: string, d: RecordDetail | null): Top {
+  if (d?.wanted) return `wanted-${d.wanted}`;
+  if (code.startsWith("cert")) return "rx";
+  return code as Top;
+}
 
 /**
  * 정체성은 **러닝 자격증**이다(사용자 2026-11-14). 신문 · 딱지는 선수자격증과 함께 나오는 것 —
  * 그래도 보는 재미가 커서 화면 맨 위에 크게 둔다. 그 위에 작은 표를 붙인다.
  * ⚠️ 「덤」 이라는 말은 쓰지 않는다(사용자 2026-11-14).
  */
-const BONUS_TAG: Record<string, string> = {
+const BONUS_TAG: Record<Top, string> = {
+  rx: "💊 복약 지도 처방전도 받았어요",
+  "wanted-fast": "🚨 말도 안 되게 빨라서 현상수배도 됐어요",
+  "wanted-slow": "🚨 말도 안 되게 느려서 현상수배도 됐어요",
   "ticket-suspend": "🚨 러닝 면허 정지도 받았어요",
   ticket: "📸 과속 딱지도 끊겼어요",
   "news-front": "📰 신문 1면에도 실렸어요",
@@ -98,14 +116,32 @@ export function Fit({ width, children }: { width: number; children: React.ReactN
   );
 }
 
-function Artwork({ kind, v }: { kind: Kind; v: RunView }) {
-  if (kind === "cert") return <License v={v} />;
-  if (kind === "news-front") return <NewsFront v={v} />;
-  if (kind === "news-local") return <NewsLocal v={v} />;
+function Artwork({ top, v }: { top: Top; v: RunView }) {
+  if (top === "rx") return <Prescription v={v} />;
+  if (top === "wanted-fast") return <Wanted v={v} mode="fast" />;
+  if (top === "wanted-slow") return <Wanted v={v} mode="slow" />;
+  if (top === "news-front") return <NewsFront v={v} />;
+  if (top === "news-local") return <NewsLocal v={v} />;
   return <Ticket v={v} />;
 }
 
-const WIDTH: Record<Kind, number> = { cert: 1000, "news-front": 900, "news-local": 900, ticket: 900, "ticket-suspend": 900 };
+const WIDTH: Record<Top, number> = {
+  rx: 1100,
+  "wanted-fast": 760,
+  "wanted-slow": 760,
+  "news-front": 900,
+  "news-local": 900,
+  ticket: 900,
+  "ticket-suspend": 900,
+};
+
+/** 책상 위 장면의 놓는 모양 */
+function sceneOf(top: Top) {
+  if (top.startsWith("news")) return "news";
+  if (top.startsWith("ticket")) return "ticket";
+  if (top.startsWith("wanted")) return "wanted";
+  return "rx";
+}
 
 
 export function RunResult({
@@ -121,6 +157,7 @@ export function RunResult({
   const code = data.result.code ?? "";
   const detail = data.result.detail;
   const kind = kindOf(code);
+  const top = topOf(code, detail);
   /** 고칠 수 있나 — 본인이면(로그인하지 않은 게스트도). 서버가 모르면 예전처럼 공유 화면이 아닐 때 */
   const canEdit = data.isOwner ?? !bare;
   const [photo, setPhoto] = useState<string | null>(null);
@@ -141,7 +178,7 @@ export function RunResult({
   const [holoKind, setHoloKind] = useState<HoloId>(isHolo(data.custom?.holo) ? data.custom.holo : DEFAULT_HOLO);
   /** 신문 이상이면 선수자격증도 준다 */
   const athlete = kind !== "cert";
-  const [fx, setFx] = useState<Kind | null>(null);
+  const [fx, setFx] = useState<Top | null>(null);
   const [fxKey, setFxKey] = useState(0);
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -150,8 +187,8 @@ export function RunResult({
   const [progress, setProgress] = useState<number | null>(null);
   /** 저장 · 공유 이미지 모양 — 책상 위에 놓인 장면 / 화면 그대로 */
   const [chosenStyle, setStyle] = useState<"desk" | "flat">("desk");
-  /** 자격증은 반듯한 판만 받는다 — 책상 위(기울인) 판이 없다 (사용자 결정 2026-11-14) */
-  const style = kind === "cert" ? "flat" : chosenStyle;
+  /** 맨 위 그림은 모두 종이라 두 모양을 다 받는다. 자격증은 아래 칸에서 반듯한 판만 */
+  const style = chosenStyle;
   const exportRef = useRef<HTMLDivElement>(null);
 
   /** 자격증 사진(얼굴 크롭 JPEG)을 올린다 — 결과 링크의 자격증에 보이게 */
@@ -203,8 +240,8 @@ export function RunResult({
       /* 저장소를 못 쓰면 매번 돈다 */
     }
     const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    if (!seen && !reduce) setFx(kind);
-  }, [data.attemptId, kind]);
+    if (!seen && !reduce) setFx(top);
+  }, [data.attemptId, top]);
 
   const v: RunView | null = useMemo(
     () =>
@@ -386,7 +423,7 @@ export function RunResult({
       const blob = await render(target);
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
-      a.download = target === "athlete" ? "myjane-athlete-license.png" : `myjane-running-${code}-${style}.png`;
+      a.download = target === "athlete" ? `myjane-${athlete ? "athlete" : "running"}-license.png` : `myjane-running-${top}-${style}.png`;
       a.click();
       setTimeout(() => URL.revokeObjectURL(a.href), 4000);
       setMsg("✅ 이미지를 저장했어요. 인스타그램에 올려 보세요 📲");
@@ -396,7 +433,7 @@ export function RunResult({
       setBusy(false);
       setProgress(null);
     }
-  }, [render, code, style]);
+  }, [render, top, style, athlete]);
 
   const shareImage = useCallback(async (target: "main" | "athlete" = "main") => {
     setBusy(true);
@@ -404,7 +441,7 @@ export function RunResult({
     setProgress(0);
     try {
       const blob = await render(target);
-      const file = new File([blob], target === "athlete" ? "myjane-athlete-license.png" : `myjane-running-${code}.png`, { type: "image/png" });
+      const file = new File([blob], target === "athlete" ? `myjane-${athlete ? "athlete" : "running"}-license.png` : `myjane-running-${top}.png`, { type: "image/png" });
       if (navigator.canShare?.({ files: [file] })) {
         await navigator.share({ files: [file] });
         setMsg(null);
@@ -418,7 +455,7 @@ export function RunResult({
       setBusy(false);
       setProgress(null);
     }
-  }, [render, code]);
+  }, [render, top, athlete]);
 
 
   if (!v || !data.result.type) {
@@ -429,21 +466,20 @@ export function RunResult({
 
   return (
     <div className={`rr ${runFontVars}`}>
-      {BONUS_TAG[code] ? <p className="rr-bonus-tag">{BONUS_TAG[code]}</p> : null}
+      <p className="rr-bonus-tag">{BONUS_TAG[top]}</p>
       <div className="rr-stagewrap rr-reveal" data-fx={fx ?? undefined} key={fxKey}>
         <div className="rr-dim" aria-hidden="true" />
         <div className="rr-flash" aria-hidden="true" />
-        <Fit width={WIDTH[kind]}>
-          <Artwork kind={kind} v={v} />
+        <Fit width={WIDTH[top]}>
+          <Artwork top={top} v={v} />
         </Fit>
       </div>
-      {kind === "cert" ? holoPicker : null}
 
       <div className="rr-after">
         <p className="rr-name">
           {t.emoji} {t.name.toUpperCase()}
         </p>
-        <p className="rr-summary">{t.content.summary}</p>
+        <p className="rr-summary">{v.detail.wanted ? WANTED_SUMMARY[v.detail.wanted] : t.content.summary}</p>
         {pct ? (
           <span className="rr-pct">
             {v.detail.percentileLabel} {pct}
@@ -564,7 +600,6 @@ export function RunResult({
           </div>
         ) : null}
 
-        {kind !== "cert" ? (
         <div className="rr-style" role="radiogroup" aria-label="이미지 모양">
           <span>이미지 모양</span>
           <button type="button" role="radio" aria-checked={style === "desk"} onClick={() => setStyle("desk")}>
@@ -574,7 +609,6 @@ export function RunResult({
             화면 그대로
           </button>
         </div>
-        ) : null}
 
         <div className="rr-actions">
           <button type="button" className="rr-btn rr-btn--main" disabled={busy} onClick={() => void shareImage()}>
@@ -592,26 +626,27 @@ export function RunResult({
         {msg ? <p className="rr-msg">{msg}</p> : null}
       </div>
 
-      {athlete ? (
-        <section className="rr-bonus">
-          <p className="rr-bonus-eyebrow">🏅 MY LICENSE · 나의 러닝 자격증</p>
-          <h2 className="rr-bonus-h">🎉 {t.name}이 나왔어요</h2>
-          <p className="rr-bonus-sub">📰 신문에 실릴 만한 기록이면 선수자격증을 드려요 🏅</p>
+      {/* 자격증 — 모든 결과가 받는다. 맨 위 그림(처방전 · 신문 · 딱지 · 수배)과 따로 */}
+      <section className="rr-bonus">
+        <p className="rr-bonus-eyebrow">🏅 MY LICENSE · 나의 러닝 자격증</p>
+        <h2 className="rr-bonus-h">🎉 {t.name}이 나왔어요</h2>
+        <p className="rr-bonus-sub">
+          {athlete ? "📰 신문에 실릴 만한 기록이면 선수자격증을 드려요 🏅" : "🏃 끝까지 달린 기록으로 러닝자격증을 드려요 🏅"}
+        </p>
 
-          <Fit width={1000}>
-            <License v={v} athlete />
-          </Fit>
-          {holoPicker}
-          <div className="rr-actions">
-            <button type="button" className="rr-btn rr-btn--main" disabled={busy} onClick={() => void shareImage("athlete")}>
-              선수자격증 공유하기
-            </button>
-            <button type="button" className="rr-btn" disabled={busy} style={{ gridColumn: "1 / -1" }} onClick={() => void saveImage("athlete")}>
-              선수자격증 이미지 저장
-            </button>
-          </div>
-        </section>
-      ) : null}
+        <Fit width={1000}>
+          <License v={v} athlete={athlete} />
+        </Fit>
+        {holoPicker}
+        <div className="rr-actions">
+          <button type="button" className="rr-btn rr-btn--main" disabled={busy} onClick={() => void shareImage("athlete")}>
+            {athlete ? "선수자격증" : "러닝자격증"} 공유하기
+          </button>
+          <button type="button" className="rr-btn" disabled={busy} style={{ gridColumn: "1 / -1" }} onClick={() => void saveImage("athlete")}>
+            {athlete ? "선수자격증" : "러닝자격증"} 이미지 저장
+          </button>
+        </div>
+      </section>
 
       <div className="rr-after">
         <p className="rr-disclaimer">
@@ -659,21 +694,17 @@ export function RunResult({
 
       {/* 저장 · 공유 이미지용 — 화면 밖. 문구 띠 없이 */}
       <div className="rr-export" ref={exportRef} aria-hidden="true">
-        {kind !== "cert" ? (
-          <div className={`rr-scene rr-scene--desk rr-scene--${kind.startsWith("news") ? "news" : "ticket"}`}>
-            <div className="rr-scene-in">
-              <Artwork kind={kind} v={v} />
-            </div>
+        <div className={`rr-scene rr-scene--desk rr-scene--${sceneOf(top)}`}>
+          <div className="rr-scene-in">
+            <Artwork top={top} v={v} />
           </div>
-        ) : null}
-        <div className={`rr-flat rr-flat--main rr-flat--${kind === "cert" ? "cert" : "paper"}`}>
-          <Artwork kind={kind} v={v} />
         </div>
-        {athlete ? (
-          <div className="rr-flat rr-flat--athlete">
-            <License v={v} athlete />
-          </div>
-        ) : null}
+        <div className="rr-flat rr-flat--main rr-flat--paper">
+          <Artwork top={top} v={v} />
+        </div>
+        <div className="rr-flat rr-flat--athlete">
+          <License v={v} athlete={athlete} />
+        </div>
       </div>
     </div>
   );
@@ -704,7 +735,7 @@ async function embedFontCSS(node: HTMLElement, onProgress?: (k: number) => void)
   // 개발 서버에서는 'Noto Serif KR', 배포에서는 '__Noto_Serif_KR_1a2b3c' 처럼 이름이 다르다
   const cs = getComputedStyle(node);
   const families = new Set(
-    ["--rf-sans", "--rf-serif", "--rf-old", "--rf-blackletter", "--rf-mono", "--rf-blackhan", "--rf-pen", "--rf-seal"]
+    ["--rf-sans", "--rf-serif", "--rf-old", "--rf-blackletter", "--rf-mono", "--rf-blackhan", "--rf-pen", "--rf-seal", "--rf-western"]
       .map((v) => cs.getPropertyValue(v).split(",")[0]?.trim().replace(/^['"]|['"]$/g, ""))
       .filter(Boolean),
   );

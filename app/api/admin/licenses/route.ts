@@ -129,6 +129,8 @@ export async function GET(req: Request) {
         },
         gender: d.gender,
         percentile: pctText(d),
+        /** 현상수배 — 말도 안 되게 빠름 · 느림(2026-11-17 부터) */
+        wanted: d.wanted ?? null,
         race: ans("race")?.trim() || null,
         photoUrl: custom.photoUrl ?? null,
         link: a.share?.isPublic && a.share.token ? `${SITE}/r/${a.share.token}` : null,

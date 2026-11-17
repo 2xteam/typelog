@@ -8,7 +8,7 @@ import { getResultTypeModel } from "@/models/ResultType";
 import { getAttemptModel, type AttemptDoc } from "@/models/Attempt";
 import { ENGINE_VERSION, flattenItems, score, scoreRecord, type Answer } from "@/lib/scoring";
 import type { Item, Resolver } from "@/lib/quizTypes";
-import { formatClock, tooFast } from "@/lib/record";
+import { formatClock } from "@/lib/record";
 import { getUserModel } from "@/models/User";
 import { publicItem } from "@/lib/quizPublic";
 import { signClaim } from "@/lib/claimToken";
@@ -294,13 +294,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
         const sec = Math.round(Number(value));
         if (!Number.isFinite(sec) || sec <= 0 || sec > 24 * 3600) return badRequest("기록을 다시 봐 주세요.");
         value = sec;
-        // 세계기록보다 빠르면 받지 않는다 — 거리·성별을 먼저 골랐을 때만 알 수 있다
-        const c = (quizDoc.resolver as Resolver | undefined)?.cutoffs;
-        const g = (attempt.answers ?? []).find((a) => a.linkId === c?.gender)?.oids?.[0];
-        const d = (attempt.answers ?? []).find((a) => a.linkId === c?.distance)?.oids?.[0];
-        if (c && g && d && tooFast(c, g, d, sec)) {
-          return badRequest(`${formatClock(sec)} 은 세계기록보다 빨라요. 한 번만 다시 볼까요? 🙂`);
-        }
+        // 세계기록보다 빨라도 받는다 — 현상수배(빠름)로 간다(사용자 2026-11-17). lib/record.ts wantedFor
       }
       const prev = (attempt.answers ?? []).find((a) => a.linkId === linkId);
       if (prev) {
