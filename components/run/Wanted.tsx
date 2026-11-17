@@ -59,9 +59,10 @@ export function Wanted({ v, mode }: { v: RunView; mode: WantedMode }) {
         <p className="rw-wanted">WANTED</p>
         <p className="rw-en">— {c.en} —</p>
         <div className="rw-photo">
-          {v.photo ? (
+          {/* 신문과 같은 방식 — 올린 사진 원본(넓게 잡은 것)을 칸에 꽉(cover). 없으면 얼굴 사진 (사용자 2026-11-17) */}
+          {v.photoWide || v.photo ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={v.photo} alt="" />
+            <img src={v.photoWide ?? v.photo ?? ""} alt="" />
           ) : (
             <svg viewBox="0 0 300 300" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
               <circle cx="150" cy="118" r="62" fill="#7a5a36" opacity=".35" />
