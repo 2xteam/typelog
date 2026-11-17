@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import { connectDB } from "@/lib/db";
 import { badRequest, forbidden, getViewer, notFound, serverError } from "@/lib/auth";
 import { getAttemptModel, type AttemptDoc } from "@/models/Attempt";
+import { portalPhoto as portal } from "@/lib/portalStorage";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -18,23 +19,6 @@ export const maxDuration = 30;
  * 키는 추측하기 어렵게 `typelog/run/<응시 id>-<무작위>.jpg`, 바꾸면 옛 파일을 지운다.
  * → my-obsidian-vault / 10-Projects/TypeLog.md 「공유 사진」
  */
-
-const PORTAL = (process.env.PORTAL_API_ORIGIN || process.env.NEXT_PUBLIC_PORTAL_ORIGIN || "https://www.myjane.co.kr").replace(/\/+$/, "");
-
-async function portal(method: "POST" | "DELETE", key: string, body?: Buffer) {
-  const res = await fetch(`${PORTAL}/api/storage/typelog-photo`, {
-    method,
-    headers: {
-      authorization: `Bearer ${process.env.ADMIN_API_SECRET ?? ""}`,
-      "x-key": key,
-      ...(body ? { "content-type": "image/jpeg" } : {}),
-    },
-    body: body ? new Uint8Array(body) : undefined,
-  });
-  const json = (await res.json().catch(() => ({}))) as { ok?: boolean; url?: string; error?: string };
-  if (!res.ok || !json.ok) throw new Error(json.error ?? `포털 ${res.status}`);
-  return json;
-}
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {

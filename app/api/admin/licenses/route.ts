@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
+import mongoose from "mongoose";
+import { portalPhoto } from "@/lib/portalStorage";
 import { connectDB } from "@/lib/db";
-import { requireAdmin, serverError } from "@/lib/auth";
+import { badRequest, requireAdmin, serverError } from "@/lib/auth";
 import { maskEmail, maskPhone } from "@/lib/mask";
 import { formatPrime, type RecordDetail } from "@/lib/record";
 import { getAttemptModel } from "@/models/Attempt";
@@ -23,6 +25,10 @@ export const dynamic = "force-dynamic";
  * 자격증 한 장에 들어가는 글자(발급처 · 급수 · 기록 · 번호)를 여기서 만들어 내려 준다 —
  * 포털은 그리기만 한다. 사진은 결과 링크를 만들 때 올린 자격증 사진(R2)만 있다.
  * 기기 안에만 있는 사진은 서버에 없다. 회원 연락처는 가려서.
+ *
+ * POST { deleteIds: string[] } — 골라서 지우기(테스트 기록 정리, 사용자 2026-11-17).
+ *   러닝 자격증 기록만, 한 번에 100건까지. 올라가 있던 자격증 사진(R2)도 포털을 거쳐 지운다.
+ *   되돌릴 수 없다 — 확인은 포털 화면(확인 창)이 받는다.
  * → my-obsidian-vault / 10-Projects/TypeLog.md 「admin 자격증 목록」
  */
 
@@ -145,6 +151,48 @@ export async function GET(req: Request) {
     }
 
     return NextResponse.json({ ok: true, total, page, pages: Math.ceil(total / SIZE), size: SIZE, counts, items });
+  } catch (err) {
+    return serverError(err);
+  }
+}
+
+export async function POST(req: Request) {
+  try {
+    const guard = await requireAdmin(req);
+    if ("error" in guard) return guard.error;
+
+    const body = (await req.json().catch(() => ({}))) as { deleteIds?: unknown };
+    const ids = Array.isArray(body.deleteIds) ? body.deleteIds.filter((x): x is string => typeof x === "string") : [];
+    if (!ids.length) return badRequest("지울 자격증을 골라 주세요.");
+    if (ids.length > 100) return badRequest("한 번에 100장까지 지울 수 있어요.");
+    if (!ids.every((id) => mongoose.Types.ObjectId.isValid(id))) return badRequest("잘못된 기록 번호가 있어요.");
+
+    await connectDB();
+    const quiz = await getQuizModel().findOne({ slug: "running-record" }).select({ _id: 1 }).lean();
+    if (!quiz) return badRequest("러닝 자격증 질문지가 없어요.");
+
+    const Attempt = getAttemptModel();
+    // 러닝 자격증 기록만 — 다른 질문지 기록은 이 길로 지우지 않는다
+    const match = { _id: { $in: ids.map((id) => new mongoose.Types.ObjectId(id)) }, quizId: quiz._id };
+    const targets = await Attempt.find(match).select({ custom: 1 }).lean();
+    const keys = targets
+      .map((a) => (a.custom as { photoKey?: string | null } | undefined)?.photoKey)
+      .filter((k): k is string => !!k);
+
+    const r = await Attempt.deleteMany(match);
+
+    // 사진은 기록을 지운 뒤에 — 사진 지우기가 실패해도 기록은 지워진 상태로 남는다(사진 주소는 추측하기 어렵다)
+    let photosDeleted = 0;
+    for (const k of keys) {
+      try {
+        await portalPhoto("DELETE", k);
+        photosDeleted += 1;
+      } catch {
+        /* 남은 사진은 R2 에서 손으로 정리 */
+      }
+    }
+
+    return NextResponse.json({ ok: true, deleted: r.deletedCount, photos: keys.length, photosDeleted });
   } catch (err) {
     return serverError(err);
   }
