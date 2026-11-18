@@ -58,21 +58,22 @@
 .nd-pair { position: absolute; inset: 0; pointer-events: none; }
 .nd-pair > .nd-slot { pointer-events: auto; }
 /*
-  반사 상자 — 카드 바로 아래(바닥)에 카드 크기로. 원근의 중심(perspective-origin)을 카드 가운데(-50%)에 맞춰
-  본 카드와 같은 원근으로 그린다. 안쪽(.nd-flip)은 카드 자리(top -100%)에서 아랫변 기준 scaleY(-1).
-  위쪽 30% 만 비치게 마스크.
+  반사 상자 — 카드 바로 아래(바닥)에. 원근의 중심(perspective-origin)을 카드 가운데에 맞춰 본 카드와 같은 원근으로
+  그린다. 안쪽(.nd-flip)은 카드 자리에서 아랫변 기준 scaleY(-1).
+  · 폭은 카드의 두 배 — 돌 때 원근으로 커진 가까운 쪽이 상자 밖에서 잘렸다
+  · 위로 카드 높이의 15% 더 — 멀어지는 쪽 아래 모서리는 바닥선보다 위로 올라가, 그 아래 반사가 잘렸다(2026-11-18)
+  상자 높이 1.15ch: 바닥선(카드 아랫변)은 위에서 13.04%, 카드 가운데는 -30.43%, 카드 윗변은 -73.91%
 */
 .nd-mirror {
-  /* 폭을 넉넉히 — 카드가 돌면 가까운 쪽이 원근으로 커져 카드 폭 밖으로 나간다. 상자 밖은 마스크에 잘려 안 보였다 */
   position: absolute; left: 50%; width: calc(var(--cw) * 2); margin-left: calc(var(--cw) * -1);
-  bottom: calc(96px - var(--cw) * 1.5873 - 2px); height: calc(var(--cw) * 1.5873);
-  transform-origin: 50% 0; perspective: 1300px; perspective-origin: 50% -50%;
+  bottom: calc(96px - var(--cw) * 1.5873 - 2px); height: calc(var(--cw) * 1.5873 * 1.15);
+  transform-origin: 50% 13.04%; perspective: 1300px; perspective-origin: 50% -30.43%;
   transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.45s ease;
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.34), rgba(0, 0, 0, 0) 30%);
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.34), rgba(0, 0, 0, 0) 30%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.34) 0%, rgba(0, 0, 0, 0.34) 13.04%, rgba(0, 0, 0, 0) 39.1%);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.34) 0%, rgba(0, 0, 0, 0.34) 13.04%, rgba(0, 0, 0, 0) 39.1%);
 }
 .nd-flip {
-  position: absolute; left: 25%; top: -100%; width: 50%; height: 100%;
+  position: absolute; left: 25%; top: -73.91%; width: 50%; height: 86.96%;
   transform-origin: 50% 100%; transform: scaleY(-1); transform-style: preserve-3d;
 }
 .nd-rise, .nd-rig { transform-style: preserve-3d; }
