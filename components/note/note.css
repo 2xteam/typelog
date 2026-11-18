@@ -30,7 +30,11 @@
 /* ── 결과 껍데기 ── */
 .nt { max-width: 560px; margin: 0 auto 28px; color: var(--nt-ivory); font-family: var(--ko); }
 .nt-shell {
-  position: relative; overflow: hidden; isolation: isolate; border-radius: 28px; background: var(--nt-bg);
+  /*
+    clip — hidden 은 「숨긴 스크롤」이라 아이폰 사파리가 안쪽을 가로로 밀어 둘 수 있다. 카드가 돌 때 모서리가
+    넘치면 내용 전체가 왼쪽으로 치우쳤다(2026-11-18). clip 은 아예 스크롤되지 않는다(옛 사파리는 hidden + NoteDeck 이 되돌림)
+  */
+  position: relative; overflow: hidden; overflow: clip; isolation: isolate; border-radius: 28px; background: var(--nt-bg);
   padding: 18px 16px 20px; box-shadow: 0 30px 60px rgba(5, 4, 9, 0.35);
 }
 .nt-eyebrow {

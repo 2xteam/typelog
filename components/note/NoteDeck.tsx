@@ -53,6 +53,21 @@ export function NoteDeck({
   const stage = useRef<HTMLDivElement>(null);
   const gesture = useRef<{ x: number; y: number; id: number; horiz: boolean | null; focus0: number } | null>(null);
 
+  /*
+    패널이 가로로 밀리면 바로 되돌린다 — overflow: clip 을 모르는 옛 사파리에서 카드가 돌 때 넘친 모서리 ·
+    입력칸 포커스 때문에 패널 안쪽이 통째로 왼쪽으로 치우친 채 남았다(2026-11-18)
+  */
+  useEffect(() => {
+    const shell = stage.current?.closest<HTMLElement>(".nt-shell");
+    if (!shell) return;
+    const back = () => {
+      if (shell.scrollLeft !== 0) shell.scrollLeft = 0;
+    };
+    back();
+    shell.addEventListener("scroll", back, { passive: true });
+    return () => shell.removeEventListener("scroll", back);
+  }, []);
+
   useLayoutEffect(() => {
     const el = stage.current;
     if (!el) return;

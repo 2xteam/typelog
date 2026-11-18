@@ -117,7 +117,7 @@ export function NoteResult({
         return;
       }
       setName(json.custom?.name || data.ownerName?.trim() || "러너");
-      setNameMsg("✅ 카드에 새 이름이 적혔어요.");
+      setNameMsg("카드에 새 이름이 적혔어요.");
     } catch {
       setNameMsg("네트워크가 불안정해요.");
     }
