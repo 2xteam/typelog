@@ -34,6 +34,9 @@ export function NoteCard({
     <div className="nc" data-face={rot === undefined ? face : undefined} style={rot === undefined ? undefined : { transform: `rotateY(${rot}deg)` }}>
       <CardFront card={card} />
       <CardBack card={card} pour={pour} />
+      {/* 옆면 — 돌 때 0.5mm 두께가 보인다(실물 카드 너비 54mm 기준) */}
+      <i className="nc-edge nc-edge--l" aria-hidden="true" />
+      <i className="nc-edge nc-edge--r" aria-hidden="true" />
     </div>
   );
 }

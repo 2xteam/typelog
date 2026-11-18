@@ -87,6 +87,7 @@
 .nc {
   position: relative; width: 100%; aspect-ratio: 63 / 100; container-type: inline-size;
   transform-style: preserve-3d; transition: transform 0.75s cubic-bezier(0.2, 0.8, 0.2, 1);
+  --t: 0.93cqw;
 }
 .nc[data-face="back"] { transform: rotateY(180deg); }
 .nc--static { transform: none; }
@@ -98,7 +99,15 @@
   --ink: #f4ecdd; /* 카드마다 palette.ts cardTheme 이 style 로 덮어쓴다 */
   --rule: color-mix(in srgb, var(--ink) 50%, transparent);
 }
-.nc-back { transform: rotateY(180deg); justify-content: space-between; }
+.nc-back { transform: rotateY(180deg) translateZ(calc(var(--t) / 2)); justify-content: space-between; }
+.nc-front { transform: translateZ(calc(var(--t) / 2)); }
+/* 두께 0.5mm — 카드 너비 54mm 의 0.93%. 앞뒷면을 반씩 띄우고 양옆에 옆면을 세운다 */
+.nc-edge {
+  position: absolute; top: 3.2cqw; bottom: 3.2cqw; width: var(--t); pointer-events: none;
+  background: linear-gradient(180deg, #f7f2ea, #d9d0c3 50%, #f2ece2);
+}
+.nc-edge--l { left: 0; transform-origin: 0 50%; transform: translateZ(calc(var(--t) / 2)) rotateY(90deg); }
+.nc-edge--r { right: 0; transform-origin: 100% 50%; transform: translateZ(calc(var(--t) / 2)) rotateY(-90deg); }
 .nc-scrim, .nc-sheen { position: absolute; inset: 0; pointer-events: none; }
 .nc-sheen {
   inset: -30% -60%; opacity: 0; mix-blend-mode: soft-light;

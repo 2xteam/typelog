@@ -1,12 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { NoteResult, type NotePayload } from "@/components/note/NoteResult";
-import { NoteDeck } from "@/components/note/NoteDeck";
-import { Wheel } from "@/components/note/Wheel";
-import { buildCard, lookOf } from "@/components/note/view";
-import { noteFontVars } from "@/components/note/fonts";
 import { SharedNote } from "@/components/note/SharedNote";
+import { buildCard, lookOf } from "@/components/note/view";
 
 type Q = {
   quiz: { title: string; disclaimer: string | null };
@@ -31,9 +28,14 @@ function pompOf(q: Q, code: string, s: string) {
   );
 }
 
-export function DevNote({ quiz, code, s, id, n }: { quiz: Q; code: string; s: string; id: string; n: number }) {
+/**
+ * 결과 화면 하나(덱 하나)만 그린다 — 앞의 회차 네 장이 덱 목록에 함께 들어간다.
+ * 공유 화면은 `?view=shared` 로 따로 본다(한 화면에 스와이프 카드가 여럿이면 헷갈린다, 사용자 2026-11-18).
+ */
+export function DevNote({ quiz, code, s, id, n, view }: { quiz: Q; code: string; s: string; id: string; n: number; view: string }) {
   const t = quiz.resultTypes.find((x) => x.code === code) ?? quiz.resultTypes[0];
   const pomp = pompOf(quiz, t.code, s);
+  const completedAt = useMemo(() => new Date().toISOString(), []);
   const data: NotePayload = {
     attemptId: id,
     attemptNo: n,
@@ -43,7 +45,7 @@ export function DevNote({ quiz, code, s, id, n }: { quiz: Q; code: string; s: st
     quiz: { slug: "runner-16type", title: quiz.quiz.title, disclaimer: quiz.quiz.disclaimer },
     result: {
       code: t.code,
-      completedAt: new Date().toISOString(),
+      completedAt,
       type: { name: t.name, subtitle: t.subtitle, emoji: t.emoji, content: t.content },
       goodWith: (t.content.goodWith ?? []).map((g) => {
         const x = quiz.resultTypes.find((r) => r.code === g);
@@ -53,38 +55,39 @@ export function DevNote({ quiz, code, s, id, n }: { quiz: Q; code: string; s: st
     },
   };
 
-  // 모은 카드 — 유형 다섯 개를 회차처럼
-  const wallet = useMemo(
+  // 앞의 회차 — 유형 몇 개를 번갈아
+  const before = useMemo(
     () =>
-      ["CLAR", "PSIF", "CSAF", "PLIR", t.code].map((c, i) =>
-        buildCard({
-          attemptId: `devwallet${i}${c}`,
+      Array.from({ length: Math.max(0, n - 1) }, (_, i) => {
+        const c = ["PSIF", "CSAF", "PLIR", "CLAR", "PSAR", "CLIF"][i % 6];
+        return buildCard({
+          attemptId: `devdeck${i}${c}`,
           attemptNo: i + 1,
           code: c,
           typeName: quiz.resultTypes.find((r) => r.code === c)?.name ?? c,
-          completedAt: new Date(Date.now() - (5 - i) * 86400e3 * 9).toISOString(),
+          completedAt: new Date(Date.now() - (n - i) * 86400e3 * 9).toISOString(),
           runner: "미리보기",
           axes: quiz.outcomes,
-          pomp: pompOf(quiz, c, ["1010", "0101", "1111", "0000", s][i]),
-        }),
-      ),
-    [quiz, t.code, s],
+          pomp: pompOf(quiz, c, ["0101", "1111", "0000", "1010", "1100", "0011"][i % 6]),
+        });
+      }),
+    [quiz, n],
   );
-  const [spinKey, setSpinKey] = useState(0);
+
+  const look = lookOf(buildCard({ attemptId: id, attemptNo: n, code: t.code, typeName: t.name, completedAt, runner: "", axes: quiz.outcomes, pomp }));
 
   return (
     <>
       <p style={{ fontFamily: "monospace", fontSize: 12 }}>
-        {t.code} s={s} id={id} · 대비(가장 나쁜 곳) {lookOf(wallet[4]).theme.worst}:1 · 막 {lookOf(wallet[4]).theme.scrim}
+        {t.code} s={s} id={id} n={n} · 글자 대비(가장 나쁜 곳) {look.theme.worst}:1 · {view === "shared" ? "공유 화면" : "결과 화면"}
       </p>
-      <NoteResult data={data} bare />
-      <div style={{ marginTop: 24 }} id="shared">
+      {view === "shared" ? (
         <SharedNote
           note={{
             attemptId: id,
             attemptNo: n,
             code: t.code,
-            completedAt: data.result.completedAt,
+            completedAt,
             runner: "미리보기",
             typeName: t.name,
             subtitle: t.subtitle,
@@ -96,39 +99,15 @@ export function DevNote({ quiz, code, s, id, n }: { quiz: Q; code: string; s: st
         >
           <p className="nt-panel-eyebrow">Try it · 나도 내려 보기</p>
           <h2 className="nt-panel-title">{quiz.quiz.title}</h2>
-          <p className="nt-panel-lead">공유 화면 미리보기 — 버튼은 동작하지 않아요</p>
-          <div className="nt-pills">
-            <span>질문 12개</span>
-            <span>약 2분</span>
-            <span>가입 없이 한 번</span>
-          </div>
           <div style={{ marginTop: 20 }}>
             <button type="button" className="nt-btn">
               나의 러닝 노트 내리기 →
             </button>
           </div>
         </SharedNote>
-      </div>
-      <div className={`nt ${noteFontVars}`} style={{ marginTop: 24 }}>
-        <div className="nt-shell">
-          <p className="nt-eyebrow">
-            <span>Deck preview</span>
-            <span>{wallet.length} cards</span>
-          </p>
-          <NoteDeck cards={wallet} start="list" />
-        </div>
-        <div className="nt-shell" style={{ marginTop: 14 }}>
-          <p className="nt-eyebrow">
-            <span>Wheel spin</span>
-            <button type="button" className="nt-chip" onClick={() => setSpinKey((k) => k + 1)}>
-              다시
-            </button>
-          </p>
-          <div style={{ maxWidth: 360, margin: "16px auto" }}>
-            <Wheel key={spinKey} picks={wallet[4].picks} mode="spin" />
-          </div>
-        </div>
-      </div>
+      ) : (
+        <NoteResult data={data} bare extraCards={before} />
+      )}
     </>
   );
 }

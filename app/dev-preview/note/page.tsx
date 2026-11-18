@@ -9,8 +9,8 @@ import { DevNote } from "./DevNote";
  *     code  유형 코드
  *     s     축마다 진하게(1) · 은은하게(0) — 색이 「진하게 둘 / 은은하게 둘」 중에서 정해진다
  *     id    기록 번호 대신 — 바꾸면 같은 유형 안에서 색 · 메시 모양이 바뀐다
- *     n     회차
- * 아래에 모은 카드(지갑)와 색 원판 돌기도 함께 그린다.
+ *     n     회차(기본 5 — 앞의 네 장이 덱 목록에 들어간다)
+ *     view  shared 면 공유 화면
  */
 export const dynamic = "force-dynamic";
 
@@ -20,7 +20,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Rec
   const json = JSON.parse(fs.readFileSync(path.join(process.cwd(), "content/quizzes/runner-16type.json"), "utf8"));
   return (
     <main style={{ maxWidth: 1080, margin: "0 auto", padding: 16 }}>
-      <DevNote quiz={json} code={q.code ?? "CLAR"} s={q.s ?? "1010"} id={q.id ?? "devpreview0000000000000001"} n={Number(q.n ?? 3)} />
+      <DevNote quiz={json} code={q.code ?? "CLAR"} s={q.s ?? "1010"} id={q.id ?? "devpreview0000000000000001"} n={Number(q.n ?? 5)} view={q.view ?? "result"} />
     </main>
   );
 }

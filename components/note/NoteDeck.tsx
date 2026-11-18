@@ -8,8 +8,9 @@ import type { NoteCardData } from "./view";
  * 카드 덱 — 목록과 상세가 **한 무대**에 있다(사용자 2026-11-18).
  *
  *   목록  카드들이 좌우로 겹쳐 놓인 줄. 좌우로 넘겨 보고, 누르면 그 카드를 줄에서 **꺼내** 크게 세운다
- *   상세  오른쪽으로 밀면 카드가 손가락을 따라 돌아 **뒷면까지** 넘어간다(또 밀면 앞면)
- *         왼쪽으로 밀면 카드가 손가락을 따라 작아지며 **줄 안 제자리로 들어간다** → 목록
+ *   상세  오른쪽 → 왼쪽으로 밀면 카드가 손가락을 따라 돌아 **뒷면까지** 넘어간다(또 밀면 앞면)
+ *         왼쪽 → 오른쪽으로 밀면 카드가 손가락을 따라 작아지며 **줄 안 제자리로 들어간다** → 목록
+ *         (사용자 2026-11-18 방향 확정)
  *         누르면 뒤집힌다. 마우스면 커서 쪽으로 살짝 기운다
  *
  * 무대: 어두운 바탕 · 핀 조명 · 반사 바닥(카드사 공개 연출). 반사는 카드 자체에 붙여(-webkit-box-reflect)
@@ -75,10 +76,10 @@ export function NoteDeck({
   const listScale = 0.56;
   const gap = cw * listScale * 0.64;
 
-  // 상세에서 왼쪽으로 민 만큼 — 0(상세) ~ 1(줄 안 제자리)
-  const putBack = mode === "detail" && drag !== null && drag < 0 ? Math.min(1, -drag / (cw * 0.9)) : 0;
-  // 상세에서 오른쪽으로 민 만큼의 회전
-  const flipDeg = mode === "detail" && drag !== null && drag > 0 ? Math.min(180, (drag / cw) * 180) : 0;
+  // 상세에서 오른쪽(→)으로 민 만큼 — 0(상세) ~ 1(줄 안 제자리)
+  const putBack = mode === "detail" && drag !== null && drag > 0 && allowList ? Math.min(1, drag / (cw * 0.9)) : 0;
+  // 상세에서 왼쪽(←)으로 민 만큼의 회전 — 손가락 쪽으로 돈다(음수)
+  const flipDeg = mode === "detail" && drag !== null && drag < 0 ? -Math.min(180, (-drag / cw) * 180) : 0;
   // 목록에서 넘기는 중의 가운데
   const center = mode === "list" ? focus : cur;
 
@@ -112,7 +113,7 @@ export function NoteDeck({
       }
       if (!g.horiz) return;
       if (mode === "list") setFocus(Math.max(-0.4, Math.min(cards.length - 0.6, g.focus0 - dx / gap)));
-      else setDrag(allowList || dx > 0 ? dx : dx * 0.25);
+      else setDrag(allowList || dx < 0 ? dx : dx * 0.25);
       return;
     }
     if (mode !== "detail" || e.pointerType !== "mouse" || !stage.current) return;
@@ -142,12 +143,12 @@ export function NoteDeck({
       return;
     }
     if (tap) {
-      setRot((v) => v + 180);
+      setRot((v) => v - 180);
       return;
     }
     if (!g.horiz || cancelled) return;
-    if (dx > cw * 0.3) setRot((v) => v + 180);
-    else if (dx < -cw * 0.32 && allowList) toList();
+    if (dx < -cw * 0.3) setRot((v) => v - 180);
+    else if (dx > cw * 0.32 && allowList) toList();
   };
 
   const open = (i: number) => {
@@ -185,7 +186,7 @@ export function NoteDeck({
         aria-label={
           mode === "list"
             ? `모은 러닝 노트 ${cards.length}장 — 좌우로 넘기고 누르면 꺼내요`
-            : `러닝 노트 카드 ${face === "front" ? "앞면" : "뒷면"} — 오른쪽으로 밀면 뒤집히고 왼쪽으로 밀면 목록에 넣어요`
+            : `러닝 노트 카드 ${face === "front" ? "앞면" : "뒷면"} — 왼쪽으로 밀면 뒤집히고 오른쪽으로 밀면 목록에 넣어요`
         }
       >
         <div className="nt-spot" aria-hidden="true" />
@@ -223,7 +224,7 @@ export function NoteDeck({
       <div className="nt-ctrl">
         {mode === "detail" ? (
           <>
-            <button type="button" className="nt-chip" onClick={() => setRot((v) => v + 180)}>
+            <button type="button" className="nt-chip" onClick={() => setRot((v) => v - 180)}>
               ↺ {face === "front" ? "뒷면 보기" : "앞면 보기"}
             </button>
             {allowList ? (
@@ -241,8 +242,8 @@ export function NoteDeck({
       <p className="nt-hint">
         {mode === "detail"
           ? allowList
-            ? "→ 밀면 뒷면 · ← 밀면 목록에 넣기"
-            : "→ 밀거나 누르면 뒷면이 보여요"
+            ? "← 밀면 뒷면 · → 밀면 목록에 넣기"
+            : "← 밀거나 누르면 뒷면이 보여요"
           : "← → 넘겨 보고, 누르면 꺼내요"}
       </p>
     </>

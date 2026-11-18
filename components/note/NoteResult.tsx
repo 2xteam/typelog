@@ -46,7 +46,16 @@ export type NotePayload = {
 
 type Row = { attemptId: string; attemptNo: number; completedAt: string | null; code: string | null; name: string | null; pomp?: Record<string, number> | null; runner?: string | null };
 
-export function NoteResult({ data, bare = false }: { data: NotePayload; bare?: boolean }) {
+export function NoteResult({
+  data,
+  bare = false,
+  extraCards,
+}: {
+  data: NotePayload;
+  bare?: boolean;
+  /** 개발용 미리보기 — DB 없이 모은 카드를 채운다 */
+  extraCards?: NoteCardData[];
+}) {
   const session = useSession();
   const t = data.result.type;
   const [name, setName] = useState(data.custom?.name?.trim() || data.ownerName?.trim() || "러너");
@@ -125,8 +134,8 @@ export function NoteResult({ data, bare = false }: { data: NotePayload; bare?: b
               }),
             )
         : [];
-    return [...others, card];
-  }, [rows, axesAll, card, data.attemptId, name]);
+    return [...(extraCards ?? []), ...others, card];
+  }, [rows, axesAll, card, data.attemptId, name, extraCards]);
 
   const [nameDraft, setNameDraft] = useState(name);
   const [nameMsg, setNameMsg] = useState<string | null>(null);

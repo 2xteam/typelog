@@ -121,55 +121,55 @@ const DEEP: Pole[] = [
   },
 ];
 
-/** 밝은 톤 — 같은 계열 · 같은 자리, 맑고 쨍한 색(레퍼런스: 테이스팅 노트 포스터 — 우유 탄 파스텔이면 흐릿하다). 앞 두 색이 더 진하다 */
+/** 밝은 톤 — 같은 계열 · 같은 자리, 밝고 맑은 캔디 톤(레퍼런스: 테이스팅 노트 포스터 — 밝기는 높이고 채도는 지킨다). 앞 두 색이 조금 더 진하다 */
 const LIGHT_COLORS: Record<string, Pole["colors"]> = {
   C: [
-    { ko: "코럴", en: "Coral", hex: "#ff7a59" },
-    { ko: "살몬", en: "Salmon", hex: "#ff8c70" },
-    { ko: "피치", en: "Peach", hex: "#ffa77d" },
-    { ko: "애프리콧", en: "Apricot", hex: "#ffb562" },
+    { ko: "코럴", en: "Coral", hex: "#ff9b85" },
+    { ko: "살몬", en: "Salmon", hex: "#ffa48f" },
+    { ko: "피치", en: "Peach", hex: "#ffbb94" },
+    { ko: "애프리콧", en: "Apricot", hex: "#ffc580" },
   ],
   F: [
-    { ko: "허니", en: "Honey", hex: "#ffc22e" },
-    { ko: "레몬", en: "Lemon", hex: "#ffdc2e" },
-    { ko: "버터", en: "Butter", hex: "#ffe15c" },
-    { ko: "바닐라", en: "Vanilla", hex: "#ffe887" },
+    { ko: "허니", en: "Honey", hex: "#ffd36b" },
+    { ko: "레몬", en: "Lemon", hex: "#ffe470" },
+    { ko: "버터", en: "Butter", hex: "#ffe98f" },
+    { ko: "바닐라", en: "Vanilla", hex: "#fff0b0" },
   ],
   L: [
-    { ko: "라임", en: "Lime", hex: "#9edb3c" },
-    { ko: "피스타치오", en: "Pistachio", hex: "#b0e05a" },
-    { ko: "말차 라테", en: "Matcha Latte", hex: "#bfe57a" },
-    { ko: "티 그린", en: "Tea Green", hex: "#cdee95" },
+    { ko: "라임", en: "Lime", hex: "#c4ec7e" },
+    { ko: "피스타치오", en: "Pistachio", hex: "#cdea93" },
+    { ko: "말차 라테", en: "Matcha Latte", hex: "#d6efa9" },
+    { ko: "티 그린", en: "Tea Green", hex: "#e0f5bd" },
   ],
   P: [
-    { ko: "민트", en: "Mint", hex: "#4fdcb5" },
-    { ko: "터콰이즈", en: "Turquoise", hex: "#3fd0d0" },
-    { ko: "아쿠아", en: "Aqua", hex: "#72e6d6" },
-    { ko: "시폼", en: "Seafoam", hex: "#94eedc" },
+    { ko: "민트", en: "Mint", hex: "#8fe8cf" },
+    { ko: "터콰이즈", en: "Turquoise", hex: "#8adfe0" },
+    { ko: "아쿠아", en: "Aqua", hex: "#a7efe4" },
+    { ko: "시폼", en: "Seafoam", hex: "#c0f4e9" },
   ],
   R: [
-    { ko: "스카이", en: "Sky", hex: "#62b1ff" },
-    { ko: "콘플라워", en: "Cornflower", hex: "#7f9cff" },
-    { ko: "파우더 블루", en: "Powder Blue", hex: "#94c2ff" },
-    { ko: "아이스", en: "Ice", hex: "#b0d3ff" },
+    { ko: "스카이", en: "Sky", hex: "#9fcdff" },
+    { ko: "콘플라워", en: "Cornflower", hex: "#aebdff" },
+    { ko: "파우더 블루", en: "Powder Blue", hex: "#bcd8ff" },
+    { ko: "아이스", en: "Ice", hex: "#d2e5ff" },
   ],
   A: [
-    { ko: "라벤더", en: "Lavender", hex: "#b085ff" },
-    { ko: "라일락", en: "Lilac", hex: "#d488f5" },
-    { ko: "페리윙클", en: "Periwinkle", hex: "#9d98ff" },
-    { ko: "모브 미스트", en: "Mauve Mist", hex: "#dcaaf5" },
+    { ko: "라벤더", en: "Lavender", hex: "#cdb0ff" },
+    { ko: "라일락", en: "Lilac", hex: "#e2b0f5" },
+    { ko: "페리윙클", en: "Periwinkle", hex: "#c3c0ff" },
+    { ko: "모브 미스트", en: "Mauve Mist", hex: "#ebcaf7" },
   ],
   S: [
-    { ko: "핫 핑크", en: "Hot Pink", hex: "#ff5fa2" },
-    { ko: "로즈", en: "Rose", hex: "#ff7aa6" },
-    { ko: "버블검", en: "Bubblegum", hex: "#ff94c4" },
-    { ko: "체리 블라썸", en: "Cherry Blossom", hex: "#ffb0cf" },
+    { ko: "핫 핑크", en: "Hot Pink", hex: "#ff8fc0" },
+    { ko: "로즈", en: "Rose", hex: "#ffa0bf" },
+    { ko: "버블검", en: "Bubblegum", hex: "#ffb3d4" },
+    { ko: "체리 블라썸", en: "Cherry Blossom", hex: "#ffc8dc" },
   ],
   I: [
-    { ko: "카라멜", en: "Caramel", hex: "#e9a35d" },
-    { ko: "라테", en: "Latte", hex: "#e0ad7a" },
-    { ko: "오트", en: "Oat", hex: "#edcca0" },
-    { ko: "샌드", en: "Sand", hex: "#f0d6a6" },
+    { ko: "카라멜", en: "Caramel", hex: "#f1bd84" },
+    { ko: "라테", en: "Latte", hex: "#ebc39b" },
+    { ko: "오트", en: "Oat", hex: "#f3dcbc" },
+    { ko: "샌드", en: "Sand", hex: "#f5e3c4" },
   ],
 };
 
@@ -302,6 +302,12 @@ export function vividMix(a: string, b: string, t: number) {
   if (dh > Math.PI) dh -= 2 * Math.PI;
   if (dh < -Math.PI) dh += 2 * Math.PI;
   return toHex(fromOklch(x.L + (y.L - x.L) * t, Math.max(x.C, y.C), x.H + dh * t));
+}
+
+/** 빛점용 — 같은 색을 조금 어둡고 진하게(레퍼런스의 산호빛 점). 글자 대비 계산에도 들어간다 */
+export function richer(hex: string) {
+  const c = toOklch(rgb(hex));
+  return toHex(fromOklch(Math.max(0.62, c.L - 0.08), Math.min(0.2, c.C * 1.45 + 0.02), c.H));
 }
 
 /** 카드 글자색 후보 — 아이보리(어두운 카드) · 에스프레소(밝은 카드, 밝은 톤을 열 때) */
@@ -441,7 +447,12 @@ export function meshCss(picks: AxisPick[], seed: string) {
   for (let k = 0; k < 4; k++) add(pickOf(mids), between(9, 20), 0.3);
   // 작은 빛점 — 둘~셋, 또렷한 쪽으로
   const dots = 2 + Math.floor(r() * 2);
-  for (let k = 0; k < dots; k++) add(pickOf(colors), between(4, 8), 0.2, between(0.3, 1.6), between(0.8, 1));
+  const rich: string[] = [];
+  for (let k = 0; k < dots; k++) {
+    const c = light ? richer(pickOf(colors)) : pickOf(colors);
+    rich.push(c);
+    add(c, between(4, 9), 0.2, between(0.3, 1.8), between(0.85, 1));
+  }
 
   // 겹침 순서 — 큰 색면 둘은 늘 아래
   const rest = shapes.slice(2);
@@ -511,5 +522,5 @@ export function meshCss(picks: AxisPick[], seed: string) {
       .join("") +
     `<rect width='${W}' height='${H}' filter='url(#n)'/></svg>`;
   const base = toHex(picks.map((p) => rgb(p.color.hex)).reduce((a, c) => mix(a, c, 0.5)));
-  return { image: `url("data:image/svg+xml,${encodeURIComponent(svg)}")`, base, fills: [...colors, ...mids] };
+  return { image: `url("data:image/svg+xml,${encodeURIComponent(svg)}")`, base, fills: [...colors, ...mids, ...rich] };
 }
