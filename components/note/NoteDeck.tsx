@@ -207,6 +207,7 @@ export function NoteDeck({
                 zIndex: p.z,
               }}
             >
+              <i className="nd-shadow" style={{ transform: `scaleX(${(0.12 + 0.88 * Math.abs(Math.cos((deg * Math.PI) / 180))).toFixed(3)})` }} aria-hidden="true" />
               <div className="nd-rise">
                 <div
                   className="nd-rig"

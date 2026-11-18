@@ -17,6 +17,9 @@ import { dotDate, lookOf, type NoteCardData } from "./view";
 const GRAIN =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
 
+/** 두께 판의 깊이 — 앞(+0.5) ~ 뒤(-0.5) 사이를 고르게 */
+const CORE = [-0.4, -0.27, -0.13, 0, 0.13, 0.27, 0.4];
+
 export function NoteCard({
   card,
   face = "front",
@@ -34,9 +37,13 @@ export function NoteCard({
     <div className="nc" data-face={rot === undefined ? face : undefined} style={rot === undefined ? undefined : { transform: `rotateY(${rot}deg)` }}>
       <CardFront card={card} />
       <CardBack card={card} pour={pour} />
-      {/* 옆면 — 돌 때 0.5mm 두께가 보인다(실물 카드 너비 54mm 기준) */}
-      <i className="nc-edge nc-edge--l" aria-hidden="true" />
-      <i className="nc-edge nc-edge--r" aria-hidden="true" />
+      {/*
+        두께 0.5mm(실물 카드 너비 54mm 기준) — 카드와 같은 둥근 판을 앞뒷면 사이에 겹쳐 쌓는다.
+        옆면 두 장만 세우면 둥근 모서리가 비어 보였다(사용자 2026-11-18)
+      */}
+      {CORE.map((z) => (
+        <i key={z} className="nc-core" style={{ transform: `translateZ(calc(var(--t) * ${z}))` }} aria-hidden="true" />
+      ))}
     </div>
   );
 }
@@ -148,52 +155,63 @@ export function CardBack({ card, pour }: { card: NoteCardData; pour?: boolean })
 }
 
 /**
- * 러닝 물병 — 4축이 아래(누구와)부터 위(마음)로 층층이 찬다. 진한 축은 층이 두껍다.
- * 레퍼런스(차 한 잔의 재료 층)를 러너의 물병으로.
+ * 러닝 물병 — 실리콘 소프트 플라스크(레퍼런스: 러닝 조끼에 꽂는 접히는 물병).
+ * 위에 바이트 밸브 · 링, 좁은 목, 아래로 갈수록 넓어지는 말랑한 몸통, 반투명 몸체, 옆 고리.
+ * 4축이 아래(누구와)부터 위(마음)로 층층이 찬다. 진한 축은 층이 두껍다.
  */
+const FLASK =
+  "M25 19 L35 19 C35.6 23 41.5 26.5 42.5 33 C43.6 52 44.6 80 45.6 100 C46.2 112 42 116.6 33 116.8 L27 116.8 C18 116.6 13.8 112 14.4 100 C15.4 80 16.4 52 17.5 33 C18.5 26.5 24.4 23 25 19 Z";
+
 function Bottle({ picks, pour }: { picks: AxisPick[]; pour?: boolean }) {
   const id = useId().replace(/:/g, "");
-  const top = 26;
-  const bottom = 116;
-  const full = (bottom - top) * 0.86;
+  const top = 30;
+  const bottom = 116.8;
+  const full = (bottom - top) * 0.84;
   const weights = picks.map((p) => (p.strong ? 1 : 0.62));
   const sum = weights.reduce((a, b) => a + b, 0) || 1;
   let y = bottom;
   const layers = picks.map((p, i) => {
     const h = (weights[i] / sum) * full;
     y -= h;
-    const light = mix(rgb(p.color.hex), [255, 255, 255], 0.16).map(Math.round).join(",");
+    const light = mix(rgb(p.color.hex), [255, 255, 255], 0.12).map(Math.round).join(",");
     return { key: p.id, y, h, fill: `rgb(${light})` };
   });
   return (
     <svg className="nc-bottle" viewBox="0 0 60 120" aria-hidden="true" data-pour={pour ? "true" : undefined}>
       <defs>
         <clipPath id={`b${id}`}>
-          <path d="M15 34 Q15 25 24 23 L36 23 Q45 25 45 34 L45 58 Q42 66 45 74 L45 110 Q45 117 38 117 L22 117 Q15 117 15 110 L15 74 Q18 66 15 58 Z" />
+          <path d={FLASK} />
         </clipPath>
         <linearGradient id={`g${id}`} x1="0" x2="1">
-          <stop offset="0" stopColor="#fff" stopOpacity=".22" />
-          <stop offset=".35" stopColor="#fff" stopOpacity="0" />
+          <stop offset="0" stopColor="#fff" stopOpacity=".55" />
+          <stop offset=".18" stopColor="#fff" stopOpacity=".12" />
+          <stop offset=".7" stopColor="#fff" stopOpacity="0" />
+          <stop offset="1" stopColor="#000" stopOpacity=".08" />
         </linearGradient>
       </defs>
-      <rect x="23" y="3" width="14" height="9" rx="2" className="nc-bottle-cap" />
-      <rect x="25" y="12" width="10" height="11" className="nc-bottle-neck" />
+      {/* 옆 고리 */}
+      <path d="M36.5 15 C47 12 52 22 47.5 30 C45.5 33.5 43 34 42 33" className="nc-bottle-strap" />
+      {/* 바이트 밸브 · 링 */}
+      <rect x="26.5" y="2.5" width="7" height="7.5" rx="3.2" className="nc-bottle-valve" />
+      <rect x="23.5" y="9.5" width="13" height="5" rx="1.6" className="nc-bottle-cap" />
+      <rect x="24.5" y="14.2" width="11" height="5" rx="1" className="nc-bottle-neck" />
       <g clipPath={`url(#b${id})`}>
-        <rect x="0" y="0" width="60" height="120" fill="rgba(255,255,255,.06)" />
+        <rect x="0" y="0" width="60" height="120" fill="rgba(255,255,255,.42)" />
         <g className="nc-liquid">
           {layers.map((l, i) => (
             <g key={l.key} style={{ animationDelay: `${0.25 + i * 0.28}s` }} className="nc-layer">
               <rect x="0" y={l.y} width="60" height={l.h + 0.6} fill={l.fill} />
-              <path d={`M0 ${l.y + 0.6} Q15 ${l.y - 1.2} 30 ${l.y + 0.6} T60 ${l.y + 0.6}`} stroke="rgba(255,255,255,.35)" strokeWidth=".6" fill="none" />
+              <path d={`M0 ${l.y + 0.6} Q15 ${l.y - 1.2} 30 ${l.y + 0.6} T60 ${l.y + 0.6}`} stroke="rgba(255,255,255,.45)" strokeWidth=".6" fill="none" />
             </g>
           ))}
         </g>
+        {/* 말랑한 몸통의 주름 · 빛 */}
+        <path d="M18.5 44 C25 46 35 46 41.5 44" className="nc-bottle-crease" />
+        <path d="M17.8 70 C25 72.5 35 72.5 42.8 70" className="nc-bottle-crease" />
         <rect x="0" y="0" width="60" height="120" fill={`url(#g${id})`} />
+        <path d="M20 36 C19.2 60 18.6 84 18.4 104" className="nc-bottle-shine" />
       </g>
-      <path
-        d="M15 34 Q15 25 24 23 L36 23 Q45 25 45 34 L45 58 Q42 66 45 74 L45 110 Q45 117 38 117 L22 117 Q15 117 15 110 L15 74 Q18 66 15 58 Z"
-        className="nc-bottle-line"
-      />
+      <path d={FLASK} className="nc-bottle-line" />
     </svg>
   );
 }
