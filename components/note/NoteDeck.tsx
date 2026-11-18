@@ -96,7 +96,9 @@ export function NoteDeck({
   // 상세에서 오른쪽(→)으로 민 만큼 — 0(상세) ~ 1(줄 안 제자리)
   const putBack = mode === "detail" && drag !== null && drag > 0 && allowList ? Math.min(1, drag / (cw * 0.9)) : 0;
   // 상세에서 왼쪽(←)으로 민 만큼의 회전 — 손가락 쪽으로 돈다(음수)
-  const flipDeg = mode === "detail" && drag !== null && drag < 0 ? -Math.min(180, (-drag / cw) * 180) : 0;
+  // 한 장뿐인 화면(결과 · 공유)은 오른쪽으로 밀어도 반대로 돈다 — 양쪽 다 뒤집기(사용자 2026-11-18)
+  const flipDeg =
+    mode === "detail" && drag !== null && (drag < 0 || !allowList) ? Math.sign(drag) * Math.min(180, (Math.abs(drag) / cw) * 180) : 0;
   // 목록에서 넘기는 중의 가운데
   const center = mode === "list" ? focus : cur;
 
@@ -130,7 +132,7 @@ export function NoteDeck({
       }
       if (!g.horiz) return;
       if (mode === "list") setFocus(Math.max(-0.4, Math.min(cards.length - 0.6, g.focus0 - dx / gap)));
-      else setDrag(allowList || dx < 0 ? dx : dx * 0.25);
+      else setDrag(dx);
       return;
     }
     if (mode !== "detail" || e.pointerType !== "mouse" || !stage.current) return;
@@ -165,7 +167,10 @@ export function NoteDeck({
     }
     if (!g.horiz || cancelled) return;
     if (dx < -cw * 0.3) setRot((v) => v - 180);
-    else if (dx > cw * 0.32 && allowList) toList();
+    else if (dx > cw * 0.32) {
+      if (allowList) toList();
+      else setRot((v) => v + 180);
+    }
   };
 
   const open = (i: number) => {
@@ -299,7 +304,7 @@ export function NoteDeck({
         {mode === "detail"
           ? allowList
             ? "← 밀면 뒷면 · → 밀면 목록에 넣기"
-            : "← 밀거나 누르면 뒷면이 보여요"
+            : "← → 양쪽으로 밀거나 누르면 뒤집혀요"
           : "← → 넘겨 보고, 누르면 꺼내요"}
       </p>
     </>
