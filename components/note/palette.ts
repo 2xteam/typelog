@@ -354,6 +354,7 @@ function blobPath(r: () => number, cx: number, cy: number, rad: number, wobble: 
  * 경계 흐림(사용자 2026-11-18 — 전엔 10점 만점에 10, 레퍼런스는 3쯤):
  *   - 덩어리 대부분은 흐림 1.4~2.6(카드 너비 63 기준) — 경계가 보이되 부드럽게
  *   - 하나는 아주 넓게 번지는 바탕 덩어리(6), 한두 개는 작고 또렷한 「툭 나타난」 점(0.7~1.1)
+ *   - 하나는 모서리 · 가장자리에 걸쳐 들어오는 큰 색면 — 경계가 또렷한 매끈한 곡선(0.3)
  *   - 고운 입자를 얹어 종이 결처럼(밝은 톤은 어두운 점 · 진한 톤은 밝은 점)
  * 진한 축은 덩어리 둘, 은은한 축은 하나. 밝은 톤의 또렷한 점은 같은 색을 흰색 쪽으로 조금 —
  * 글자 대비는 더 좋아진다(에스프레소 글자). 진한 톤은 검정 쪽으로.
@@ -405,6 +406,23 @@ export function meshCss(picks: AxisPick[], seed: string) {
     [rest[i], rest[k]] = [rest[k], rest[i]];
   }
   const ordered = [shapes[0], ...rest];
+  // 또렷한 곡선 경계(레퍼런스 왼쪽 위 모서리) — 큰 덩어리를 카드 바깥 모서리 · 가장자리에 두어
+  // 일부만 걸쳐 들어오게 한다. 흔들림을 작게(매끈한 호), 흐림은 거의 없게. 맨 위에 얹는다
+  {
+    const spots: [number, number][] = [
+      [-1, -1], [0, -1], [1, -1],
+      [-1, 0], [1, 0],
+      [-1, 1], [0, 1], [1, 1],
+    ];
+    const [sx, sy] = spots[Math.floor(r() * spots.length)];
+    const rad = between(22, 32);
+    const cx = sx < 0 ? -rad * between(0.2, 0.45) : sx > 0 ? W + rad * between(0.2, 0.45) : between(10, W - 10);
+    const cy = sy < 0 ? -rad * between(0.2, 0.45) : sy > 0 ? H + rad * between(0.2, 0.45) : between(20, H - 20);
+    // 바탕 덩어리와 다른 색 — 같은 색끼리 붙으면 경계가 보이지 않는다
+    const others = colors.filter((c) => c !== shapes[0].fill);
+    const pool = others.length ? others : colors;
+    ordered.push({ d: blobPath(r, cx, cy, rad, 0.06), fill: pool[Math.floor(r() * pool.length)], blur: 0.3, op: 1 });
+  }
   if (light) {
     ordered.splice(1, 0, { d: blobPath(r, between(8, 55), between(8, 92), between(10, 16), 0.3), fill: "#ffffff", blur: 4, op: 0.5 });
   }
