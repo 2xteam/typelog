@@ -72,7 +72,7 @@ export function Wheel({
           const flip = mid > 90 && mid < 270;
           return (
             <g key={pole.code} className="nw-pole" data-on={on ? "true" : undefined}>
-              <path d={sector(R0, R1 - 1, a0 + 0.4, a0 + step - 0.4)} fill={pole.colors[0].hex} />
+              <path d={sector(R0, R1 - 1, a0 + 0.4, a0 + step - 0.4)} fill={pole.colors[0].hex} className="nw-pole-seg" />
               <text
                 transform={flip ? `rotate(${mid + 180}) translate(0 ${(R0 + R1) / 2 + 2})` : `rotate(${mid}) translate(0 ${-(R0 + R1) / 2 + 2})`}
                 className="nw-pole-label"
@@ -85,9 +85,13 @@ export function Wheel({
                 const m = b0 + sub / 2;
                 const left = m > 180;
                 const key = `${i}:${j}`;
+                const me = mine.has(key);
+                // 내 색은 바깥으로 살짝 튀어나온다 — 원판에서 자리가 한눈에 보이게
+                const t = ((m - 90) * Math.PI) / 180;
+                const pop = me && lit ? `translate(${(Math.cos(t) * 6).toFixed(2)}px, ${(Math.sin(t) * 6).toFixed(2)}px)` : undefined;
                 return (
-                  <g key={c.en} className="nw-shade" data-on={mine.has(key) ? "true" : undefined} data-family={on ? "true" : undefined}>
-                    <path d={sector(R1, R2, b0 + 0.3, b0 + sub - 0.3)} fill={c.hex} filter={mine.has(key) ? "url(#nw-glow)" : undefined} />
+                  <g key={c.en} className="nw-shade" data-on={me ? "true" : undefined} data-family={on ? "true" : undefined} style={{ transform: pop }}>
+                    <path d={sector(R1, R2, b0 + 0.3, b0 + sub - 0.3)} fill={c.hex} filter={me && lit ? "url(#nw-glow)" : undefined} />
                     <text
                       transform={left ? `rotate(${m + 90}) translate(${-R2 + 5} 1.4)` : `rotate(${m - 90}) translate(${R1 + 5} 1.4)`}
                       textAnchor="start"
@@ -96,6 +100,14 @@ export function Wheel({
                     >
                       {c.ko}
                     </text>
+                    {me ? (
+                      <circle
+                        className="nw-mark"
+                        cx={(Math.cos(t) * (R2 + 6)).toFixed(2)}
+                        cy={(Math.sin(t) * (R2 + 6)).toFixed(2)}
+                        r="1.9"
+                      />
+                    ) : null}
                   </g>
                 );
               })}

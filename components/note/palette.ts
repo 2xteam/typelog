@@ -8,7 +8,7 @@
  *     둘 중 하나는 카드 번호(응시 id)로 정한다. 한 번 나온 카드의 색은 다시 바뀌지 않는다
  *   - 결과 화면의 색 원판은 내 색이 어디 있는지 **보여 주기만** 한다. 바꾸는 버튼은 없다
  *
- * 톤은 둘 — 진한 톤(기본) · 밝은 톤(파스텔, 2026-11-18 비교용). `NEXT_PUBLIC_NOTE_TONE=light` 로 바꾼다.
+ * 톤은 둘 — 밝은 톤(파스텔, 기본 — 사용자 2026-11-18) · 진한 톤. `NEXT_PUBLIC_NOTE_TONE=deep` 이면 진한 톤.
  * 서버 · 브라우저가 같은 값을 읽어야 해서 NEXT_PUBLIC 이다(빌드 때 박힌다). 무대는 어느 톤이든 어둡다.
  * 글자색은 아래 `cardTheme` 이 대비를 계산해 정한다 — 밝은 톤이면 에스프레소 글자로 저절로 바뀐다.
  *
@@ -173,7 +173,8 @@ const LIGHT_COLORS: Record<string, Pole["colors"]> = {
   ],
 };
 
-export const TONE: "deep" | "light" = process.env.NEXT_PUBLIC_NOTE_TONE === "light" ? "light" : "deep";
+/** 2026-11-18 사용자 결정으로 밝은 톤이 기본. 진한 톤은 NEXT_PUBLIC_NOTE_TONE=deep */
+export const TONE: "deep" | "light" = process.env.NEXT_PUBLIC_NOTE_TONE === "deep" ? "deep" : "light";
 
 export const POLES: Pole[] = TONE === "light" ? DEEP.map((p) => ({ ...p, colors: LIGHT_COLORS[p.code] })) : DEEP;
 
@@ -311,24 +312,58 @@ export function cardTheme(hexes: string[]): CardTheme {
   return { ink: best.ink, dark: best.dark, scrim: best.scrim, worst: best.worst, back };
 }
 
-/** 메시 그라디언트 — 4색의 자리 · 크기를 응시 id 로 고정한다(공유 · admin 에서도 같은 모양) */
+/** 응시 id → 고정된 난수열(mulberry32). 같은 카드면 언제 어디서 그려도 같은 값이 나온다 */
+function rng(seed: string) {
+  let a = hash(seed);
+  return () => {
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/**
+ * 메시 그라디언트 — 레퍼런스(테이스팅 노트 포스터)처럼 여러 색이 번져 섞인다.
+ *
+ * **섞임 포인트는 카드마다 다르다.** 응시 id(만들어질 때 정해지는 값)로 난수열을 만들어 번짐의
+ * 자리 · 크기 · 개수 · 바탕 결의 각도를 정한다 → 같은 유형이라도 카드마다 모양이 다르고,
+ * 한 번 만들어진 카드는 결과 · 공유 · admin 어디서 그려도 늘 같은 모양이다.
+ *   - 진한 축의 색은 번짐 두 개, 은은한 축은 하나
+ *   - 바탕은 4색을 무작위 각도 · 순서로 가로지르는 결(빈 곳 없이 여러 색이 비친다)
+ *   - 밝은 톤은 빛 번짐(흰 안개) 하나를 더한다 — 진한 톤은 아이보리 글자 대비 때문에 넣지 않는다
+ */
 export function meshCss(picks: AxisPick[], seed: string) {
-  const h = hash(seed + ":mesh");
-  const spots = [
-    [18, 14],
-    [86, 22],
-    [24, 82],
-    [80, 88],
-  ];
-  const layers = picks.map((p, i) => {
-    const jx = ((h >>> (i * 4)) & 15) - 7;
-    const jy = ((h >>> (i * 4 + 2)) & 15) - 7;
-    const [x, y] = spots[(i + (h & 3)) % 4];
-    const size = p.strong ? 78 : 58;
-    return `radial-gradient(${size}% ${size * 0.8}% at ${x + jx}% ${y + jy}%, ${p.color.hex} 0%, ${p.color.hex}cc 38%, transparent 72%)`;
-  });
+  const r = rng(seed + ":mesh");
+  const between = (a: number, b: number) => a + (b - a) * r();
+  const blobs: string[] = [];
+  for (const p of picks) {
+    const n = p.strong ? 2 : 1;
+    for (let k = 0; k < n; k++) {
+      const x = between(-12, 112).toFixed(1);
+      const y = between(-10, 110).toFixed(1);
+      const w = between(48, 86).toFixed(0);
+      const h = (Number(w) * between(0.7, 1.15)).toFixed(0);
+      blobs.push(`radial-gradient(${w}% ${h}% at ${x}% ${y}%, ${p.color.hex} 0%, ${p.color.hex}d9 34%, ${p.color.hex}00 72%)`);
+    }
+  }
+  // 번짐 순서를 섞는다 — 위에 깔리는 색이 카드마다 달라진다
+  for (let i = blobs.length - 1; i > 0; i--) {
+    const k = Math.floor(r() * (i + 1));
+    [blobs[i], blobs[k]] = [blobs[k], blobs[i]];
+  }
+  if (TONE === "light") {
+    blobs.unshift(`radial-gradient(${between(30, 50).toFixed(0)}% ${between(26, 42).toFixed(0)}% at ${between(15, 85).toFixed(1)}% ${between(10, 90).toFixed(1)}%, rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 70%)`);
+  }
+  // sort 에 난수를 쓰면 엔진(서버 Node · 아이폰 Safari)마다 결과가 달라진다 — 직접 섞는다
+  const order = picks.map((p) => p.color.hex);
+  for (let i = order.length - 1; i > 0; i--) {
+    const k = Math.floor(r() * (i + 1));
+    [order[i], order[k]] = [order[k], order[i]];
+  }
+  if (order.length) blobs.push(`linear-gradient(${between(0, 360).toFixed(0)}deg, ${order.join(", ")})`);
   const base = picks.length
     ? toHex(picks.map((p) => rgb(p.color.hex)).reduce((a, c) => mix(a, c, 0.5)))
     : "#2a2420";
-  return { image: layers.join(", "), base };
+  return { image: blobs.join(", "), base };
 }
