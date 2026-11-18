@@ -160,7 +160,7 @@ export default function SharedLanding({ params }: { params: Promise<{ token: str
           <SharedLicense run={data.run} />
           <Sheet
             center
-            eyebrow="A FRIEND SHARED"
+            eyebrow="SHARED"
             headline={`🏅 ${data.run.name} 님의 러닝 자격증이에요`}
             lead="🤔 나의 러닝 자격증은 몇급일까요? 기록만 넣으면 바로 발급돼요 ⏱️"
           />
@@ -169,11 +169,11 @@ export default function SharedLanding({ params }: { params: Promise<{ token: str
         <Sheet
           tone="dark"
           center
-          eyebrow="A FRIEND SHARED"
+          eyebrow="SHARED"
           /**
            * 타입 이름을 문장에 끼우지 않고 **헤드라인으로 세운다.**
            *
-           * "친구는 {이름}이 나왔어요" 처럼 쓰면 조사가 걸린다. 한글 이름은
+           * "{누구}는 {이름}이 나왔어요" 처럼 쓰면 조사가 걸린다. 한글 이름은
            * 받침으로 이/가를 고를 수 있지만 로마자 이름은 한글 표기에 따라
            * 갈린다 — Ryan(라이언)은 "이", Chloe(클로이)는 "가" 다. 표기를
            * 코드가 추측할 수 없으니 조사가 필요 없는 문장으로 쓴다.
@@ -190,10 +190,10 @@ export default function SharedLanding({ params }: { params: Promise<{ token: str
                 {data.friend.name}
               </>
             ) : (
-              "친구가 타입을 나눠 줬어요"
+              "공유된 타입이에요"
             )
           }
-          lead={data.friend ? (data.friend.subtitle ?? "친구가 나눈 타입이에요") : null}
+          lead={data.friend ? (data.friend.subtitle ?? null) : null}
         >
           <p className="result-summary" style={{ textAlign: "center" }}>
             나는 어떤 타입일까요? 지금 해볼 수 있어요.

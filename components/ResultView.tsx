@@ -187,7 +187,7 @@ export function ResultView({
         if (!ok) ok = await copyText(url);
         setShareUrl(url);
         setCopied(ok);
-        setShareMsg(ok ? "✅ 링크를 복사했어요! 친구에게 붙여넣어 보내 보세요 📋" : "👇 아래 링크를 복사해서 친구에게 보내 주세요.");
+        setShareMsg(ok ? "✅ 링크를 복사했어요! 붙여넣어 보내 보세요 📋" : "👇 아래 링크를 복사해서 보내 주세요.");
       } catch {
         noUrl(new Error("network"));
         setShareMsg("네트워크가 불안정해요.");
@@ -200,7 +200,7 @@ export function ResultView({
     if (!shareUrl) return;
     const ok = await copyText(shareUrl);
     setCopied(ok);
-    setShareMsg(ok ? "✅ 링크를 복사했어요! 친구에게 붙여넣어 보내 보세요 📋" : "링크를 길게 눌러 복사해 주세요.");
+    setShareMsg(ok ? "✅ 링크를 복사했어요! 붙여넣어 보내 보세요 📋" : "링크를 길게 눌러 복사해 주세요.");
   }, [shareUrl]);
 
   const shareBox = shareMsg ? (

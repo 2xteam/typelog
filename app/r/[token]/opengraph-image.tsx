@@ -11,14 +11,14 @@ import { loadKoreanFont } from "@/lib/ogFont";
  * 카카오톡·메신저에 링크를 붙이면 이 그림이 먼저 보인다. 글자만 있는 링크와
  * 그림이 있는 링크는 눌리는 정도가 다르다.
  *
- * **친구의 타입 이름까지만 보여준다.** 결과 문장을 그림에 넣으면 링크를 받은
+ * **공유한 사람의 타입 이름까지만 보여준다.** 결과 문장을 그림에 넣으면 링크를 받은
  * 사람이 눌러볼 이유가 없어진다 — 그리고 남의 결과를 미리보기로 아무에게나
  * 퍼뜨리는 셈이 된다.
  * → my-obsidian-vault / 10-Projects/TypeLog.md
  */
 
 export const runtime = "nodejs";
-export const alt = "TypeLog — 친구가 나눈 타입";
+export const alt = "TypeLog — 공유된 타입 결과";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -30,7 +30,7 @@ const GOLD = "#fa7e1e";
 export default async function Image({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
 
-  let title = "친구가 타입을 나눠 줬어요";
+  let title = "나의 타입 찾기";
   let typeName: string | null = null;
   let emoji = "✨";
 
@@ -58,7 +58,8 @@ export default async function Image({ params }: { params: Promise<{ token: strin
     /* 못 읽어도 기본 그림은 나와야 한다 */
   }
 
-  const headline = typeName ? `친구는 ${typeName}` : "친구가 타입을 나눠 줬어요";
+  // 「친구」 문구는 쓰지 않는다(사용자 2026-11-18) — 유형 이름만 크게
+  const headline = typeName ?? "공유된 타입이에요";
   const font = await loadKoreanFont(`${headline}${title}나도 해보기TypeLog`);
 
   return new ImageResponse(

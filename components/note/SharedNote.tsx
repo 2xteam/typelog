@@ -10,7 +10,7 @@ import "./note.css";
 
 /**
  * 결과 링크 첫 화면 — 러닝 노트. 공유 화면의 틀(카드 → 나도 해보기)은 러닝 자격증과 같고,
- * 옷만 이번 컨셉으로: 어두운 무대에 친구의 카드가 공개되고, 그 아래 무대 조명 색(자홍 → 파랑) 버튼.
+ * 옷만 이번 컨셉으로: 어두운 무대에 공유한 사람의 카드가 공개되고, 그 아래 무대 조명 색(자홍 → 파랑) 버튼.
  * 버튼 · 안내(가입 · 로그인)는 공유 화면(`app/r/[token]/page.tsx`)이 `children` 으로 넣는다.
  */
 export type SharedNoteData = {
@@ -46,7 +46,7 @@ export function SharedNote({ note, children }: { note: SharedNoteData; children:
           </span>
         </div>
         <p className="nt-eyebrow" style={{ marginTop: 14 }}>
-          <span>A friend shared</span>
+          <span>Shared</span>
           <span>Running Note</span>
         </p>
         <h1 className="nt-head">

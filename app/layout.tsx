@@ -29,11 +29,12 @@ export const metadata: Metadata = {
    * 링크를 붙였을 때 보이는 미리보기.
    *
    * 공유 링크(`/r/[token]`)는 여기 값을 쓰지 않고 자기 `opengraph-image` 로
-   * 친구의 타입까지 그린다 → app/r/[token]/opengraph-image.tsx
+   * 공유한 결과의 타입까지 그린다 → app/r/[token]/opengraph-image.tsx
    */
   openGraph: {
     type: "website",
     siteName: "TypeLog",
+    locale: "ko_KR",
     title: "TypeLog — 나의 타입을 기록해요",
     description: "질문에 답하면 나의 타입이 나오고, 다시 할 때마다 그 변화가 쌓여요.",
   },
