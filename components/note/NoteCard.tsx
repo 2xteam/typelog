@@ -129,12 +129,11 @@ export function CardBack({ card, pour }: { card: NoteCardData; pour?: boolean })
 
       <section className="nc-roast">
         <p className="nc-label">Roast Point · 로스팅 포인트</p>
-        {/* 레퍼런스(로스팅 단계 표): 굵은 선으로 이은 갈색 원 다섯 · 내 단계는 노란 고리 + 위에 「here!」 핀 */}
+        {/* 레퍼런스(로스팅 단계 표): 굵은 선으로 이은 갈색 원 다섯 · 내 단계 자리에는 금속 메달 */}
         <ol>
           {ROAST.map((r, i) => (
             <li key={r} data-on={i === level} aria-current={i === level ? "step" : undefined}>
-              {i === level ? <RoastPin /> : null}
-              <i aria-hidden="true" />
+              {i === level ? <RoastMedal /> : <i aria-hidden="true" />}
               <span>{r}</span>
             </li>
           ))}
@@ -157,31 +156,47 @@ export function CardBack({ card, pour }: { card: NoteCardData; pour?: boolean })
 }
 
 /**
- * 내 단계 표시 — 메달(사용자 2026-11-18, 러닝화 대신). 리본 두 갈래 + 금빛 원판 + 안쪽 고리 + 별.
- * 위에서 살짝 흔들린다(저장 이미지 · 움직임 줄이기에선 멈춤)
+ * 내 단계 — 동그라미 자리에 들어가는 금속 메달(사용자 2026-11-18). 짧은 리본 두 갈래 + 금속 원판
+ * (원뿔 그라디언트로 빛이 도는 금속 결) + 톱니 테두리 + 가운데 작은 「RUN」.
  */
-function RoastPin() {
+function RoastMedal() {
   const id = useId().replace(/:/g, "");
+  const teeth = Array.from({ length: 24 }, (_, k) => {
+    const a = (k / 24) * Math.PI * 2;
+    return `${(20 + Math.cos(a) * 14.6).toFixed(2)},${(26 + Math.sin(a) * 14.6).toFixed(2)}`;
+  });
   return (
-    <svg className="nc-pin" viewBox="0 0 40 52" aria-hidden="true">
+    <svg className="nc-medal" viewBox="0 0 40 42" aria-hidden="true">
       <defs>
-        <linearGradient id={`m${id}`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#fff1a8" />
-          <stop offset=".45" stopColor="#f8c74a" />
-          <stop offset="1" stopColor="#e3962a" />
+        <linearGradient id={`e${id}`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#fff4c2" />
+          <stop offset=".3" stopColor="#d9a93c" />
+          <stop offset=".55" stopColor="#fbe7a1" />
+          <stop offset=".8" stopColor="#b9821f" />
+          <stop offset="1" stopColor="#e9c160" />
         </linearGradient>
+        <radialGradient id={`f${id}`} cx=".38" cy=".32" r=".75">
+          <stop offset="0" stopColor="#fff7d1" />
+          <stop offset=".35" stopColor="#f1cd6b" />
+          <stop offset=".75" stopColor="#c48e26" />
+          <stop offset="1" stopColor="#8f6113" />
+        </radialGradient>
       </defs>
       {/* 리본 */}
-      <path d="M11 1 H19 L24 20 H16 Z" className="nc-pin-ribbon-l" />
-      <path d="M21 1 H29 L24 20 H16 Z" className="nc-pin-ribbon-r" />
-      {/* 원판 */}
-      <circle cx="20" cy="34" r="15" fill={`url(#m${id})`} className="nc-pin-disc" />
-      <circle cx="20" cy="34" r="10.6" className="nc-pin-ring" />
-      <path
-        d="M20 27.2 L21.9 31.4 L26.4 31.8 L23 34.8 L24 39.3 L20 36.9 L16 39.3 L17 34.8 L13.6 31.8 L18.1 31.4 Z"
-        className="nc-pin-star"
-      />
-      <path d="M11.5 27.5 A11 11 0 0 1 17 22.6" className="nc-pin-shine" />
+      <path d="M13 0 H19.5 L22 12 H15.5 Z" className="nc-medal-rib-l" />
+      <path d="M20.5 0 H27 L24.5 12 H18 Z" className="nc-medal-rib-r" />
+      {/* 톱니 테두리 · 원판 · 안쪽 고리 */}
+      {teeth.map((t, k) => {
+        const [x, y] = t.split(",").map(Number);
+        return <circle key={k} cx={x} cy={y} r="1.6" fill={`url(#e${id})`} />;
+      })}
+      <circle cx="20" cy="26" r="14.2" fill={`url(#e${id})`} className="nc-medal-edge" />
+      <circle cx="20" cy="26" r="11.2" fill={`url(#f${id})`} className="nc-medal-face" />
+      <circle cx="20" cy="26" r="9.6" className="nc-medal-ring" />
+      <text x="20" y="28.6" textAnchor="middle" className="nc-medal-t">
+        RUN
+      </text>
+      <path d="M12.2 21.5 A9 9 0 0 1 16.6 17.6" className="nc-medal-shine" />
     </svg>
   );
 }
