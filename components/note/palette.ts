@@ -323,47 +323,119 @@ function rng(seed: string) {
   };
 }
 
+/** 닫힌 덩어리 — 둘레 점을 무작위 반지름으로 흔들고 부드럽게 잇는다(Catmull-Rom → 3차 베지어) */
+function blobPath(r: () => number, cx: number, cy: number, rad: number, wobble: number) {
+  const n = 6 + Math.floor(r() * 3);
+  const pts = Array.from({ length: n }, (_, k) => {
+    const a = (k / n) * Math.PI * 2 + r() * 0.5;
+    const rr = rad * (1 - wobble + r() * wobble * 2);
+    return [cx + Math.cos(a) * rr, cy + Math.sin(a) * rr];
+  });
+  const f = (v: number) => v.toFixed(1);
+  let d = `M${f(pts[0][0])} ${f(pts[0][1])}`;
+  for (let k = 0; k < n; k++) {
+    const p0 = pts[(k - 1 + n) % n];
+    const p1 = pts[k];
+    const p2 = pts[(k + 1) % n];
+    const p3 = pts[(k + 2) % n];
+    const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
+    const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+    d += ` C${f(c1[0])} ${f(c1[1])} ${f(c2[0])} ${f(c2[1])} ${f(p2[0])} ${f(p2[1])}`;
+  }
+  return d + "Z";
+}
+
 /**
- * 메시 그라디언트 — 레퍼런스(테이스팅 노트 포스터)처럼 여러 색이 번져 섞인다.
+ * 메시 — 레퍼런스(테이스팅 노트 포스터)처럼 여러 색 **덩어리**가 겹쳐 섞인다. SVG 한 장을 카드 바탕에 깐다.
  *
- * **섞임 포인트는 카드마다 다르다.** 응시 id(만들어질 때 정해지는 값)로 난수열을 만들어 번짐의
- * 자리 · 크기 · 개수 · 바탕 결의 각도를 정한다 → 같은 유형이라도 카드마다 모양이 다르고,
- * 한 번 만들어진 카드는 결과 · 공유 · admin 어디서 그려도 늘 같은 모양이다.
- *   - 진한 축의 색은 번짐 두 개, 은은한 축은 하나
- *   - 바탕은 4색을 무작위 각도 · 순서로 가로지르는 결(빈 곳 없이 여러 색이 비친다)
- *   - 밝은 톤은 빛 번짐(흰 안개) 하나를 더한다 — 진한 톤은 아이보리 글자 대비 때문에 넣지 않는다
+ * **섞임 포인트는 카드마다 다르고, 한 번 정해지면 그대로다.** 응시 id 로 만든 난수열이 덩어리의 자리 · 크기 ·
+ * 모양 · 흐림 · 겹침 순서 · 바탕 결의 각도를 정한다 → 같은 유형도 카드마다 다르고, 어디서 그려도 같다.
+ *
+ * 경계 흐림(사용자 2026-11-18 — 전엔 10점 만점에 10, 레퍼런스는 3쯤):
+ *   - 덩어리 대부분은 흐림 1.4~2.6(카드 너비 63 기준) — 경계가 보이되 부드럽게
+ *   - 하나는 아주 넓게 번지는 바탕 덩어리(6), 한두 개는 작고 또렷한 「툭 나타난」 점(0.7~1.1)
+ *   - 고운 입자를 얹어 종이 결처럼(밝은 톤은 어두운 점 · 진한 톤은 밝은 점)
+ * 진한 축은 덩어리 둘, 은은한 축은 하나. 밝은 톤의 또렷한 점은 같은 색을 흰색 쪽으로 조금 —
+ * 글자 대비는 더 좋아진다(에스프레소 글자). 진한 톤은 검정 쪽으로.
  */
 export function meshCss(picks: AxisPick[], seed: string) {
   const r = rng(seed + ":mesh");
   const between = (a: number, b: number) => a + (b - a) * r();
-  const blobs: string[] = [];
+  const W = 63;
+  const H = 100;
+  const light = TONE === "light";
+  const colors = picks.map((p) => p.color.hex);
+  if (!colors.length) return { image: "none", base: "#2a2420" };
+
+  type Shape = { d: string; fill: string; blur: number; op: number };
+  const shapes: Shape[] = [];
+  // 넓게 번지는 바탕 덩어리 하나
+  shapes.push({
+    d: blobPath(r, between(10, 53), between(15, 85), between(34, 44), 0.25),
+    fill: colors[Math.floor(r() * colors.length)],
+    blur: 6,
+    op: 0.9,
+  });
   for (const p of picks) {
     const n = p.strong ? 2 : 1;
     for (let k = 0; k < n; k++) {
-      const x = between(-12, 112).toFixed(1);
-      const y = between(-10, 110).toFixed(1);
-      const w = between(48, 86).toFixed(0);
-      const h = (Number(w) * between(0.7, 1.15)).toFixed(0);
-      blobs.push(`radial-gradient(${w}% ${h}% at ${x}% ${y}%, ${p.color.hex} 0%, ${p.color.hex}d9 34%, ${p.color.hex}00 72%)`);
+      shapes.push({
+        d: blobPath(r, between(-6, W + 6), between(-6, H + 6), between(13, 26), 0.32),
+        fill: p.color.hex,
+        blur: between(1.4, 2.6),
+        op: between(0.82, 1),
+      });
     }
   }
-  // 번짐 순서를 섞는다 — 위에 깔리는 색이 카드마다 달라진다
-  for (let i = blobs.length - 1; i > 0; i--) {
+  // 작고 또렷한 점 — 「툭 나타난 변수」 같은 자리
+  const accents = 1 + Math.floor(r() * 2);
+  for (let k = 0; k < accents; k++) {
+    const c = rgb(colors[Math.floor(r() * colors.length)]);
+    shapes.push({
+      d: blobPath(r, between(6, W - 6), between(30, H - 8), between(5, 9), 0.22),
+      fill: toHex(mix(c, light ? [255, 255, 255] : [0, 0, 0], light ? 0.28 : 0.2)),
+      blur: between(0.7, 1.1),
+      op: 0.95,
+    });
+  }
+  // 겹침 순서 — 바탕 덩어리는 늘 맨 아래
+  const rest = shapes.slice(1);
+  for (let i = rest.length - 1; i > 0; i--) {
     const k = Math.floor(r() * (i + 1));
-    [blobs[i], blobs[k]] = [blobs[k], blobs[i]];
+    [rest[i], rest[k]] = [rest[k], rest[i]];
   }
-  if (TONE === "light") {
-    blobs.unshift(`radial-gradient(${between(30, 50).toFixed(0)}% ${between(26, 42).toFixed(0)}% at ${between(15, 85).toFixed(1)}% ${between(10, 90).toFixed(1)}%, rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 70%)`);
+  const ordered = [shapes[0], ...rest];
+  if (light) {
+    ordered.splice(1, 0, { d: blobPath(r, between(8, 55), between(8, 92), between(10, 16), 0.3), fill: "#ffffff", blur: 4, op: 0.5 });
   }
-  // sort 에 난수를 쓰면 엔진(서버 Node · 아이폰 Safari)마다 결과가 달라진다 — 직접 섞는다
-  const order = picks.map((p) => p.color.hex);
+
+  // 바탕 결 — 4색을 무작위 각도 · 순서로(빈 곳 없이 여러 색이 비친다)
+  const order = [...colors];
   for (let i = order.length - 1; i > 0; i--) {
     const k = Math.floor(r() * (i + 1));
     [order[i], order[k]] = [order[k], order[i]];
   }
-  if (order.length) blobs.push(`linear-gradient(${between(0, 360).toFixed(0)}deg, ${order.join(", ")})`);
-  const base = picks.length
-    ? toHex(picks.map((p) => rgb(p.color.hex)).reduce((a, c) => mix(a, c, 0.5)))
-    : "#2a2420";
-  return { image: blobs.join(", "), base };
+  const ang = between(0, Math.PI);
+  const gx = (0.5 + Math.cos(ang) * 0.5).toFixed(2);
+  const gy = (0.5 + Math.sin(ang) * 0.5).toFixed(2);
+  const gx2 = (0.5 - Math.cos(ang) * 0.5).toFixed(2);
+  const gy2 = (0.5 - Math.sin(ang) * 0.5).toFixed(2);
+
+  const blurs = [...new Set(ordered.map((s) => s.blur.toFixed(1)))];
+  const svg =
+    `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${W} ${H}' preserveAspectRatio='none'>` +
+    `<defs><linearGradient id='g' x1='${gx2}' y1='${gy2}' x2='${gx}' y2='${gy}'>` +
+    order.map((c, i) => `<stop offset='${(i / Math.max(1, order.length - 1)).toFixed(2)}' stop-color='${c}'/>`).join("") +
+    `</linearGradient>` +
+    blurs.map((b) => `<filter id='b${b.replace(".", "_")}' x='-50%' y='-50%' width='200%' height='200%'><feGaussianBlur stdDeviation='${b}'/></filter>`).join("") +
+    `<filter id='n' x='0' y='0' width='100%' height='100%'><feTurbulence type='fractalNoise' baseFrequency='2.4' numOctaves='2' seed='${Math.floor(r() * 999)}'/>` +
+    `<feColorMatrix values='0 0 0 0 ${light ? 0.1 : 1} 0 0 0 0 ${light ? 0.08 : 1} 0 0 0 0 ${light ? 0.06 : 1} 0 0 0 ${light ? 0.16 : 0.1} 0'/></filter></defs>` +
+    `<rect width='${W}' height='${H}' fill='url(#g)'/>` +
+    ordered
+      .map((s) => `<path d='${s.d}' fill='${s.fill}' fill-opacity='${s.op.toFixed(2)}' filter='url(#b${s.blur.toFixed(1).replace(".", "_")})'/>`)
+      .join("") +
+    `<rect width='${W}' height='${H}' filter='url(#n)'/>` +
+    `</svg>`;
+  const base = toHex(picks.map((p) => rgb(p.color.hex)).reduce((a, c) => mix(a, c, 0.5)));
+  return { image: `url("data:image/svg+xml,${encodeURIComponent(svg)}")`, base };
 }

@@ -45,7 +45,9 @@ export function CardFront({ card }: { card: NoteCardData }) {
         {
           "--ink": theme.ink,
           backgroundColor: mesh.base,
-          backgroundImage: `${GRAIN}, ${mesh.image}`,
+          // 메시에 입자가 들어 있어 앞면엔 GRAIN 을 따로 깔지 않는다
+          backgroundImage: mesh.image,
+          backgroundSize: "100% 100%",
         } as React.CSSProperties
       }
     >
