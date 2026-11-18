@@ -42,7 +42,7 @@ export function NoteCard({
         옆면 두 장만 세우면 둥근 모서리가 비어 보였다(사용자 2026-11-18)
       */}
       {CORE.map((z) => (
-        <i key={z} className="nc-core" style={{ transform: `translateZ(calc(var(--t) * ${z}))` }} aria-hidden="true" />
+        <i key={z} className="nc-core" style={{ transform: `translateZ(calc(var(--t, 0.93cqw) * ${z}))` }} aria-hidden="true" />
       ))}
     </div>
   );

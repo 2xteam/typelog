@@ -1,0 +1,11 @@
+{
+  "$schema": "typelog/quiz/v1",
+  "mode": "content",
+  "_note": [
+    "노출 순서(2026-11-18) — 러닝 자격증 1 · 러닝 MBTI 2, 나머지는 그대로(10~). admin → 질문지 등록에 붙여넣고 검사 → 등록."
+  ],
+  "quizSlug": "runner-16type",
+  "quizMeta": {
+    "order": 2
+  }
+}

@@ -259,6 +259,8 @@ export type QuizImport =
         disclaimer?: string | null;
         /** 화면 방식 — 채점과 무관해서 공개 뒤에도 바꾼다. 답 · 결과 코드는 그대로다 */
         experience?: "running" | "note" | null;
+        /** 목록 노출 순서 — 작을수록 위. 채점과 무관 */
+        order?: number;
       } | null;
       resultTypes?: ResultTypeInput[];
     };

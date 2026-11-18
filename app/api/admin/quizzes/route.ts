@@ -103,6 +103,8 @@ export async function POST(req: Request) {
         if (qm.disclaimer !== undefined) set.disclaimer = qm.disclaimer ?? null;
         // 화면 방식(러닝 노트 · 러닝 자격증) — 답 · 결과 코드는 건드리지 않는다
         if (qm.experience !== undefined) set.experience = qm.experience ?? null;
+        // 노출 순서 — 작을수록 위
+        if (typeof qm.order === "number") set.order = qm.order;
         if (Object.keys(set).length) await Quiz.updateOne({ _id: quizId }, { $set: set });
       }
       for (const t of body.resultTypes ?? []) {

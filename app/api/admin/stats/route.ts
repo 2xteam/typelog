@@ -56,32 +56,11 @@ export async function GET(req: Request) {
       { label: "게스트 응시", value: guests },
     ];
 
-    /** 질문지별 응시 — 어느 질문지가 실제로 쓰이는지 본다 */
-    const rows: (string | number)[][] = [];
-    const list = await Quiz.find({}).sort({ order: 1 }).lean();
-    for (const q of list) {
-      const [total, done] = await Promise.all([
-        Attempt.countDocuments({ quizId: q._id }),
-        Attempt.countDocuments({ quizId: q._id, status: "completed" }),
-      ]);
-      rows.push([
-        q.title,
-        q.status === "published" ? "공개" : q.status === "closed" ? "종료" : "작성 중",
-        Array.isArray(q.items) ? q.items.length : 0,
-        total,
-        done,
-      ]);
-    }
-
-    const tables = rows.length
-      ? [
-          {
-            title: "질문지별 응시",
-            columns: ["질문지", "상태", "문항", "응시", "완주"],
-            rows,
-          },
-        ]
-      : [];
+    /**
+     * 질문지별 응시 표는 내려보내지 않는다(2026-11-18) — 포털 요약 카드 안의 「등록된 질문지」 목록이
+     * 상태(공개 · 해제) · 응시 · 완주를 함께 보여 준다(/api/admin/quizzes).
+     */
+    const tables: { title: string; columns: string[]; rows: (string | number)[][] }[] = [];
 
     return NextResponse.json({ ok: true, stats, tables });
   } catch (err) {
