@@ -234,16 +234,12 @@
 .nc-roast li:nth-child(5) i { background: #2f180d; }
 .nc-roast li span { font: 600 2.8cqw/1 var(--ko); white-space: nowrap; }
 .nc-roast li[data-on="true"] span { font-weight: 800; }
-/* 내 단계 메달 — 동그라미(6.2cqw)보다 크게, 원판 가운데가 선 높이에 오도록 위쪽을 끌어올린다 */
-.nc-medal { position: relative; z-index: 1; width: 11cqw; height: auto; margin: -5.2cqw -2.4cqw -0.4cqw; overflow: visible;
-  filter: drop-shadow(0 0.5cqw 0.6cqw rgba(0, 0, 0, 0.28)); }
-.nc-medal-rib-l { fill: #6a52e6; }
-.nc-medal-rib-r { fill: #9a3fd6; }
-.nc-medal-edge { stroke: rgba(90, 60, 10, 0.55); stroke-width: 0.5; }
-.nc-medal-face { stroke: rgba(255, 246, 210, 0.9); stroke-width: 0.6; }
-.nc-medal-ring { fill: none; stroke: rgba(120, 82, 14, 0.55); stroke-width: 0.5; stroke-dasharray: 0.8 0.8; }
-.nc-medal-t { font: 700 6.4px var(--en); letter-spacing: 0.6px; fill: #6b4607; }
-.nc-medal-shine { fill: none; stroke: rgba(255, 255, 255, 0.9); stroke-width: 1.2; stroke-linecap: round; }
+/* 내 단계 메달 — 심플한 육각 스틸. 판 가운데가 선 높이에 오도록 위를 끌어올린다 */
+.nc-medal { position: relative; z-index: 1; width: 10.5cqw; height: 10.5cqw; flex: none; margin: -3.46cqw -2.15cqw -0.84cqw; overflow: visible;
+  filter: drop-shadow(0 0.3cqw 0.4cqw rgba(0, 0, 0, 0.22)); }
+.nc-medal-plate { stroke: #6f777f; stroke-width: 0.6; stroke-linejoin: round; }
+.nc-medal-line { fill: none; stroke: rgba(255, 255, 255, 0.7); stroke-width: 0.6; stroke-linejoin: round; }
+.nc-medal-t { font: 700 5.4px var(--en); letter-spacing: 0.6px; fill: #3c434a; }
 .nc-cup { margin-top: 0; min-height: 15cqw; }
 .nc-cup p:not(.nc-label) { margin: 0 0 0.8cqw; font: 500 3.4cqw/1.45 var(--ko); word-break: keep-all; }
 .nc-bfoot { padding-top: 2.6cqw; border-top: 0.3cqw solid var(--rule); display: flex; justify-content: space-between; align-items: baseline; gap: 2cqw; }
