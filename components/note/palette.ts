@@ -121,55 +121,55 @@ const DEEP: Pole[] = [
   },
 ];
 
-/** 밝은 톤 — 같은 계열 · 같은 자리, 쨍한 파스텔(레퍼런스: 테이스팅 노트 포스터). 앞 두 색이 더 진하다(진하게) */
+/** 밝은 톤 — 같은 계열 · 같은 자리, 맑고 쨍한 색(레퍼런스: 테이스팅 노트 포스터 — 우유 탄 파스텔이면 흐릿하다). 앞 두 색이 더 진하다 */
 const LIGHT_COLORS: Record<string, Pole["colors"]> = {
   C: [
-    { ko: "코럴", en: "Coral", hex: "#ff8f73" },
-    { ko: "살몬", en: "Salmon", hex: "#ff9e86" },
-    { ko: "피치", en: "Peach", hex: "#ffbf9b" },
-    { ko: "애프리콧", en: "Apricot", hex: "#ffc98a" },
+    { ko: "코럴", en: "Coral", hex: "#ff7a59" },
+    { ko: "살몬", en: "Salmon", hex: "#ff8c70" },
+    { ko: "피치", en: "Peach", hex: "#ffa77d" },
+    { ko: "애프리콧", en: "Apricot", hex: "#ffb562" },
   ],
   F: [
-    { ko: "허니", en: "Honey", hex: "#ffcb45" },
-    { ko: "레몬", en: "Lemon", hex: "#ffe066" },
-    { ko: "버터", en: "Butter", hex: "#ffe590" },
-    { ko: "바닐라", en: "Vanilla", hex: "#ffedb0" },
+    { ko: "허니", en: "Honey", hex: "#ffc22e" },
+    { ko: "레몬", en: "Lemon", hex: "#ffdc2e" },
+    { ko: "버터", en: "Butter", hex: "#ffe15c" },
+    { ko: "바닐라", en: "Vanilla", hex: "#ffe887" },
   ],
   L: [
-    { ko: "라임", en: "Lime", hex: "#b4e06a" },
-    { ko: "피스타치오", en: "Pistachio", hex: "#c2e486" },
-    { ko: "말차 라테", en: "Matcha Latte", hex: "#d0e8a4" },
-    { ko: "티 그린", en: "Tea Green", hex: "#dbf1b9" },
+    { ko: "라임", en: "Lime", hex: "#9edb3c" },
+    { ko: "피스타치오", en: "Pistachio", hex: "#b0e05a" },
+    { ko: "말차 라테", en: "Matcha Latte", hex: "#bfe57a" },
+    { ko: "티 그린", en: "Tea Green", hex: "#cdee95" },
   ],
   P: [
-    { ko: "민트", en: "Mint", hex: "#78e2c6" },
-    { ko: "터콰이즈", en: "Turquoise", hex: "#6dd8d8" },
-    { ko: "아쿠아", en: "Aqua", hex: "#9debe0" },
-    { ko: "시폼", en: "Seafoam", hex: "#b7f1e4" },
+    { ko: "민트", en: "Mint", hex: "#4fdcb5" },
+    { ko: "터콰이즈", en: "Turquoise", hex: "#3fd0d0" },
+    { ko: "아쿠아", en: "Aqua", hex: "#72e6d6" },
+    { ko: "시폼", en: "Seafoam", hex: "#94eedc" },
   ],
   R: [
-    { ko: "스카이", en: "Sky", hex: "#8cc4ff" },
-    { ko: "콘플라워", en: "Cornflower", hex: "#9db3ff" },
-    { ko: "파우더 블루", en: "Powder Blue", hex: "#b7d3ff" },
-    { ko: "아이스", en: "Ice", hex: "#cfe2ff" },
+    { ko: "스카이", en: "Sky", hex: "#62b1ff" },
+    { ko: "콘플라워", en: "Cornflower", hex: "#7f9cff" },
+    { ko: "파우더 블루", en: "Powder Blue", hex: "#94c2ff" },
+    { ko: "아이스", en: "Ice", hex: "#b0d3ff" },
   ],
   A: [
-    { ko: "라벤더", en: "Lavender", hex: "#c5a4ff" },
-    { ko: "라일락", en: "Lilac", hex: "#dba4f5" },
-    { ko: "페리윙클", en: "Periwinkle", hex: "#b8b5ff" },
-    { ko: "모브 미스트", en: "Mauve Mist", hex: "#e3c5f7" },
+    { ko: "라벤더", en: "Lavender", hex: "#b085ff" },
+    { ko: "라일락", en: "Lilac", hex: "#d488f5" },
+    { ko: "페리윙클", en: "Periwinkle", hex: "#9d98ff" },
+    { ko: "모브 미스트", en: "Mauve Mist", hex: "#dcaaf5" },
   ],
   S: [
-    { ko: "핫 핑크", en: "Hot Pink", hex: "#ff7eb0" },
-    { ko: "로즈", en: "Rose", hex: "#ff93b4" },
-    { ko: "버블검", en: "Bubblegum", hex: "#ffadd0" },
-    { ko: "체리 블라썸", en: "Cherry Blossom", hex: "#ffc5d9" },
+    { ko: "핫 핑크", en: "Hot Pink", hex: "#ff5fa2" },
+    { ko: "로즈", en: "Rose", hex: "#ff7aa6" },
+    { ko: "버블검", en: "Bubblegum", hex: "#ff94c4" },
+    { ko: "체리 블라썸", en: "Cherry Blossom", hex: "#ffb0cf" },
   ],
   I: [
-    { ko: "카라멜", en: "Caramel", hex: "#eab27a" },
-    { ko: "라테", en: "Latte", hex: "#e2bb92" },
-    { ko: "오트", en: "Oat", hex: "#efd9bd" },
-    { ko: "샌드", en: "Sand", hex: "#f2e0c2" },
+    { ko: "카라멜", en: "Caramel", hex: "#e9a35d" },
+    { ko: "라테", en: "Latte", hex: "#e0ad7a" },
+    { ko: "오트", en: "Oat", hex: "#edcca0" },
+    { ko: "샌드", en: "Sand", hex: "#f0d6a6" },
   ],
 };
 
@@ -265,6 +265,45 @@ export const contrast = (a: RGB, b: RGB) => {
 };
 export const mix = (a: RGB, b: RGB, t: number): RGB => [0, 1, 2].map((i) => a[i] + (b[i] - a[i]) * t) as RGB;
 
+// ── 맑게 섞기(OKLCH) ──
+// RGB 로 섞으면 핑크 + 초록이 회색빛 베이지가 된다(가운데가 탁해진다). 색상환을 따라 돌고 채도는
+// 둘 중 큰 쪽을 지켜서, 핑크 + 노랑 → 쨍한 주황처럼 맑은 중간색을 만든다.
+const srgbToLin = (v: number) => lin(v);
+const linToSrgb = (v: number) => {
+  const c = Math.max(0, Math.min(1, v));
+  return 255 * (c <= 0.0031308 ? 12.92 * c : 1.055 * c ** (1 / 2.4) - 0.055);
+};
+function toOklch(c: RGB) {
+  const [r, g, b] = c.map(srgbToLin);
+  const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+  const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+  const s2 = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+  const L = 0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s2;
+  const A = 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s2;
+  const B = 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s2;
+  return { L, C: Math.hypot(A, B), H: Math.atan2(B, A) };
+}
+function fromOklch(L: number, C: number, H: number): RGB {
+  const A = C * Math.cos(H);
+  const B = C * Math.sin(H);
+  const l = (L + 0.3963377774 * A + 0.2158037573 * B) ** 3;
+  const m = (L - 0.1055613458 * A - 0.0638541728 * B) ** 3;
+  const s2 = (L - 0.0894841775 * A - 1.291485548 * B) ** 3;
+  return [
+    linToSrgb(4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s2),
+    linToSrgb(-1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s2),
+    linToSrgb(-0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s2),
+  ];
+}
+export function vividMix(a: string, b: string, t: number) {
+  const x = toOklch(rgb(a));
+  const y = toOklch(rgb(b));
+  let dh = y.H - x.H;
+  if (dh > Math.PI) dh -= 2 * Math.PI;
+  if (dh < -Math.PI) dh += 2 * Math.PI;
+  return toHex(fromOklch(x.L + (y.L - x.L) * t, Math.max(x.C, y.C), x.H + dh * t));
+}
+
 /** 카드 글자색 후보 — 아이보리(어두운 카드) · 에스프레소(밝은 카드, 밝은 톤을 열 때) */
 export const IVORY = "#f4ecdd";
 export const ESPRESSO = "#1d1510";
@@ -352,10 +391,11 @@ function blobPath(r: () => number, cx: number, cy: number, rad: number, wobble: 
  * 같은 유형도 카드마다 다르고, 결과 · 공유 · admin 어디서 그려도 같은 그림이다.
  *
  * 레퍼런스와 맞춘 것(사용자 2026-11-18, 두 그림을 나란히 비교):
- *   - 색이 4개뿐이면 납작하다 → 내 4색 + **두 색 사이의 중간색** + (밝은 톤) 빛 안개
- *   - 덩어리가 서로를 가리면 섞이지 않는다 → **반투명**(0.5~0.92), 겹친 곳에 새 색이 생긴다
+ *   - 색이 4개뿐이면 납작하다 → 내 4색 + **두 색 사이의 중간색**(OKLCH 로 맑게, `vividMix`) + (밝은 톤) 옅은 빛 안개 하나
+ *   - 덩어리가 서로를 가리면 섞이지 않는다 → 살짝 비치게(0.72~1). 너무 투명하면 겹친 곳이 탁해진다
  *   - 속이 단색이면 오려 붙인 종이 같다 → 절반은 **가운데가 진하고 바깥으로 옅어지는** 채움
- *   - **흐림도 덩어리마다 무작위** — 또렷(0.2~0.7) 15% · 중간(1.2~3) 35% · 아주 뿌옇게(4~10) 50%
+ *   - **흐림도 덩어리마다 무작위** — 또렷(0.2~0.7) 22% · 중간(1.2~3) 50% · 뿌옇게(3.5~7) 28%.
+ *     뿌연 덩어리가 많으면 전체가 흐릿해진다(사용자 2026-11-18 「너무 흐릿하기만」)
  *   - 크기 대비 — 화면을 가로지르는 큰 색면부터 작은 빛점까지
  *   - 모서리 · 가장자리에 걸쳐 들어오는 또렷한 곡선 경계 하나
  *   - 입자는 아주 옅게(칙칙해지지 않게)
@@ -373,17 +413,17 @@ export function meshCss(picks: AxisPick[], seed: string) {
 
   const blurOf = () => {
     const t = r();
-    return t < 0.15 ? between(0.2, 0.7) : t < 0.5 ? between(1.2, 3) : between(4, 10);
+    return t < 0.22 ? between(0.2, 0.7) : t < 0.72 ? between(1.2, 3) : between(3.5, 7);
   };
   // 두 색 사이의 중간색 — 레퍼런스의 핑크 → 살구 → 노랑 같은 이어짐
   const mids: string[] = [];
   for (let a = 0; a < colors.length; a++) {
-    for (let b = a + 1; b < colors.length; b++) mids.push(toHex(mix(rgb(colors[a]), rgb(colors[b]), between(0.35, 0.65))));
+    for (let b = a + 1; b < colors.length; b++) mids.push(vividMix(colors[a], colors[b], between(0.35, 0.65)));
   }
 
   type Shape = { d: string; fill: string; blur: number; op: number; glow: boolean };
   const shapes: Shape[] = [];
-  const add = (fill: string, rad: number, wobble: number, blur = blurOf(), op = between(0.5, 0.92)) =>
+  const add = (fill: string, rad: number, wobble: number, blur = blurOf(), op = between(0.72, 1)) =>
     shapes.push({
       d: blobPath(r, between(-8, W + 8), between(-8, H + 8), rad, wobble),
       fill,
@@ -411,15 +451,13 @@ export function meshCss(picks: AxisPick[], seed: string) {
   }
   const ordered = [shapes[0], shapes[1], ...rest];
   if (light) {
-    for (let k = 0; k < 2; k++) {
-      ordered.splice(2 + Math.floor(r() * (ordered.length - 2)), 0, {
-        d: blobPath(r, between(5, W - 5), between(5, H - 5), between(7, 14), 0.3),
-        fill: "#ffffff",
-        blur: between(3, 7),
-        op: between(0.35, 0.6),
-        glow: true,
-      });
-    }
+    ordered.splice(2 + Math.floor(r() * (ordered.length - 2)), 0, {
+      d: blobPath(r, between(5, W - 5), between(5, H - 5), between(6, 11), 0.3),
+      fill: "#ffffff",
+      blur: between(2.5, 5),
+      op: between(0.18, 0.3),
+      glow: true,
+    });
   }
   // 또렷한 곡선 경계(레퍼런스 왼쪽 위 모서리) — 큰 덩어리를 카드 바깥 모서리 · 가장자리에 두어
   // 일부만 걸쳐 들어오게. 흔들림 작게(매끈한 호), 흐림 거의 없이, 맨 위에. 큰 색면과 다른 색
