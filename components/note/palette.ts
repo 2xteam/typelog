@@ -522,5 +522,8 @@ export function meshCss(picks: AxisPick[], seed: string) {
       .join("") +
     `<rect width='${W}' height='${H}' filter='url(#n)'/></svg>`;
   const base = toHex(picks.map((p) => rgb(p.color.hex)).reduce((a, c) => mix(a, c, 0.5)));
-  return { image: `url("data:image/svg+xml,${encodeURIComponent(svg)}")`, base, fills: [...colors, ...mids, ...rich] };
+  // 괄호까지 인코딩한다 — 안 하면 이미지 저장(html-to-image)이 SVG 안의 url(#g) 를 바깥 주소로 알고 받으려다
+  // 실패해 카드 바탕을 통째로 버렸다(검은 카드, 2026-11-18)
+  const uri = encodeURIComponent(svg).replace(/\(/g, "%28").replace(/\)/g, "%29");
+  return { image: `url("data:image/svg+xml,${uri}")`, base, fills: [...colors, ...mids, ...rich] };
 }

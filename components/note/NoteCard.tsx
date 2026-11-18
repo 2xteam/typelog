@@ -15,7 +15,7 @@ import { dotDate, lookOf, type NoteCardData } from "./view";
  */
 
 const GRAIN =
-  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E\")";
 
 /** 두께 판의 깊이 — 앞(+0.5) ~ 뒤(-0.5) 사이를 고르게 */
 const CORE = [-0.4, -0.27, -0.13, 0, 0.13, 0.27, 0.4];
@@ -160,7 +160,7 @@ export function CardBack({ card, pour }: { card: NoteCardData; pour?: boolean })
  * 4축이 아래(누구와)부터 위(마음)로 층층이 찬다. 진한 축은 층이 두껍다.
  */
 const FLASK =
-  "M25 19 L35 19 C35.6 23 41.5 26.5 42.5 33 C43.6 52 44.6 80 45.6 100 C46.2 112 42 116.6 33 116.8 L27 116.8 C18 116.6 13.8 112 14.4 100 C15.4 80 16.4 52 17.5 33 C18.5 26.5 24.4 23 25 19 Z";
+  "M24.6 20.6 L35.4 20.6 C35.8 24.4 41.6 27.2 42.6 34 C43.7 53 44.7 81 45.6 100 C46.2 112 42 116.6 33 116.8 L27 116.8 C18 116.6 13.8 112 14.4 100 C15.3 81 16.3 53 17.4 34 C18.4 27.2 24.2 24.4 24.6 20.6 Z";
 
 function Bottle({ picks, pour }: { picks: AxisPick[]; pour?: boolean }) {
   const id = useId().replace(/:/g, "");
@@ -189,12 +189,16 @@ function Bottle({ picks, pour }: { picks: AxisPick[]; pour?: boolean }) {
           <stop offset="1" stopColor="#000" stopOpacity=".08" />
         </linearGradient>
       </defs>
-      {/* 옆 고리 */}
-      <path d="M36.5 15 C47 12 52 22 47.5 30 C45.5 33.5 43 34 42 33" className="nc-bottle-strap" />
-      {/* 바이트 밸브 · 링 */}
-      <rect x="26.5" y="2.5" width="7" height="7.5" rx="3.2" className="nc-bottle-valve" />
-      <rect x="23.5" y="9.5" width="13" height="5" rx="1.6" className="nc-bottle-cap" />
-      <rect x="24.5" y="14.2" width="11" height="5" rx="1" className="nc-bottle-neck" />
+      {/* 옆 고리 — 마개 링에서 나와 어깨로 */}
+      <path d="M37.4 14.2 C46.5 12.6 51.4 21.5 47.6 29.5 C46.2 32.5 44 33.6 42.7 33.2" className="nc-bottle-strap" />
+      {/* 바이트 밸브 — 위가 좁아지는 마개 꼭지, 가운데 틈 */}
+      <path d="M27.6 10.4 L28.3 4.6 Q28.5 2.6 30 2.6 Q31.5 2.6 31.7 4.6 L32.4 10.4 Z" className="nc-bottle-valve" />
+      <path d="M30 3.6 L30 6.2" className="nc-bottle-slit" />
+      {/* 마개 — 홈이 파인 링 */}
+      <rect x="23.2" y="10.2" width="13.6" height="5.6" rx="1.2" className="nc-bottle-cap" />
+      <path d="M26 10.8 V15.2 M28.6 10.8 V15.2 M31.4 10.8 V15.2 M34 10.8 V15.2" className="nc-bottle-rib" />
+      {/* 목 — 단단한 칼라 */}
+      <rect x="24.3" y="15.6" width="11.4" height="5.4" rx="0.8" className="nc-bottle-neck" />
       <g clipPath={`url(#b${id})`}>
         <rect x="0" y="0" width="60" height="120" fill="rgba(255,255,255,.42)" />
         <g className="nc-liquid">

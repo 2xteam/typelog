@@ -718,7 +718,12 @@ export function RunResult({
  * 구글 폰트)의 cssRules 는 브라우저가 막아 SecurityError 가 난다(2026-11-14). 한글 글꼴은
  * 조각이 백 개 가까이라 다 넣으면 수 MB 가 되므로 쓰인 글자로 거른다.
  */
-async function embedFontCSS(node: HTMLElement, onProgress?: (k: number) => void): Promise<string> {
+export async function embedFontCSS(
+  node: HTMLElement,
+  onProgress?: (k: number) => void,
+  /** 글꼴 이름을 읽을 CSS 변수 — 러닝 노트는 자기 글꼴 변수를 넘긴다 */
+  vars: string[] = ["--rf-sans", "--rf-serif", "--rf-old", "--rf-blackletter", "--rf-mono", "--rf-blackhan", "--rf-pen", "--rf-seal", "--rf-western"],
+): Promise<string> {
   const chars = new Set([...(node.textContent ?? ""), ..."0123456789:′″.,%+−-/ABCDEFGHIJKLMNOPQRSTUVWXYZ"]);
   const codes = [...chars].map((c) => c.codePointAt(0) ?? 0);
   const covers = (range: string) =>
@@ -735,7 +740,7 @@ async function embedFontCSS(node: HTMLElement, onProgress?: (k: number) => void)
   // 개발 서버에서는 'Noto Serif KR', 배포에서는 '__Noto_Serif_KR_1a2b3c' 처럼 이름이 다르다
   const cs = getComputedStyle(node);
   const families = new Set(
-    ["--rf-sans", "--rf-serif", "--rf-old", "--rf-blackletter", "--rf-mono", "--rf-blackhan", "--rf-pen", "--rf-seal", "--rf-western"]
+    vars
       .map((v) => cs.getPropertyValue(v).split(",")[0]?.trim().replace(/^['"]|['"]$/g, ""))
       .filter(Boolean),
   );

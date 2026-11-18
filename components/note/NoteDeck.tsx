@@ -13,8 +13,10 @@ import type { NoteCardData } from "./view";
  *         (사용자 2026-11-18 방향 확정)
  *         누르면 뒤집힌다. 마우스면 커서 쪽으로 살짝 기운다
  *
- * 무대: 어두운 바탕 · 핀 조명 · 반사 바닥(카드사 공개 연출). 반사는 카드 자체에 붙여(-webkit-box-reflect)
- * 손가락을 늦지 않게 따라온다 — 전엔 반사용 복제 카드가 0.45초 늦게 따라왔다.
+ * 무대: 어두운 바탕 · 핀 조명 · 반사 바닥(카드사 공개 연출).
+ * 반사 — 원근으로 그린 그림을 뒤집으면(box-reflect) 카드가 돌 때 아랫변 기울기가 반대로 나온다(사용자 2026-11-18
+ * 「그림자가 반대로 돈다」). 그래서 반사 카드를 **3D 공간에서 바닥면 기준으로 뒤집고**(scaleY(-1)) 같은 원근으로 그린다.
+ * 회전 값 · 전환 시간이 본 카드와 같아서 늦지 않게 따라온다.
  * 처음 한 번(`reveal`): 조명이 켜지고 카드가 돌며 떠올라 선다 → 반사광. 움직임 줄이기면 처음부터 서 있다.
  */
 
@@ -34,7 +36,7 @@ export function NoteDeck({
   reveal?: boolean;
   /** 공유 화면처럼 한 장뿐이면 목록으로 들어가지 않는다 */
   allowList?: boolean;
-  onChange?: (s: { mode: Mode; id: string }) => void;
+  onChange?: (s: { mode: Mode; id: string; face: "front" | "back" }) => void;
 }) {
   // 오래된 것 → 최근 순으로 왼쪽부터 놓는다
   const cards = useMemo(() => [...input].sort((a, b) => a.attemptNo - b.attemptNo), [input]);
@@ -67,8 +69,8 @@ export function NoteDeck({
     if (face === "back" && card) setPoured((p) => (p[card.attemptId] ? p : { ...p, [card.attemptId]: true }));
   }, [face, card]);
   useEffect(() => {
-    if (card) onChange?.({ mode, id: card.attemptId });
-  }, [mode, card, onChange]);
+    if (card) onChange?.({ mode, id: card.attemptId, face });
+  }, [mode, card, face, onChange]);
 
   // ── 크기 ──
   const cw = Math.min(280, w * 0.7);
@@ -196,26 +198,29 @@ export function NoteDeck({
           const p = slot(i);
           const isCur = i === cur && mode === "detail";
           const deg = isCur ? rot + flipDeg : 0;
+          const place = {
+            transform: `translateX(${p.x}px) translateY(${p.y}px) scale(${p.s})`,
+            opacity: p.op,
+          };
+          const rigT = `rotateY(${p.ry}deg)${isCur && drag === null ? ` rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)` : ""}`;
           return (
-            <div
-              key={c.attemptId}
-              className="nd-slot"
-              data-cur={isCur ? "true" : undefined}
-              style={{
-                transform: `translateX(${p.x}px) translateY(${p.y}px) scale(${p.s})`,
-                opacity: p.op,
-                zIndex: p.z,
-              }}
-            >
-              <i className="nd-shadow" style={{ transform: `scaleX(${(0.12 + 0.88 * Math.abs(Math.cos((deg * Math.PI) / 180))).toFixed(3)})` }} aria-hidden="true" />
-              <div className="nd-rise">
-                <div
-                  className="nd-rig"
-                  style={{
-                    transform: `rotateY(${p.ry}deg)${isCur && drag === null ? ` rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)` : ""}`,
-                  }}
-                >
-                  <NoteCard card={c} rot={deg} pour={!!poured[c.attemptId]} />
+            <div key={c.attemptId} className="nd-pair" style={{ zIndex: p.z }}>
+              {/* 바닥 반사 — 3D 에서 바닥면 기준으로 뒤집은 같은 카드 */}
+              <div className="nd-mirror" data-cur={isCur ? "true" : undefined} style={place} aria-hidden="true">
+                <div className="nd-flip">
+                  <div className="nd-rise">
+                    <div className="nd-rig" style={{ transform: rigT }}>
+                      <NoteCard card={c} rot={deg} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="nd-slot" data-cur={isCur ? "true" : undefined} style={place}>
+                <i className="nd-shadow" style={{ transform: `scaleX(${(0.12 + 0.88 * Math.abs(Math.cos((deg * Math.PI) / 180))).toFixed(3)})` }} aria-hidden="true" />
+                <div className="nd-rise">
+                  <div className="nd-rig" style={{ transform: rigT }}>
+                    <NoteCard card={c} rot={deg} pour={!!poured[c.attemptId]} />
+                  </div>
                 </div>
               </div>
             </div>

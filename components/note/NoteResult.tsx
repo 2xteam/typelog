@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getGuestKey } from "@/lib/guestKey";
 import { useSession } from "@/lib/useSession";
 import { NoteDeck } from "./NoteDeck";
+import { NoteExport } from "./NoteExport";
 import { Wheel } from "./Wheel";
 import { buildCard, splitOutcomes, type NoteCardData } from "./view";
 import { noteFontVars } from "./fonts";
@@ -94,8 +95,8 @@ export function NoteResult({
   }, [data.attemptId]);
 
   /** 덱이 지금 보여 주는 것 — 머리글을 맞춘다 */
-  const [deck, setDeck] = useState<{ mode: "list" | "detail"; id: string }>({ mode: "detail", id: data.attemptId });
-  const onDeck = useCallback((s: { mode: "list" | "detail"; id: string }) => setDeck(s), []);
+  const [deck, setDeck] = useState<{ mode: "list" | "detail"; id: string; face: "front" | "back" }>({ mode: "detail", id: data.attemptId, face: "front" });
+  const onDeck = useCallback((s: { mode: "list" | "detail"; id: string; face: "front" | "back" }) => setDeck(s), []);
 
   // 모은 카드 — 회원만 서버에 쌓인다. 비회원은 이 한 장
   const [rows, setRows] = useState<Row[] | null>(null);
@@ -164,6 +165,7 @@ export function NoteResult({
       <div className="nt-shell">
         <DeckHead deck={deck} cards={cards} pageId={data.attemptId} subtitle={t?.subtitle ?? null} signedIn={session.status === "signed-in"} />
         <NoteDeck cards={cards} initialId={data.attemptId} reveal={reveal} onChange={onDeck} />
+        {deck.mode === "detail" ? <NoteExport card={cards.find((c) => c.attemptId === deck.id) ?? card} face={deck.face} /> : null}
       </div>
 
       <section className="nt-panel">
@@ -270,7 +272,7 @@ function DeckHead({
   subtitle,
   signedIn,
 }: {
-  deck: { mode: "list" | "detail"; id: string };
+  deck: { mode: "list" | "detail"; id: string; face: "front" | "back" };
   cards: NoteCardData[];
   pageId: string;
   subtitle: string | null;

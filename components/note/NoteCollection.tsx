@@ -21,7 +21,7 @@ export function NoteCollection({ slug }: { slug: string }) {
   const [data, setData] = useState<{ title: string; axes: AxisDecl[]; rows: Row[]; total: number } | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [starting, setStarting] = useState(false);
-  const [deck, setDeck] = useState<{ mode: "list" | "detail"; id: string } | null>(null);
+  const [deck, setDeck] = useState<{ mode: "list" | "detail"; id: string; face: "front" | "back" } | null>(null);
 
   /** 한 장 더 — 목록(/types)의 「해보기」와 같은 방식으로 새 회차를 연다 */
   const again = async () => {
