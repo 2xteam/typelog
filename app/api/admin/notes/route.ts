@@ -103,6 +103,7 @@ export async function GET(req: Request) {
         result: { code: c, name: typeByCode.get(c)?.name ?? c, emoji: typeByCode.get(c)?.emoji ?? "" },
         card: {
           ink: theme.ink,
+          dark: theme.dark,
           scrim: theme.scrim,
           contrast: theme.worst,
           back: theme.back,

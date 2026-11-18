@@ -8,8 +8,9 @@
  *     둘 중 하나는 카드 번호(응시 id)로 정한다. 한 번 나온 카드의 색은 다시 바뀌지 않는다
  *   - 결과 화면의 색 원판은 내 색이 어디 있는지 **보여 주기만** 한다. 바꾸는 버튼은 없다
  *
- * 1차는 진한 톤만(사용자 — 밝은 톤은 나중에 따로 본다). 글자색은 아래 `cardTheme` 이
- * 대비를 계산해 정한다 — 색을 바꿔도 손으로 확인할 필요가 없게.
+ * 톤은 둘 — 진한 톤(기본) · 밝은 톤(파스텔, 2026-11-18 비교용). `NEXT_PUBLIC_NOTE_TONE=light` 로 바꾼다.
+ * 서버 · 브라우저가 같은 값을 읽어야 해서 NEXT_PUBLIC 이다(빌드 때 박힌다). 무대는 어느 톤이든 어둡다.
+ * 글자색은 아래 `cardTheme` 이 대비를 계산해 정한다 — 밝은 톤이면 에스프레소 글자로 저절로 바뀐다.
  *
  * 서버(admin · 공유 API)에서도 같은 색을 내야 하므로 이 파일은 순수 함수만 둔다.
  * → my-obsidian-vault / 50-Plans/K 러닝 노트.md
@@ -29,7 +30,7 @@ export type Pole = {
  * 원판 순서 = 색상환 순서(주황 → 노랑 → 초록 → 청록 → 파랑 → 보라 → 빨강 → 갈색).
  * 앞의 두 색이 「진하게」, 뒤의 두 색이 「은은하게」 자리다.
  */
-export const POLES: Pole[] = [
+const DEEP: Pole[] = [
   {
     code: "C",
     ko: "크루형",
@@ -119,6 +120,62 @@ export const POLES: Pole[] = [
     ],
   },
 ];
+
+/** 밝은 톤 — 같은 계열 · 같은 자리, 파스텔. 앞 두 색이 조금 더 짙다(진하게) */
+const LIGHT_COLORS: Record<string, Pole["colors"]> = {
+  C: [
+    { ko: "코럴", en: "Coral", hex: "#f0a588" },
+    { ko: "살몬", en: "Salmon", hex: "#f2b09a" },
+    { ko: "피치", en: "Peach", hex: "#f8d3bf" },
+    { ko: "애프리콧", en: "Apricot", hex: "#f9dcb8" },
+  ],
+  F: [
+    { ko: "허니", en: "Honey", hex: "#f2cf7e" },
+    { ko: "버터", en: "Butter", hex: "#f5dc8f" },
+    { ko: "바닐라", en: "Vanilla", hex: "#f7e9b8" },
+    { ko: "크림", en: "Cream", hex: "#f6edcc" },
+  ],
+  L: [
+    { ko: "세이지", en: "Sage", hex: "#b9cfa4" },
+    { ko: "피스타치오", en: "Pistachio", hex: "#c6dba2" },
+    { ko: "말차 라테", en: "Matcha Latte", hex: "#d5e2bf" },
+    { ko: "티 그린", en: "Tea Green", hex: "#dcebc8" },
+  ],
+  P: [
+    { ko: "민트", en: "Mint", hex: "#a8dccb" },
+    { ko: "셀라돈", en: "Celadon", hex: "#b3d9c9" },
+    { ko: "아쿠아 헤이즈", en: "Aqua Haze", hex: "#cdeae0" },
+    { ko: "시폼", en: "Seafoam", hex: "#d4efe6" },
+  ],
+  R: [
+    { ko: "스카이", en: "Sky", hex: "#a9c8ec" },
+    { ko: "콘플라워", en: "Cornflower", hex: "#b3c2ee" },
+    { ko: "파우더 블루", en: "Powder Blue", hex: "#cbdcf1" },
+    { ko: "아이스", en: "Ice", hex: "#d9e6f5" },
+  ],
+  A: [
+    { ko: "라벤더", en: "Lavender", hex: "#c6b5ea" },
+    { ko: "라일락", en: "Lilac", hex: "#d1b4e3" },
+    { ko: "페리윙클", en: "Periwinkle", hex: "#cfd0f2" },
+    { ko: "모브 미스트", en: "Mauve Mist", hex: "#ddd0ef" },
+  ],
+  S: [
+    { ko: "로즈", en: "Rose", hex: "#f2a7b5" },
+    { ko: "베리 밀크", en: "Berry Milk", hex: "#eeb0c4" },
+    { ko: "블러시", en: "Blush", hex: "#f6ccd4" },
+    { ko: "체리 블라썸", en: "Cherry Blossom", hex: "#f8d8e0" },
+  ],
+  I: [
+    { ko: "라테", en: "Latte", hex: "#dcc3a6" },
+    { ko: "카푸치노", en: "Cappuccino", hex: "#d6b99b" },
+    { ko: "오트", en: "Oat", hex: "#e8dcc8" },
+    { ko: "샌드", en: "Sand", hex: "#eadfcb" },
+  ],
+};
+
+export const TONE: "deep" | "light" = process.env.NEXT_PUBLIC_NOTE_TONE === "light" ? "light" : "deep";
+
+export const POLES: Pole[] = TONE === "light" ? DEEP.map((p) => ({ ...p, colors: LIGHT_COLORS[p.code] })) : DEEP;
 
 export const poleByCode = (code: string) => POLES.find((p) => p.code === code) ?? null;
 
@@ -210,6 +267,9 @@ export const mix = (a: RGB, b: RGB, t: number): RGB => [0, 1, 2].map((i) => a[i]
 /** 카드 글자색 후보 — 아이보리(어두운 카드) · 에스프레소(밝은 카드, 밝은 톤을 열 때) */
 export const IVORY = "#f4ecdd";
 export const ESPRESSO = "#1d1510";
+/** 색 한 칸 위의 글자색 — 원판 라벨처럼 한 색 위에 올라가는 글자 */
+export const inkOn = (hex: string) => (contrast(rgb(IVORY), rgb(hex)) >= contrast(rgb(ESPRESSO), rgb(hex)) ? IVORY : ESPRESSO);
+
 /** 글자 대비 목표. AA(4.5) 에 메시가 섞이는 몫을 조금 더 얹었다 */
 const TARGET = 4.8;
 

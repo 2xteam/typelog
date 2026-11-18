@@ -209,8 +209,8 @@
 
 /* ── 색 원판 ── */
 .nw { display: block; width: 100%; height: auto; overflow: visible; }
-.nw-pole-label { font: 700 7px var(--ko); fill: var(--nt-ivory, #efe7da); text-anchor: middle; dominant-baseline: middle; }
-.nw-shade-label { font: 600 4.3px var(--ko); fill: #f4ecdd; dominant-baseline: middle; }
+.nw-pole-label { font: 700 7px var(--ko); text-anchor: middle; dominant-baseline: middle; }
+.nw-shade-label { font: 600 4.3px var(--ko); dominant-baseline: middle; }
 .nw-hole { fill: #0b0a10; stroke: rgba(227, 197, 140, 0.35); stroke-width: 0.6; }
 .nw-center { font: 600 9px var(--en); letter-spacing: 1.6px; fill: #e3c58c; text-anchor: middle; dominant-baseline: middle; }
 .nw-shade, .nw-pole path { transition: opacity 0.7s ease; }

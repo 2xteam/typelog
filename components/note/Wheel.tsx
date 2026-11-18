@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { POLES, type AxisPick } from "./palette";
+import { inkOn, POLES, type AxisPick } from "./palette";
 
 /**
  * 이름 있는 색 원판(레퍼런스: 커피 향미 원판).
@@ -76,6 +76,7 @@ export function Wheel({
               <text
                 transform={flip ? `rotate(${mid + 180}) translate(0 ${(R0 + R1) / 2 + 2})` : `rotate(${mid}) translate(0 ${-(R0 + R1) / 2 + 2})`}
                 className="nw-pole-label"
+                fill={inkOn(pole.colors[0].hex)}
               >
                 {pole.ko.replace("형", "")}
               </text>
@@ -91,6 +92,7 @@ export function Wheel({
                       transform={left ? `rotate(${m + 90}) translate(${-R2 + 5} 1.4)` : `rotate(${m - 90}) translate(${R1 + 5} 1.4)`}
                       textAnchor="start"
                       className="nw-shade-label"
+                      fill={inkOn(c.hex)}
                     >
                       {c.ko}
                     </text>
