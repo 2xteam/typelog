@@ -49,6 +49,12 @@ export async function GET(req: Request) {
         const all = types.filter((t) => String(t.quizId) === id);
         const got = new Set(rows.map((a) => a.result?.code).filter(Boolean) as string[]);
         const byCode = new Map(all.map((t) => [t.code, t]));
+        /** 타입마다 가장 최근 회차 — 도감 칸을 누르면 그 결과로 간다(rows 는 최근 순) */
+        const latestOf = new Map<string, string>();
+        for (const a of rows) {
+          const c = a.result?.code;
+          if (c && !latestOf.has(c)) latestOf.set(c, String(a._id));
+        }
         const latest = rows[0];
         const latestType = latest?.result?.code ? byCode.get(latest.result.code) : null;
         return {
@@ -74,6 +80,8 @@ export async function GET(req: Request) {
               name: t.name,
               emoji: t.emoji,
               found: got.has(t.code),
+              /** 나온 타입이면 그 타입이 나온 가장 최근 회차 */
+              attemptId: latestOf.get(t.code) ?? null,
             }))
             .sort((a, b) => a.code.localeCompare(b.code)),
           foundCount: got.size,

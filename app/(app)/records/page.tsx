@@ -18,7 +18,7 @@ type Record = {
   emoji: string | null;
   attemptCount: number;
   latest: { attemptId: string; attemptNo: number; code: string | null; name: string | null; emoji: string | null } | null;
-  collection: { code: string; name: string; emoji: string; found: boolean }[];
+  collection: { code: string; name: string; emoji: string; found: boolean; attemptId?: string | null }[];
   foundCount: number;
   totalCount: number;
 };
@@ -71,21 +71,37 @@ export default function RecordsPage() {
               도감 {r.foundCount} / {r.totalCount}
             </span>
             {r.latest?.name ? (
-              <span className="pill">
-                지난번 {r.latest.emoji} {r.latest.name}
-              </span>
+              <Link className="pill pill--link" href={`/results/${r.latest.attemptId}`}>
+                지난번 {r.latest.emoji} {r.latest.name} →
+              </Link>
             ) : null}
           </div>
 
           <div className="dex">
-            {r.collection.map((c) => (
-              <div key={c.code} className="dex-cell" data-found={c.found} title={c.found ? c.name : "아직 안 나왔어요"}>
-                <span className="dex-emoji" aria-hidden="true">
-                  {c.found ? c.emoji : "?"}
-                </span>
-                <span className="dex-name">{c.found ? c.name : "???"}</span>
-              </div>
-            ))}
+            {/* 나온 타입은 누르면 그 타입이 나온 가장 최근 회차의 결과로 */}
+            {r.collection.map((c) =>
+              c.found && c.attemptId ? (
+                <Link
+                  key={c.code}
+                  href={`/results/${c.attemptId}`}
+                  className="dex-cell dex-cell--link"
+                  data-found="true"
+                  title={`${c.name} — 가장 최근 결과 보기`}
+                >
+                  <span className="dex-emoji" aria-hidden="true">
+                    {c.emoji}
+                  </span>
+                  <span className="dex-name">{c.name}</span>
+                </Link>
+              ) : (
+                <div key={c.code} className="dex-cell" data-found={c.found} title={c.found ? c.name : "아직 안 나왔어요"}>
+                  <span className="dex-emoji" aria-hidden="true">
+                    {c.found ? c.emoji : "?"}
+                  </span>
+                  <span className="dex-name">{c.found ? c.name : "???"}</span>
+                </div>
+              ),
+            )}
           </div>
 
           <div style={{ display: "flex", gap: 8, marginTop: 20, flexWrap: "wrap" }}>
