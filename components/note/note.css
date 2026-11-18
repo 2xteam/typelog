@@ -23,8 +23,9 @@
     radial-gradient(75% 38% at 50% 100%, rgba(96, 80, 200, 0.3), rgba(96, 80, 200, 0) 76%),
     radial-gradient(130% 55% at 50% -12%, rgba(4, 4, 14, 0.75), rgba(4, 4, 14, 0) 62%);
   --nt-bg: var(--nt-wall), linear-gradient(180deg, #0a0a1f 0%, #141340 62%, #0b0b24 100%);
-  --en: var(--nf-garamond), "Times New Roman", serif;
-  --ko: var(--rf-serif), "Noto Serif KR", serif;
+  /* 글씨체 — 카드 바깥은 러닝 자격증 화면과 같은 Pretendard(사용자 2026-11-18). 카드 안쪽(.nc)만 세리프 */
+  --en: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --ko: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 /* ── 결과 껍데기 ── */
@@ -39,7 +40,7 @@
 }
 .nt-eyebrow {
   display: flex; justify-content: space-between; margin: 0; padding: 0 4px;
-  font: 600 12px/1 var(--en); letter-spacing: 0.32em; text-transform: uppercase; color: var(--nt-accent);
+  font: 700 11.5px/1 var(--en); letter-spacing: 0.22em; text-transform: uppercase; color: var(--nt-accent);
 }
 .nt-head { margin: 16px 0 0; text-align: center; font: 700 24px/1.35 var(--ko); letter-spacing: -0.02em; word-break: keep-all; }
 .nt-head span { display: block; font: 500 15px/1 var(--en); letter-spacing: 0.5em; color: var(--nt-accent); margin-bottom: 8px; padding-left: 0.5em; }
@@ -162,6 +163,9 @@
   position: relative; width: 100%; aspect-ratio: 63 / 100; container-type: inline-size;
   transform-style: preserve-3d; transition: transform 0.75s cubic-bezier(0.2, 0.8, 0.2, 1);
   --t: 0.93cqw;
+  /* 카드 안쪽은 커피 테이스팅 카드의 세리프 그대로 */
+  --en: var(--nf-garamond), "Times New Roman", serif;
+  --ko: var(--rf-serif), "Noto Serif KR", serif;
 }
 .nc[data-face="back"] { transform: rotateY(180deg); }
 .nc--static { transform: none; }
@@ -214,7 +218,7 @@
 .nc-bottle-rib { stroke: color-mix(in srgb, #ffffff 45%, transparent); stroke-width: 0.55; }
 .nc-bottle-strap { fill: none; stroke: var(--ink); stroke-width: 1.3; stroke-linecap: round; }
 .nc-bottle-seam { fill: none; stroke: color-mix(in srgb, var(--ink) 35%, transparent); stroke-width: 0.45; stroke-linejoin: round; }
-.nc-bottle-text { font: 700 4.2px var(--en); letter-spacing: 0.9px; fill: color-mix(in srgb, var(--ink) 55%, transparent); }
+.nc-bottle-text { font: 700 4.4px var(--en); letter-spacing: 1.1px; fill: color-mix(in srgb, var(--ink) 55%, transparent); }
 .nc-bottle-drop { fill: rgba(255, 255, 255, 0.75); stroke: color-mix(in srgb, var(--ink) 25%, transparent); stroke-width: 0.25; }
 .nc-bottle-shine { fill: none; stroke: rgba(255, 255, 255, 0.75); stroke-width: 1.4; stroke-linecap: round; }
 .nc-bottle-line { fill: none; stroke: var(--ink); stroke-width: 0.9; }
@@ -399,7 +403,7 @@
 .nt-actions .nt-btn--main { grid-column: 1 / -1; }
 .nt-actions .nt-btn--ghost { grid-column: 1 / -1; }
 .nt-msg { margin: 10px 0 0; font-size: 14px; text-align: center; color: var(--nt-dim); }
-.nt-making { position: fixed; inset: 0; z-index: 1000; font-family: var(--ko, serif); display: grid; place-items: center; padding: 24px; background: rgba(5, 4, 9, 0.6); backdrop-filter: blur(4px); }
+.nt-making { position: fixed; inset: 0; z-index: 1000; font-family: Pretendard, -apple-system, sans-serif; --ko: Pretendard, -apple-system, sans-serif; display: grid; place-items: center; padding: 24px; background: rgba(5, 4, 9, 0.6); backdrop-filter: blur(4px); }
 .nt-making-card { --nt-ivory: #ecebf8; --nt-dim: #aeb1d8; --nt-accent: #c9b8ff; width: min(360px, 100%); padding: 24px 22px; border-radius: 22px; text-align: center;
   background: linear-gradient(180deg, #1a1850, #0d0c28); border: 1px solid rgba(201, 184, 255, 0.2); box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5); }
 .nt-making-t { margin: 0; font: 800 18px/1.3 var(--ko); color: var(--nt-ivory); }
@@ -419,18 +423,18 @@
     radial-gradient(58% 52% at 106% 50%, rgba(44, 84, 214, 0.55), rgba(44, 84, 214, 0) 72%),
     radial-gradient(130% 55% at 50% -12%, rgba(4, 4, 14, 0.75), rgba(4, 4, 14, 0) 62%);
   background: linear-gradient(180deg, #0a0a1f 0%, #141340 62%, #0b0b24 100%);
-  font-family: var(--rf-serif), serif;
+  font-family: var(--rf-sans), sans-serif;
 }
 .nx-spot { position: absolute; inset: 0; background: var(--nt-wall); }
 .nx-head { position: relative; text-align: center; }
-.nx-head p { display: flex; justify-content: space-between; margin: 0; font: 600 15px/1 var(--nf-garamond), serif; letter-spacing: 0.34em; text-transform: uppercase; color: #c9b8ff; }
-.nx-head h2 { margin: 22px 0 0; font: 700 34px/1.3 var(--rf-serif), serif; letter-spacing: -0.02em; }
-.nx-head h2 b { display: block; margin-bottom: 8px; font: 500 22px/1 var(--nf-garamond), serif; letter-spacing: 0.5em; color: #c9b8ff; }
+.nx-head p { display: flex; justify-content: space-between; margin: 0; font: 600 14px/1 var(--rf-sans), sans-serif; letter-spacing: 0.34em; text-transform: uppercase; color: #c9b8ff; }
+.nx-head h2 { margin: 22px 0 0; font: 800 34px/1.3 var(--rf-sans), sans-serif; letter-spacing: -0.02em; }
+.nx-head h2 b { display: block; margin-bottom: 8px; font: 700 20px/1 var(--rf-sans), sans-serif; letter-spacing: 0.5em; color: #c9b8ff; }
 .nx-pair { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; margin-top: 34px; }
 .nx-pair figure { margin: 0; }
 .nx-pair .nx-card { filter: drop-shadow(0 22px 30px rgba(0, 0, 0, 0.55)); }
-.nx-pair figcaption { margin-top: 16px; text-align: center; font: 600 14px/1 var(--nf-garamond), serif; letter-spacing: 0.3em; text-transform: uppercase; color: #aeb1d8; }
-.nx-foot { position: relative; display: flex; justify-content: space-between; margin-top: 30px; font: 600 13px/1 var(--nf-garamond), serif; letter-spacing: 0.22em; text-transform: uppercase; color: #aeb1d8; }
+.nx-pair figcaption { margin-top: 16px; text-align: center; font: 600 13px/1 var(--rf-sans), sans-serif; letter-spacing: 0.3em; text-transform: uppercase; color: #aeb1d8; }
+.nx-foot { position: relative; display: flex; justify-content: space-between; margin-top: 30px; font: 600 13px/1 var(--rf-sans), sans-serif; letter-spacing: 0.22em; text-transform: uppercase; color: #aeb1d8; }
 
 /* ── 로딩 ── */
 /* 카드 배경 그림을 만드는 동안(보통 한순간, 모은 카드처럼 여러 장이면 차례로) */

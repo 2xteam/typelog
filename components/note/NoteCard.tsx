@@ -207,22 +207,20 @@ function RoastMedal({ colors }: { colors: string[] }) {
 }
 
 /**
- * 러닝 물병 — 요즘 가장 많이 쓰는 소프트 플라스크(레퍼런스, 사용자 2026-11-18). 하단 디테일이 핵심:
- *   몸통은 어깨에서 아래로 살짝 좁아지는 허리 → 하단 양옆이 날개처럼 바깥으로 벌어지고,
- *   가운데 접착 탭이 아래로 튀어나온 로켓 꼬리. 날개와 탭 사이는 안쪽으로 파인 홈.
- *   가장자리를 따라 열접착 띠(안쪽 가는 선), 세로 「TIME TO RUN」, 맺힌 물방울, 왼쪽 위 마개 고리.
+ * 러닝 물병 — 소프트 플라스크(사용자 2026-11-18). 하단은 단순하게 **육각형의 아랫부분**처럼:
+ * 옆선이 내려와 양쪽에서 비스듬히 꺾여 평평한 바닥으로(날개 · 꼬리는 물고기 같아 걷었다).
+ * 가장자리 안쪽 열접착 띠, 세로 「MY JANE」, 맺힌 물방울, 왼쪽 위 마개 고리.
  * 4축이 아래(누구와)부터 위(마음)로 층층이 찬다. 진한 축은 층이 두껍다.
  */
 const FLASK =
-  "M25 20.6 L35 20.6 C35.4 24 40.6 26.4 41.8 32 C42.6 38 42.2 60 41.4 84 C41.2 90.4 42.6 96.4 45.2 101.6 L46.8 109 C47 110.2 46.2 110.8 45.2 110.4 L38.2 107 L32.8 113.6 L30.6 115.4 C30.2 115.7 29.8 115.7 29.4 115.4 L27.2 113.6 L21.8 107 L14.8 110.4 C13.8 110.8 13 110.2 13.2 109 L14.8 101.6 C17.4 96.4 18.8 90.4 18.6 84 C17.8 60 17.4 38 18.2 32 C19.4 26.4 24.6 24 25 20.6 Z";
-/** 열접착 띠 — 가장자리보다 안쪽으로 한 겹(옆선 · 하단 날개 · 탭) */
-const SEAM =
-  "M20.6 34 C20 42 20.2 62 20.8 84 C21 90.8 19.8 96.6 17.2 101.8 L16.2 106.8 L22.4 103.8 L28.2 111.2 L30 112.6 L31.8 111.2 L37.6 103.8 L43.8 106.8 L42.8 101.8 C40.2 96.6 39 90.8 39.2 84 C39.8 62 40 42 39.4 34";
+  "M25 20.6 L35 20.6 C35.4 24 40.6 26.4 41.8 32 C42.6 40 42.4 70 42 98 L35.6 113.4 C35.3 114.2 34.7 114.6 33.8 114.6 L26.2 114.6 C25.3 114.6 24.7 114.2 24.4 113.4 L18 98 C17.6 70 17.4 40 18.2 32 C19.4 26.4 24.6 24 25 20.6 Z";
+/** 열접착 띠 — 가장자리보다 안쪽으로 한 겹(옆선 · 비스듬한 모서리 · 바닥) */
+const SEAM = "M20.6 34 C20.2 46 20.2 72 20.4 97.6 L26.4 111.8 L33.6 111.8 L39.6 97.6 C39.8 72 39.8 46 39.4 34";
 
 function Bottle({ picks, pour }: { picks: AxisPick[]; pour?: boolean }) {
   const id = useId().replace(/:/g, "");
   const top = 30;
-  const bottom = 115.4;
+  const bottom = 114.6;
   const full = (bottom - top) * 0.84;
   const weights = picks.map((p) => (p.strong ? 1 : 0.62));
   const sum = weights.reduce((a, b) => a + b, 0) || 1;
@@ -269,13 +267,13 @@ function Bottle({ picks, pour }: { picks: AxisPick[]; pour?: boolean }) {
         <rect x="0" y="0" width="60" height="120" fill={`url(#g${id})`} />
         {/* 열접착 띠 · 세로 글자 · 빛 · 물방울 */}
         <path d={SEAM} className="nc-bottle-seam" />
-        <text x="0" y="0" transform="translate(35.6 46) rotate(90)" className="nc-bottle-text">
-          TIME TO RUN
+        <text x="0" y="0" transform="translate(35.6 54) rotate(90)" className="nc-bottle-text">
+          MY JANE
         </text>
         <path d="M22.4 38 C21.8 56 22 74 22.8 88" className="nc-bottle-shine" />
         <ellipse cx="25.2" cy="62" rx="0.9" ry="1.3" className="nc-bottle-drop" />
         <ellipse cx="33.6" cy="80" rx="0.7" ry="1" className="nc-bottle-drop" />
-        <ellipse cx="28.4" cy="95" rx="1" ry="1.4" className="nc-bottle-drop" />
+        <ellipse cx="28.4" cy="100" rx="1" ry="1.4" className="nc-bottle-drop" />
         <ellipse cx="36.2" cy="40" rx="0.6" ry="0.9" className="nc-bottle-drop" />
       </g>
       <path d={FLASK} className="nc-bottle-line" />
