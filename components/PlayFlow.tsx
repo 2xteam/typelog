@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Sheet } from "@/components/Sheet";
 import { getGuestKey } from "@/lib/guestKey";
 import { RunPlay, type RunItem } from "@/components/run/RunPlay";
+import { NotePlay } from "@/components/note/NotePlay";
 
 /**
  * 응시 화면 — 한 문항씩.
@@ -45,6 +46,8 @@ export function PlayFlow({
   const [quiz, setQuiz] = useState<{ title: string; emoji: string | null; experience?: string | null } | null>(null);
   /** 러닝 기록 — 다른 화면으로 넘긴다 */
   const [run, setRun] = useState<{ items: RunItem[]; answers: Answer[]; preview: string | null } | null>(null);
+  /** 러닝 노트 — 어두운 무대의 선택 화면으로 넘긴다 */
+  const [note, setNote] = useState<{ items: Item[]; answers: Answer[] } | null>(null);
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
   const [at, setAt] = useState(0);
   const [busy, setBusy] = useState(false);
@@ -67,6 +70,10 @@ export function PlayFlow({
       setQuiz(data.quiz);
       if (data.quiz?.experience === "running") {
         setRun({ items: data.items ?? [], answers: data.answers ?? [], preview: data.preview ?? null });
+        return;
+      }
+      if (data.quiz?.experience === "note") {
+        setNote({ items: data.items ?? [], answers: data.answers ?? [] });
         return;
       }
       setItems(data.items ?? []);
@@ -138,6 +145,17 @@ export function PlayFlow({
         items={run.items}
         initialAnswers={run.answers}
         initialPreview={run.preview}
+      />
+    );
+  }
+  if (note && quiz) {
+    return (
+      <NotePlay
+        attemptId={attemptId}
+        resultPath={resultPath}
+        quiz={quiz}
+        items={note.items}
+        initialAnswers={note.answers}
       />
     );
   }

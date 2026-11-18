@@ -7,6 +7,7 @@ import { Sheet } from "@/components/Sheet";
 import { getGuestKey } from "@/lib/guestKey";
 import { loginUrl, signupUrl } from "@/lib/portal";
 import { SharedLicense } from "@/components/run/SharedLicense";
+import { SharedNote, type SharedNoteData } from "@/components/note/SharedNote";
 import type { RecordDetail } from "@/lib/record";
 
 /**
@@ -37,6 +38,8 @@ type Shared = {
   notice: string | null;
   friend: { name: string; subtitle: string | null; emoji: string } | null;
   /** 러닝 기록 — 자격증으로 보여 준다 */
+  /** 러닝 노트 — 무대 위 카드로 보여 준다 */
+  note?: SharedNoteData | null;
   run?: { attemptId: string; attemptNo: number; code: string; detail: RecordDetail; completedAt: string | null; name: string; issuer?: string | null; photoUrl?: string | null; holo?: string | null } | null;
 };
 
@@ -103,6 +106,44 @@ export default function SharedLanding({ params }: { params: Promise<{ token: str
     );
   }
   if (!data) return null;
+
+  /** 러닝 노트 — 같은 틀(카드 → 나도 해보기), 옷은 이번 컨셉(어두운 무대 · 금빛 버튼) */
+  if (data.note) {
+    return (
+      <SharedNote note={data.note}>
+        <p className="nt-panel-eyebrow">Try it · 나도 내려 보기</p>
+        <h2 className="nt-panel-title">{data.quiz.title}</h2>
+        <p className="nt-panel-lead">{data.quiz.tagline}</p>
+        <div className="nt-pills">
+          {data.quiz.ageLabel ? <span>{data.quiz.ageLabel} 추천</span> : null}
+          {data.quiz.itemCount ? <span>질문 {data.quiz.itemCount}개</span> : null}
+          {data.quiz.estimatedMinutes ? <span>약 {data.quiz.estimatedMinutes}분</span> : null}
+          <span>가입 없이 한 번</span>
+        </div>
+        {data.open && !needSignup ? (
+          <div style={{ marginTop: 20 }}>
+            <button type="button" className="nt-btn" onClick={() => void start()} disabled={busy}>
+              {busy ? "여는 중…" : "나의 러닝 노트 내리기 →"}
+            </button>
+          </div>
+        ) : needSignup ? null : (
+          <p className="nt-fine">{data.notice ?? "지금은 할 수 없어요."}</p>
+        )}
+        {msg ? <p className="nt-fine">{msg}</p> : null}
+        {needSignup ? (
+          <div style={{ display: "flex", gap: 10, marginTop: 14, justifyContent: "center", flexWrap: "wrap" }}>
+            <a className="nt-btn" href={signupUrl(`/r/${token}`)}>
+              가입하고 다시 하기 →
+            </a>
+            <a className="nt-btn nt-btn--ghost" href={loginUrl(`/r/${token}`)}>
+              이미 회원이면 로그인
+            </a>
+          </div>
+        ) : null}
+        {data.quiz.disclaimer ? <p className="nt-fine">{data.quiz.disclaimer}</p> : null}
+      </SharedNote>
+    );
+  }
 
   return (
     <>

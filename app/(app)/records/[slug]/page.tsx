@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { use, useCallback, useEffect, useState } from "react";
 import { Sheet } from "@/components/Sheet";
+import { NoteCollection } from "@/components/note/NoteCollection";
 
 /**
  * 한 질문지의 회차 목록.
@@ -30,7 +31,7 @@ const day = (iso: string | null) => {
 
 export default function RecordDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
-  const [quiz, setQuiz] = useState<{ title: string; emoji: string | null } | null>(null);
+  const [quiz, setQuiz] = useState<{ title: string; emoji: string | null; experience?: string | null } | null>(null);
   const [rows, setRows] = useState<Row[]>([]);
   const [total, setTotal] = useState(0);
   const [hasMore, setHasMore] = useState(false);
@@ -70,6 +71,8 @@ export default function RecordDetailPage({ params }: { params: Promise<{ slug: s
     );
   }
   if (!quiz) return null;
+  /** 러닝 노트 — 회차 목록 대신 모은 카드(지갑) */
+  if (quiz.experience === "note") return <NoteCollection slug={slug} />;
 
   return (
     <Sheet eyebrow="RECORDS" headline={`${quiz.emoji ?? ""} ${quiz.title}`.trim()}>

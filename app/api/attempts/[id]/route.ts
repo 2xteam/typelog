@@ -91,7 +91,12 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       status: attempt.status,
       isOwner: mine,
       custom: attempt.custom
-        ? { issuer: attempt.custom.issuer ?? null, photoUrl: attempt.custom.photoUrl ?? null, holo: attempt.custom.holo ?? null }
+        ? {
+            issuer: attempt.custom.issuer ?? null,
+            photoUrl: attempt.custom.photoUrl ?? null,
+            holo: attempt.custom.holo ?? null,
+            name: attempt.custom.name ?? null,
+          }
         : null,
       shared: attempt.share?.isPublic === true,
       shuffleSeed: attempt.shuffleSeed,
@@ -144,8 +149,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
             .lean()
         : [];
 
-      /** 러닝 기록 — 자격증의 「러너」 칸. 회원이면 닉네임 */
-      if (quiz.experience === "running" && attempt.owner.kind === "user" && attempt.owner.userId) {
+      /** 러닝 기록 — 자격증의 「러너」 칸 · 러닝 노트 카드의 Runner 칸. 회원이면 닉네임 */
+      if ((quiz.experience === "running" || quiz.experience === "note") && attempt.owner.kind === "user" && attempt.owner.userId) {
         const u = await getUserModel().findById(attempt.owner.userId).select({ nickname: 1 }).lean();
         body.ownerName = (u as { nickname?: string | null } | null)?.nickname?.trim() || null;
       }
@@ -221,7 +226,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       /** 저장하지 않는 답(키·몸무게) — 채점에만 쓴다 */
       transient?: Record<string, unknown>;
       /** 결과 화면에서 꾸미는 값 — 선수자격증 발급처 등 */
-      custom?: { issuer?: unknown; holo?: unknown };
+      custom?: { issuer?: unknown; holo?: unknown; name?: unknown };
     };
     try {
       body = await req.json();
@@ -242,9 +247,11 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     const target = body.answer?.linkId ? allItems.find((i) => i.linkId === body.answer!.linkId) : null;
 
     // 결과 꾸미기 — 끝난 기록에서 본인만. 점수와 무관하다
-    if (attempt.status === "completed" && body.custom && ("issuer" in body.custom || "holo" in body.custom)) {
+    if (attempt.status === "completed" && body.custom && ("issuer" in body.custom || "holo" in body.custom || "name" in body.custom)) {
       const set: Record<string, string | null> = {};
-      const out: { issuer?: string | null; holo?: string } = {};
+      const out: { issuer?: string | null; holo?: string; name?: string | null } = {};
+      // 러닝 노트 카드에 적힐 이름(10자) — 성향 · 색은 바꿀 수 없고 이름만 바꾼다(사용자 2026-11-18)
+      if ("name" in body.custom) out.name = set["custom.name"] = cleanLine(body.custom.name, 10) || null;
       if ("issuer" in body.custom) out.issuer = set["custom.issuer"] = cleanLine(body.custom.issuer, 9) || null;
       if ("holo" in body.custom) {
         if (!isHolo(body.custom.holo)) return badRequest("없는 홀로그램 무늬예요.");

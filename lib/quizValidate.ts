@@ -11,6 +11,9 @@ import {
 import { AGE_MAX } from "@/lib/ageRange";
 import { flattenItems, randomAnswers, score, seeded } from "@/lib/scoring";
 
+/** 질문지 화면 방식 — null 이면 일반 응시 · 결과 화면 */
+const EXPERIENCES = ["running", "note"];
+
 /**
  * 등록 JSON 을 기계가 검사한다.
  *
@@ -97,9 +100,15 @@ export function validateImport(payload: unknown): Report {
       if (!isPlainObject(qm)) err("quizMeta", "객체여야 해요.");
       else {
         for (const key of Object.keys(qm)) {
-          if (!["title", "tagline", "disclaimer"].includes(key)) warn(`quizMeta.${key}`, "title · tagline · disclaimer 만 고칠 수 있어요.");
+          if (!["title", "tagline", "disclaimer", "experience"].includes(key)) {
+            warn(`quizMeta.${key}`, "title · tagline · disclaimer · experience 만 고칠 수 있어요.");
+          }
         }
         if (qm.title !== undefined && (typeof qm.title !== "string" || !qm.title.trim())) err("quizMeta.title", "비어 있어요.");
+        // 화면 방식은 채점과 무관하다 — 공개 뒤에도 바꿀 수 있다(사용자 2026-11-18). 답 · 결과는 그대로
+        if (qm.experience !== undefined && qm.experience !== null && !EXPERIENCES.includes(qm.experience as string)) {
+          err("quizMeta.experience", `${EXPERIENCES.join(" · ")} · null 중 하나여야 해요.`);
+        }
       }
     }
     // 제목만 고칠 때는 결과 문장을 보내지 않아도 된다

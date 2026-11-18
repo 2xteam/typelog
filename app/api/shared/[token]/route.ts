@@ -43,7 +43,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ token: s
     const type = attempt.result?.code
       ? await getResultTypeModel()
           .findOne({ quizId: attempt.quizId, code: attempt.result.code })
-          .select({ code: 1, name: 1, subtitle: 1, emoji: 1 })
+          .select({ code: 1, name: 1, subtitle: 1, emoji: 1, content: 1 })
           .lean()
       : null;
 
@@ -77,9 +77,40 @@ export async function GET(req: Request, { params }: { params: Promise<{ token: s
       };
     }
 
+    /**
+     * 러닝 노트 — 공유한 사람의 카드 한 장을 그대로 보여 준다(사용자 2026-11-18).
+     * 카드에 적힌 것까지만 — 유형 이름 · 축(색을 정하는 pomp) · 강점 두 줄 · 잘 맞는 블렌드 코드.
+     * 요약 · 팁 같은 긴 문장은 보내지 않는다. 나도 해 보게 만드는 자리다.
+     */
+    let note: Record<string, unknown> | null = null;
+    if (quiz.experience === "note" && attempt.result?.code) {
+      let runner = (attempt.custom as { name?: string | null } | undefined)?.name?.trim() || null;
+      if (!runner && attempt.owner?.kind === "user" && attempt.owner.userId) {
+        const u = await getUserModel().findById(attempt.owner.userId).select({ nickname: 1 }).lean();
+        runner = (u as { nickname?: string | null } | null)?.nickname?.trim() || null;
+      }
+      const content = (type?.content ?? {}) as { strengths?: string[]; goodWith?: string[] };
+      note = {
+        attemptId: String(attempt._id),
+        attemptNo: attempt.attemptNo ?? 1,
+        code: attempt.result.code,
+        completedAt: attempt.completedAt ?? null,
+        runner: runner || "러너",
+        typeName: type?.name ?? attempt.result.code,
+        subtitle: type?.subtitle ?? null,
+        strengths: (content.strengths ?? []).slice(0, 2),
+        goodWith: (content.goodWith ?? []).slice(0, 2),
+        axes: (quiz.outcomes ?? [])
+          .filter((o) => o.left?.code && o.right?.code)
+          .map((o) => ({ id: o.id, label: o.label ?? o.id, left: o.left, right: o.right })),
+        pomp: Object.fromEntries((attempt.result.outcomes ?? []).map((o) => [o.id, o.pomp])),
+      };
+    }
+
     return NextResponse.json({
       ok: true,
       run,
+      note,
       quiz: {
         slug: quiz.slug,
         title: quiz.title,

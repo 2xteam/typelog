@@ -111,7 +111,7 @@ export type QuizDoc = {
   ageRange: { min: number | null; max: number | null };
   cover: { emoji: string | null; imageUrl: string | null };
   disclaimer: string | null;
-  experience: "running" | null;
+  experience: "running" | "note" | null;
   status: "draft" | "published" | "closed";
   publishedAt: Date | null;
   schedule: { startAt: Date | null; endAt: Date | null; openingNoticeText: string | null };

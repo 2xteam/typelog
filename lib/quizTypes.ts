@@ -207,7 +207,7 @@ export type QuizMeta = {
    * 일반 질문지와 다른 화면을 쓰는 질문지. 지금은 `"running"` 하나 —
    * 큰 선택 화면 · 사진 단계 · 생성 연출 · 딱지/신문/자격증 결과
    */
-  experience?: "running" | null;
+  experience?: "running" | "note" | null;
   schedule?: Schedule | null;
   estimatedMinutes?: number | null;
   shuffle?: boolean;
@@ -253,6 +253,12 @@ export type QuizImport =
       mode: "content";
       quizSlug: string;
       /** 공개 뒤에도 고칠 수 있는 질문지 글자 — 채점과 무관하다 */
-      quizMeta?: { title?: string; tagline?: string; disclaimer?: string | null } | null;
+      quizMeta?: {
+        title?: string;
+        tagline?: string;
+        disclaimer?: string | null;
+        /** 화면 방식 — 채점과 무관해서 공개 뒤에도 바꾼다. 답 · 결과 코드는 그대로다 */
+        experience?: "running" | "note" | null;
+      } | null;
       resultTypes?: ResultTypeInput[];
     };

@@ -6,6 +6,7 @@ import { Sheet } from "@/components/Sheet";
 import { getGuestKey } from "@/lib/guestKey";
 import { useSession } from "@/lib/useSession";
 import { RunResult, type RunPayload } from "@/components/run/RunResult";
+import { NoteResult, type NotePayload } from "@/components/note/NoteResult";
 
 /**
  * 결과 화면.
@@ -239,6 +240,46 @@ export function ResultView({
   const signupHref = data.claimToken
     ? `/login?next=${encodeURIComponent(`/results/${attemptId}?claim=${data.claimToken}`)}`
     : `/login?next=${encodeURIComponent(`/results/${attemptId}`)}`;
+
+  /** 러닝 노트 — 무대 위 커피 카드(러너 블렌드) */
+  if (quiz.experience === "note") {
+    return (
+      <>
+        {isGuest && !bare ? (
+          <Sheet tone="gold" eyebrow="SAVE" headline="가입하면 카드가 쌓여요">
+            <p className="lead">가입하지 않으면 이 러닝 노트는 다시 볼 수 없어요. 가입하면 회차마다 카드가 모여요.</p>
+            <div style={{ marginTop: 16 }}>
+              <Link className="btn btn--primary" href={signupHref}>
+                가입하고 모으기 →
+              </Link>
+            </div>
+          </Sheet>
+        ) : null}
+        <NoteResult data={data as unknown as NotePayload} bare={bare} />
+        <Sheet center eyebrow="AGAIN" headline={bare ? "다른 타입도 궁금하죠?" : "다시 해볼까요?"}>
+          <div style={{ display: "flex", gap: 10, marginTop: 18, justifyContent: "center", flexWrap: "wrap" }}>
+            <Link className="btn btn--primary" href="/types">
+              {bare ? "타입로그 둘러보기 →" : "다른 것도 해보기 →"}
+            </Link>
+            {!isGuest ? (
+              <>
+                <button type="button" className="btn btn--ghost" onClick={() => void share()}>
+                  결과 링크 만들기
+                </button>
+                {!bare ? (
+                  <Link className="btn btn--ghost" href={`/records/${quiz.slug}`}>
+                    모은 카드 보기
+                  </Link>
+                ) : null}
+              </>
+            ) : null}
+          </div>
+          {shareBox}
+          {!bare ? <p className="result-fineprint">🔗 결과 링크로는 이 러닝 노트 카드가 보여요.</p> : null}
+        </Sheet>
+      </>
+    );
+  }
 
   /** 러닝 기록 — 과속딱지 · 신문 · 자격증 화면 */
   if (quiz.experience === "running") {

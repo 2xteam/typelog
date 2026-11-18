@@ -22,6 +22,9 @@ export async function GET(req: Request) {
       rows.map(async (q: Record<string, unknown>) => ({
         slug: q.slug,
         title: q.title,
+        emoji: (q.cover as { emoji?: string | null } | undefined)?.emoji ?? null,
+        /** 화면 방식 — admin 질문지 상세가 어떤 데이터 칸(러닝 자격증 · 러닝 노트)을 보여 줄지 정한다 */
+        experience: q.experience ?? null,
         status: q.status,
         schedule: q.schedule,
         itemCount: Array.isArray(q.items) ? q.items.length : 0,
@@ -29,6 +32,7 @@ export async function GET(req: Request) {
         scoringRevision: q.scoringRevision,
         contentRevision: q.contentRevision,
         attempts: await Attempt.countDocuments({ quizId: q._id }),
+        completed: await Attempt.countDocuments({ quizId: q._id, status: "completed" }),
       })),
     );
     return NextResponse.json({ ok: true, quizzes: list });
@@ -96,6 +100,8 @@ export async function POST(req: Request) {
         if (typeof qm.title === "string" && qm.title.trim()) set.title = qm.title.trim();
         if (typeof qm.tagline === "string" && qm.tagline.trim()) set.tagline = qm.tagline.trim();
         if (qm.disclaimer !== undefined) set.disclaimer = qm.disclaimer ?? null;
+        // 화면 방식(러닝 노트 · 러닝 자격증) — 답 · 결과 코드는 건드리지 않는다
+        if (qm.experience !== undefined) set.experience = qm.experience ?? null;
         if (Object.keys(set).length) await Quiz.updateOne({ _id: quizId }, { $set: set });
       }
       for (const t of body.resultTypes ?? []) {

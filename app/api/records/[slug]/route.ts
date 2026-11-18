@@ -4,6 +4,7 @@ import { notFound, requireViewer, serverError } from "@/lib/auth";
 import { getQuizModel } from "@/models/Quiz";
 import { getResultTypeModel } from "@/models/ResultType";
 import { getAttemptModel } from "@/models/Attempt";
+import { getUserModel } from "@/models/User";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -25,12 +26,15 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
     const userId = guard.viewer.userId;
 
     const { slug } = await params;
-    const skip = Math.max(0, Number(new URL(req.url).searchParams.get("skip") ?? 0) || 0);
+    const sp = new URL(req.url).searchParams;
+    const skip = Math.max(0, Number(sp.get("skip") ?? 0) || 0);
+    /** 러닝 노트의 모은 카드는 한 번에 더 많이 본다(60장까지) */
+    const size = Math.min(60, Math.max(1, Number(sp.get("limit")) || PAGE));
 
     await connectDB();
     const quiz = await getQuizModel()
       .findOne({ slug })
-      .select({ slug: 1, title: 1, cover: 1 })
+      .select({ slug: 1, title: 1, cover: 1, experience: 1, outcomes: 1 })
       .lean();
     if (!quiz) return notFound("없는 질문지예요.");
 
@@ -44,10 +48,10 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
      * 경계의 한 줄만 비교가 빠진다.
      */
     const rows = await Attempt.find(filter)
-      .select({ attemptNo: 1, completedAt: 1, durationSec: 1, result: 1, quizRevision: 1 })
+      .select({ attemptNo: 1, completedAt: 1, durationSec: 1, result: 1, quizRevision: 1, custom: 1 })
       .sort({ attemptNo: -1 })
       .skip(skip)
-      .limit(PAGE + 1)
+      .limit(size + 1)
       .lean();
 
     const codes = [...new Set(rows.map((a) => a.result?.code).filter(Boolean) as string[])];
@@ -57,7 +61,16 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
       .lean();
     const byCode = new Map(types.map((t) => [t.code, t]));
 
-    const page = rows.slice(0, PAGE).map((a, i) => {
+    /**
+     * 러닝 노트 — 카드를 그리려면 축마다의 pomp 와 이름이 있어야 한다(색이 pomp · 기록 번호로 정해진다).
+     * 문장은 보내지 않는다. 상세는 그 회차 결과 화면에서.
+     */
+    const note = quiz.experience === "note";
+    const nickname = note
+      ? ((await getUserModel().findById(userId).select({ nickname: 1 }).lean()) as { nickname?: string | null } | null)?.nickname?.trim() || null
+      : null;
+
+    const page = rows.slice(0, size).map((a, i) => {
       const code = a.result?.code ?? null;
       const t = code ? byCode.get(code) : null;
       const prev = rows[i + 1]?.result?.code ?? null;
@@ -73,16 +86,34 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
         /** null 이면 첫 회차라 비교할 것이 없다 */
         changed: prev === null ? null : prev !== code,
         prevCode: prev,
+        ...(note
+          ? {
+              pomp: Object.fromEntries((a.result?.outcomes ?? []).map((o) => [o.id, o.pomp])),
+              runner: (a.custom as { name?: string | null } | undefined)?.name?.trim() || nickname || "러너",
+            }
+          : {}),
       };
     });
 
     return NextResponse.json({
       ok: true,
-      quiz: { slug: quiz.slug, title: quiz.title, emoji: quiz.cover?.emoji ?? null },
+      quiz: {
+        slug: quiz.slug,
+        title: quiz.title,
+        emoji: quiz.cover?.emoji ?? null,
+        experience: quiz.experience ?? null,
+        ...(note
+          ? {
+              axes: (quiz.outcomes ?? [])
+                .filter((o) => o.left?.code && o.right?.code)
+                .map((o) => ({ id: o.id, label: o.label ?? o.id, left: o.left, right: o.right })),
+            }
+          : {}),
+      },
       total,
       skip,
-      pageSize: PAGE,
-      hasMore: skip + PAGE < total,
+      pageSize: size,
+      hasMore: skip + size < total,
       attempts: page,
     });
   } catch (err) {
