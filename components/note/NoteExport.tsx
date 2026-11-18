@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { embedFontCSS } from "@/components/run/RunResult";
 import { CardBack, CardFront } from "./NoteCard";
 import { dotDate, type NoteCardData } from "./view";
@@ -11,6 +12,9 @@ import { noteFontVars } from "./fonts";
  *
  *   공유하기    지금 무대에 보이는 **카드 면 한 장만**(앞면이면 앞면, 뒷면이면 뒷면)
  *   이미지 저장 **앞면 · 뒷면을 양옆에** 놓은 전용 화면 — 어두운 무대 · 핀 조명 · 머리글(사용자 2026-11-18)
+ *
+ * 버튼 · 만드는 중 화면 · 안내 문구는 러닝 자격증(`RunResult.tsx`)과 같은 틀이다(사용자 2026-11-18) —
+ * 큰 「공유하기」, 그 아래 「이미지 저장」, 만드는 동안 가운데 카드(진행률 · 글꼴 담는 중 → 그리는 중).
  *
  * 글꼴은 직접 골라 넣는다(`embedFontCSS`) — 라이브러리에 맡기면 다른 도메인 CSS 를 읽다 SecurityError.
  * 사파리는 첫 그림에 글꼴을 덜 불러오므로 두 번 그린다(러닝 자격증에서 겪은 것).
@@ -55,7 +59,7 @@ export function NoteExport({ card, face }: { card: NoteCardData; face: "front" |
       a.download = `${name}.png`;
       a.click();
       setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-      setMsg("✅ 앞면 · 뒷면을 한 장에 저장했어요.");
+      setMsg("✅ 이미지를 저장했어요. 인스타그램에 올려 보세요 📲");
     } catch (e) {
       setMsg((e as Error).message);
     } finally {
@@ -72,14 +76,9 @@ export function NoteExport({ card, face }: { card: NoteCardData; face: "front" |
       const file = new File([blob], `${name}-${face}.png`, { type: "image/png" });
       if (navigator.canShare?.({ files: [file] })) {
         await navigator.share({ files: [file] });
+        setMsg(null);
       } else {
-        // 바로 공유가 안 되는 브라우저(데스크톱 등) — 같은 그림을 내려받는다
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = file.name;
-        a.click();
-        setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-        setMsg("이 브라우저는 바로 공유가 안 돼서 카드 그림을 내려받았어요.");
+        setMsg("이 브라우저는 바로 공유가 안 돼요. 휴대폰 브라우저에서 열어 공유해 주세요.");
       }
     } catch (e) {
       if ((e as Error).name !== "AbortError") setMsg((e as Error).message);
@@ -91,20 +90,33 @@ export function NoteExport({ card, face }: { card: NoteCardData; face: "front" |
 
   return (
     <>
-      <div className="nt-ctrl nt-ctrl--export">
-        <button type="button" className="nt-chip nt-chip--gold" onClick={() => void share()} disabled={busy}>
-          📤 공유하기
+      <div className="nt-actions">
+        <button type="button" className="nt-btn nt-btn--main" disabled={busy} onClick={() => void share()}>
+          공유하기
         </button>
-        <button type="button" className="nt-chip" onClick={() => void save()} disabled={busy}>
-          ⬇ 이미지 저장 · 앞뒤 한 장
+        <button type="button" className="nt-btn nt-btn--ghost" disabled={busy} onClick={() => void save()}>
+          이미지 저장
         </button>
       </div>
-      {progress !== null ? (
-        <div className="nt-progress" aria-label="이미지 만드는 중">
-          <i style={{ width: `${progress}%` }} />
-        </div>
-      ) : null}
-      {msg ? <p className="nt-hint">{msg}</p> : null}
+      {msg ? <p className="nt-msg">{msg}</p> : null}
+      {/* 만드는 중 — 덱 카드(z-index 200)보다 위에 오도록 body 에 띄운다 */}
+      {progress !== null
+        ? createPortal(
+            <div className="nt-making" role="status" aria-live="polite">
+              <div className="nt-making-card">
+                <p className="nt-making-t">🎨 이미지를 만드는 중이에요</p>
+                <div className="nt-making-bar" aria-hidden="true">
+                  <i style={{ width: `${progress}%` }} />
+                </div>
+                <p className="nt-making-n">
+                  {progress}% · {progress < 70 ? "글꼴을 담는 중" : progress < 100 ? "그리는 중" : "거의 다 됐어요"}
+                </p>
+                <p className="nt-making-sub">보통 2~5초 걸려요. 휴대폰에서는 조금 더 걸릴 수 있어요.</p>
+              </div>
+            </div>,
+            document.body,
+          )
+        : null}
 
       {/* 화면 밖 — 찍기용 */}
       <div ref={box} className={`nx ${noteFontVars}`} aria-hidden="true">

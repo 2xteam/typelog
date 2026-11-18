@@ -63,7 +63,8 @@
   위쪽 30% 만 비치게 마스크.
 */
 .nd-mirror {
-  position: absolute; left: 50%; width: var(--cw); margin-left: calc(var(--cw) / -2);
+  /* 폭을 넉넉히 — 카드가 돌면 가까운 쪽이 원근으로 커져 카드 폭 밖으로 나간다. 상자 밖은 마스크에 잘려 안 보였다 */
+  position: absolute; left: 50%; width: calc(var(--cw) * 2); margin-left: calc(var(--cw) * -1);
   bottom: calc(96px - var(--cw) * 1.5873 - 2px); height: calc(var(--cw) * 1.5873);
   transform-origin: 50% 0; perspective: 1300px; perspective-origin: 50% -50%;
   transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.45s ease;
@@ -71,7 +72,7 @@
   mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.34), rgba(0, 0, 0, 0) 30%);
 }
 .nd-flip {
-  position: absolute; left: 0; top: -100%; width: 100%; height: 100%;
+  position: absolute; left: 25%; top: -100%; width: 50%; height: 100%;
   transform-origin: 50% 100%; transform: scaleY(-1); transform-style: preserve-3d;
 }
 .nd-rise, .nd-rig { transform-style: preserve-3d; }
@@ -330,9 +331,19 @@
 }
 
 /* ── 공유 · 저장 ── */
-.nt-ctrl--export { margin-top: 12px; }
-.nt-progress { height: 3px; margin: 10px auto 0; max-width: 260px; border-radius: 2px; background: rgba(255, 255, 255, 0.12); overflow: hidden; }
-.nt-progress i { display: block; height: 100%; background: var(--nt-gold); transition: width 0.2s ease; }
+.nt-actions { position: relative; z-index: 2; margin-top: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.nt-actions .nt-btn { width: 100%; height: 54px; border-radius: 16px; padding: 0; font-size: 16px; }
+.nt-actions .nt-btn--main { grid-column: 1 / -1; }
+.nt-actions .nt-btn--ghost { grid-column: 1 / -1; }
+.nt-msg { margin: 10px 0 0; font-size: 14px; text-align: center; color: var(--nt-dim); }
+.nt-making { position: fixed; inset: 0; z-index: 1000; font-family: var(--ko, serif); display: grid; place-items: center; padding: 24px; background: rgba(5, 4, 9, 0.6); backdrop-filter: blur(4px); }
+.nt-making-card { --nt-ivory: #efe7da; --nt-dim: #b9ae9c; --nt-gold: #e3c58c; width: min(360px, 100%); padding: 24px 22px; border-radius: 22px; text-align: center;
+  background: linear-gradient(180deg, #16121f, #0c0a11); border: 1px solid rgba(227, 197, 140, 0.2); box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5); }
+.nt-making-t { margin: 0; font: 800 18px/1.3 var(--ko); color: var(--nt-ivory); }
+.nt-making-bar { margin: 18px 0 0; height: 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.1); overflow: hidden; }
+.nt-making-bar i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #ecd5a3, #b88a48); transition: width 0.25s ease; }
+.nt-making-n { margin: 10px 0 0; font: 800 14px/1 var(--ko); color: var(--nt-gold); font-variant-numeric: tabular-nums; }
+.nt-making-sub { margin: 8px 0 0; font-size: 12.5px; color: var(--nt-dim); }
 /* 찍기용 — 화면 밖에 반듯하게(3D 없이) */
 .nx { position: fixed; left: -12000px; top: 0; pointer-events: none; }
 .nx .nc-face { transform: none !important; box-shadow: none; }
