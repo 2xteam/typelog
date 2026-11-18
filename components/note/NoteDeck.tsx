@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { NoteCard } from "./NoteCard";
 import type { NoteCardData } from "./view";
 
@@ -51,6 +51,8 @@ export function NoteDeck({
   const [poured, setPoured] = useState<Record<string, boolean>>({});
   const [w, setW] = useState(360);
   const stage = useRef<HTMLDivElement>(null);
+  /** 반사를 세로로만 번지게 하는 SVG 필터 id(덱마다 하나) */
+  const smearId = `nd-smear-${useId().replace(/:/g, "")}`;
   const gesture = useRef<{ x: number; y: number; id: number; horiz: boolean | null; focus0: number } | null>(null);
 
   useLayoutEffect(() => {
@@ -176,7 +178,7 @@ export function NoteDeck({
         data-mode={mode}
         data-drag={drag !== null || gesture.current?.horiz ? "true" : undefined}
         data-reveal={reveal ? "true" : undefined}
-        style={{ "--glow": glow, "--cw": `${cw}px`, height: ch + 150 } as React.CSSProperties}
+        style={{ "--glow": glow, "--cw": `${cw}px`, "--smear": `url(#${smearId})`, height: ch + 150 } as React.CSSProperties}
         onPointerDown={onDown}
         onPointerMove={onMove}
         onPointerUp={(e) => end(e)}
@@ -193,6 +195,14 @@ export function NoteDeck({
       >
         <div className="nt-spot" aria-hidden="true" />
         <div className="nt-floor" aria-hidden="true" />
+        {/* 광택 바닥의 반사 — 가로 2 · 세로 10 으로 번지고, 세로 줄결로 살짝 흔들린다 */}
+        <svg className="nd-defs" aria-hidden="true" width="0" height="0">
+          <filter id={smearId} x="-10%" y="-10%" width="120%" height="140%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.09 0.004" numOctaves="2" seed="5" result="n" />
+            <feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G" result="d" />
+            <feGaussianBlur in="d" stdDeviation="2.2 10" />
+          </filter>
+        </svg>
         <div className="nt-pool" aria-hidden="true" />
         {visible.map(({ c, i }) => {
           const p = slot(i);
