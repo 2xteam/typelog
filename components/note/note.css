@@ -219,18 +219,35 @@
 .nc-blend li b { font: 700 3.8cqw/1.15 var(--ko); }
 .nc-blend li span { grid-column: 2; font: 500 3cqw/1.3 var(--ko); }
 .nc-roast { margin-top: 0; }
-.nc-roast ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); position: relative; }
-.nc-roast ol::before { content: ""; position: absolute; left: 10%; right: 10%; top: 1.7cqw; height: 0.3cqw; background: var(--rule); }
-.nc-roast li { display: flex; flex-direction: column; align-items: center; gap: 1.4cqw; position: relative; }
-.nc-roast li i { width: 3.4cqw; height: 3.4cqw; border-radius: 50%; box-shadow: 0 0 0 0.35cqw var(--ink); }
-.nc-roast li:nth-child(1) i { background: #b88a5c; }
-.nc-roast li:nth-child(2) i { background: #95633b; }
-.nc-roast li:nth-child(3) i { background: #6e4327; }
-.nc-roast li:nth-child(4) i { background: #4b2b18; }
-.nc-roast li:nth-child(5) i { background: #2a170c; }
-.nc-roast li span { font: 500 2.7cqw/1 var(--ko); }
-.nc-roast li[data-on="true"] i { transform: scale(1.35); box-shadow: 0 0 0 0.6cqw var(--ink), 0 0 0 1.3cqw color-mix(in srgb, var(--ink) 30%, transparent); }
+/* 로스팅 단계 — 굵은 선으로 이은 갈색 원 다섯(밝음 → 짙음), 내 단계는 노란 고리 + 위에 「here!」 핀 */
+.nc-roast ol { list-style: none; margin: 0; padding: 9cqw 0 0; display: grid; grid-template-columns: repeat(5, 1fr); position: relative; }
+.nc-roast ol::before {
+  content: ""; position: absolute; left: 10%; right: 10%; top: calc(9cqw + 3.1cqw - 0.4cqw); height: 0.8cqw; border-radius: 0.4cqw;
+  background: var(--ink);
+}
+.nc-roast li { display: flex; flex-direction: column; align-items: center; gap: 1.8cqw; position: relative; }
+.nc-roast li i { position: relative; width: 6.2cqw; height: 6.2cqw; border-radius: 50%; box-shadow: 0 0.3cqw 0.6cqw rgba(0, 0, 0, 0.18); }
+.nc-roast li:nth-child(1) i { background: #8a5a35; }
+.nc-roast li:nth-child(2) i { background: #774627; }
+.nc-roast li:nth-child(3) i { background: #5e3820; }
+.nc-roast li:nth-child(4) i { background: #4a2a19; }
+.nc-roast li:nth-child(5) i { background: #2f180d; }
+.nc-roast li[data-on="true"] i::after {
+  content: ""; position: absolute; inset: 1.35cqw; border-radius: 50%; border: 0.7cqw solid #ffd84a;
+}
+.nc-roast li span { font: 600 2.8cqw/1 var(--ko); white-space: nowrap; }
 .nc-roast li[data-on="true"] span { font-weight: 800; }
+.nc-pin { position: absolute; bottom: calc(100% + 0.4cqw); left: 50%; width: 12cqw; height: auto; margin-left: -6cqw; overflow: visible; z-index: 1;
+  filter: drop-shadow(0 0.5cqw 0.5cqw rgba(0, 0, 0, 0.22)); animation: nc-hop 1.6s ease-in-out infinite; }
+@keyframes nc-hop { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-1.4cqw) rotate(-4deg); } 60% { transform: translateY(-0.6cqw) rotate(-2deg); } }
+.nc-pin-upper { stroke: var(--ink); stroke-width: 1.1; stroke-linejoin: round; }
+.nc-pin-line { fill: none; stroke: var(--ink); stroke-width: 1.1; stroke-linecap: round; stroke-linejoin: round; }
+.nc-pin-lace { fill: none; stroke: #ffffff; stroke-width: 1.3; stroke-linecap: round; }
+.nc-pin-mid { fill: #ffffff; stroke: var(--ink); stroke-width: 1.1; stroke-linejoin: round; }
+.nc-pin-sole { fill: var(--ink); }
+.nc-pin-speed { fill: none; stroke: var(--ink); stroke-width: 1.1; stroke-linecap: round; opacity: 0.55; }
+.nx .nc-pin { animation: none; }
+@media (prefers-reduced-motion: reduce) { .nc-pin { animation: none; } }
 .nc-cup { margin-top: 0; min-height: 15cqw; }
 .nc-cup p:not(.nc-label) { margin: 0 0 0.8cqw; font: 500 3.4cqw/1.45 var(--ko); word-break: keep-all; }
 .nc-bfoot { padding-top: 2.6cqw; border-top: 0.3cqw solid var(--rule); display: flex; justify-content: space-between; align-items: baseline; gap: 2cqw; }

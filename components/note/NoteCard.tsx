@@ -129,9 +129,11 @@ export function CardBack({ card, pour }: { card: NoteCardData; pour?: boolean })
 
       <section className="nc-roast">
         <p className="nc-label">Roast Point · 로스팅 포인트</p>
+        {/* 레퍼런스(로스팅 단계 표): 굵은 선으로 이은 갈색 원 다섯 · 내 단계는 노란 고리 + 위에 「here!」 핀 */}
         <ol>
           {ROAST.map((r, i) => (
-            <li key={r} data-on={i === level}>
+            <li key={r} data-on={i === level} aria-current={i === level ? "step" : undefined}>
+              {i === level ? <RoastPin /> : null}
               <i aria-hidden="true" />
               <span>{r}</span>
             </li>
@@ -151,6 +153,40 @@ export function CardBack({ card, pour }: { card: NoteCardData; pour?: boolean })
         <b>{card.code}</b>
       </footer>
     </div>
+  );
+}
+
+/**
+ * 내 단계 표시 — 러닝화(사용자 2026-11-18, 핀 대신). 레퍼런스 핀의 주황 → 노랑을 갑피에,
+ * 흰 미드솔 · 짙은 밑창 · 끈 · 뒤꿈치 속도선. 브랜드처럼 보이는 줄무늬는 넣지 않는다. 동그라미 위에서 통통 뛴다
+ */
+function RoastPin() {
+  const id = useId().replace(/:/g, "");
+  return (
+    <svg className="nc-pin" viewBox="0 0 52 34" aria-hidden="true">
+      <defs>
+        <linearGradient id={`p${id}`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#f3a06b" />
+          <stop offset="1" stopColor="#fbd94a" />
+        </linearGradient>
+      </defs>
+      {/* 속도선 */}
+      <path d="M1.5 13 H7 M0.5 17.5 H6 M2 22 H6.5" className="nc-pin-speed" />
+      {/* 갑피 */}
+      <path
+        d="M9 24.5 C8.6 20 9.8 15.5 12 12.2 L14.2 8.6 C15 7.2 16.8 6.9 18 7.9 L20.6 10.2 C22.4 11.8 25 12.4 27.4 12 C31.6 15.6 37.5 17.6 43.4 18.6 C46.6 19.2 48.6 21.2 48.6 24.5 Z"
+        fill={`url(#p${id})`}
+        className="nc-pin-upper"
+      />
+      {/* 뒤꿈치 탭 · 혀 */}
+      <path d="M12.6 11.4 L10.6 9.6" className="nc-pin-line" />
+      <path d="M20.6 10.2 C21.6 8.2 23.6 7.4 25.6 8 L27.4 12" className="nc-pin-line" />
+      {/* 끈 */}
+      <path d="M24.4 13.6 L27.6 12.2 M27 15.3 L30.2 13.9 M29.8 16.8 L33 15.6" className="nc-pin-lace" />
+      {/* 미드솔 · 밑창 */}
+      <path d="M8.6 24.5 H48.8 C49.6 24.5 50.2 25.2 50 26 L49.6 27.6 H8.8 Z" className="nc-pin-mid" />
+      <path d="M8.8 27.6 H49.6 C49.2 29.6 47.6 30.6 45.6 30.6 H12 C10.2 30.6 8.8 29.4 8.8 27.6 Z" className="nc-pin-sole" />
+    </svg>
   );
 }
 
