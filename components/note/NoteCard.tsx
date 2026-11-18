@@ -207,20 +207,20 @@ function RoastMedal({ colors }: { colors: string[] }) {
 }
 
 /**
- * 러닝 물병 — 소프트 플라스크(사용자 2026-11-18). 하단은 단순하게 **육각형의 아랫부분**처럼:
- * 옆선이 내려와 양쪽에서 비스듬히 꺾여 평평한 바닥으로(날개 · 꼬리는 물고기 같아 걷었다).
- * 가장자리 안쪽 열접착 띠, 세로 「MY JANE」, 맺힌 물방울, 왼쪽 위 마개 고리.
+ * 러닝 물병 — 소프트 플라스크(레퍼런스 쉐입, 사용자 2026-11-18).
+ * 투명한 원통형 캡 · 넓은 칼라 링 · 둥글게 넓어지는 어깨 · 위가 조금 넓고 아래로 살짝 좁아지는 긴 몸통 ·
+ * 둥근 바닥과 가운데 아래 작은 고리 탭. 세로 「MY JANE」, 맺힌 물방울.
  * 4축이 아래(누구와)부터 위(마음)로 층층이 찬다. 진한 축은 층이 두껍다.
  */
 const FLASK =
-  "M25 20.6 L35 20.6 C35.4 24 40.6 26.4 41.8 32 C42.6 40 42.4 70 42 98 L35.6 113.4 C35.3 114.2 34.7 114.6 33.8 114.6 L26.2 114.6 C25.3 114.6 24.7 114.2 24.4 113.4 L18 98 C17.6 70 17.4 40 18.2 32 C19.4 26.4 24.6 24 25 20.6 Z";
-/** 열접착 띠 — 가장자리보다 안쪽으로 한 겹(옆선 · 비스듬한 모서리 · 바닥) */
-const SEAM = "M20.6 34 C20.2 46 20.2 72 20.4 97.6 L26.4 111.8 L33.6 111.8 L39.6 97.6 C39.8 72 39.8 46 39.4 34";
+  "M22.6 20 L37.4 20 C38.2 22.6 41.6 24.4 43.2 28.4 C44 30.6 44.2 33.6 44 38 L42.6 104 C42.5 109.8 39.6 113 33.4 113.2 L26.6 113.2 C20.4 113 17.5 109.8 17.4 104 L16 38 C15.8 33.6 16 30.6 16.8 28.4 C18.4 24.4 21.8 22.6 22.6 20 Z";
+/** 안쪽 가는 선 — 말랑한 몸통의 가장자리 두께 */
+const SEAM = "M18.4 36 C18.3 50 18.8 80 19.6 103.6 C19.8 108.4 22 110.8 26.8 111 L33.2 111 C38 110.8 40.2 108.4 40.4 103.6 C41.2 80 41.7 50 41.6 36";
 
 function Bottle({ picks, pour }: { picks: AxisPick[]; pour?: boolean }) {
   const id = useId().replace(/:/g, "");
   const top = 30;
-  const bottom = 114.6;
+  const bottom = 113.2;
   const full = (bottom - top) * 0.84;
   const weights = picks.map((p) => (p.strong ? 1 : 0.62));
   const sum = weights.reduce((a, b) => a + b, 0) || 1;
@@ -244,16 +244,16 @@ function Bottle({ picks, pour }: { picks: AxisPick[]; pour?: boolean }) {
           <stop offset="1" stopColor="#000" stopOpacity=".08" />
         </linearGradient>
       </defs>
-      {/* 마개 고리 — 왼쪽 위로 나온 끈 */}
-      <path d="M24 12.6 C17.6 11.4 14.2 15.4 16 19.4 C17.2 22 20.6 22.2 23.2 20.4" className="nc-bottle-strap" />
-      {/* 바이트 밸브 — 위가 좁아지는 꼭지, 가운데 틈 */}
-      <path d="M27.6 10.4 L28.3 4.6 Q28.5 2.6 30 2.6 Q31.5 2.6 31.7 4.6 L32.4 10.4 Z" className="nc-bottle-valve" />
-      <path d="M30 3.6 L30 6.2" className="nc-bottle-slit" />
-      {/* 마개 — 홈이 파인 링 */}
-      <rect x="23.2" y="10.2" width="13.6" height="5.6" rx="1.2" className="nc-bottle-cap" />
-      <path d="M26 10.8 V15.2 M28.6 10.8 V15.2 M31.4 10.8 V15.2 M34 10.8 V15.2" className="nc-bottle-rib" />
-      {/* 목 — 단단한 칼라 */}
-      <rect x="24.6" y="15.6" width="10.8" height="5.4" rx="0.8" className="nc-bottle-neck" />
+      {/* 바닥 고리 탭 — 가운데 아래로 작은 고리 */}
+      <path d="M27.4 112.6 L27.6 115.2 C27.8 117.6 32.2 117.6 32.4 115.2 L32.6 112.6" className="nc-bottle-tab" />
+      <ellipse cx="30" cy="115" rx="1.2" ry="0.9" className="nc-bottle-hole" />
+      {/* 투명한 원통형 캡 — 윗테 · 가운데 띠 */}
+      <path d="M25.2 3.6 C25.2 2.6 26 2 27 2 L33 2 C34 2 34.8 2.6 34.8 3.6 L35.2 13.4 L24.8 13.4 Z" className="nc-bottle-valve" />
+      <path d="M25.4 5.4 H34.6" className="nc-bottle-rib-dark" />
+      <path d="M27.2 4 V12" className="nc-bottle-capshine" />
+      {/* 넓은 칼라 링 */}
+      <rect x="22" y="13" width="16" height="7.4" rx="1.6" className="nc-bottle-neck" />
+      <path d="M22.4 16.6 H37.6" className="nc-bottle-rib-dark" />
       <g clipPath={`url(#b${id})`}>
         <rect x="0" y="0" width="60" height="120" fill="rgba(255,255,255,.42)" />
         <g className="nc-liquid">
@@ -270,10 +270,10 @@ function Bottle({ picks, pour }: { picks: AxisPick[]; pour?: boolean }) {
         <text x="0" y="0" transform="translate(35.6 54) rotate(90)" className="nc-bottle-text">
           MY JANE
         </text>
-        <path d="M22.4 38 C21.8 56 22 74 22.8 88" className="nc-bottle-shine" />
+        <path d="M20.6 34 C20.2 56 20.6 80 21.4 100" className="nc-bottle-shine" />
         <ellipse cx="25.2" cy="62" rx="0.9" ry="1.3" className="nc-bottle-drop" />
         <ellipse cx="33.6" cy="80" rx="0.7" ry="1" className="nc-bottle-drop" />
-        <ellipse cx="28.4" cy="100" rx="1" ry="1.4" className="nc-bottle-drop" />
+        <ellipse cx="27.4" cy="104" rx="1" ry="1.4" className="nc-bottle-drop" />
         <ellipse cx="36.2" cy="40" rx="0.6" ry="0.9" className="nc-bottle-drop" />
       </g>
       <path d={FLASK} className="nc-bottle-line" />

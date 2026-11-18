@@ -217,6 +217,10 @@
 .nc-bottle-slit { stroke: var(--ink); stroke-width: 0.6; stroke-linecap: round; }
 .nc-bottle-rib { stroke: color-mix(in srgb, #ffffff 45%, transparent); stroke-width: 0.55; }
 .nc-bottle-strap { fill: none; stroke: var(--ink); stroke-width: 1.3; stroke-linecap: round; }
+.nc-bottle-tab { fill: color-mix(in srgb, #ffffff 60%, transparent); stroke: var(--ink); stroke-width: 0.8; stroke-linejoin: round; }
+.nc-bottle-hole { fill: none; stroke: var(--ink); stroke-width: 0.6; }
+.nc-bottle-rib-dark { stroke: color-mix(in srgb, var(--ink) 45%, transparent); stroke-width: 0.5; }
+.nc-bottle-capshine { stroke: rgba(255, 255, 255, 0.9); stroke-width: 0.9; stroke-linecap: round; }
 .nc-bottle-seam { fill: none; stroke: color-mix(in srgb, var(--ink) 35%, transparent); stroke-width: 0.45; stroke-linejoin: round; }
 .nc-bottle-text { font: 700 4.4px var(--en); letter-spacing: 1.1px; fill: color-mix(in srgb, var(--ink) 55%, transparent); }
 .nc-bottle-drop { fill: rgba(255, 255, 255, 0.75); stroke: color-mix(in srgb, var(--ink) 25%, transparent); stroke-width: 0.25; }
