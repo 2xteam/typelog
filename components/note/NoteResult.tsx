@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { getGuestKey } from "@/lib/guestKey";
 import { useSession } from "@/lib/useSession";
-import { Stage } from "./Stage";
-import { Wallet } from "./Wallet";
+import { NoteDeck } from "./NoteDeck";
 import { Wheel } from "./Wheel";
 import { buildCard, splitOutcomes, type NoteCardData } from "./view";
 import { noteFontVars } from "./fonts";
@@ -15,8 +14,8 @@ import "./note.css";
 /**
  * 러닝 노트 결과 — 무대 위 카드 한 장 + 아이덴티티 컬러 + 맛평가(긴 문장).
  *
- * - 카드: 처음 한 번 등장 연출(→ Stage.tsx). 왼쪽으로 밀면 뒷면, 오른쪽으로 밀면 모은 카드
- * - 모은 카드: 회원은 지금까지의 카드가 지갑처럼 겹쳐 보인다. 누르면 그 회차 결과로
+ * - 카드 덱(→ NoteDeck.tsx): 목록과 상세가 한 무대. 오른쪽으로 밀면 뒷면, 왼쪽으로 밀면 줄 안으로(목록).
+ *   회원은 지금까지의 카드가 좌우 줄로 놓이고, 누르면 그 카드를 꺼낸다. 처음 한 번 등장 연출
  * - 아이덴티티 컬러: 원판에서 내 색 자리를 비추기만 한다(바꿀 수 없다)
  * - 바꿀 수 있는 건 카드에 적힐 **이름**뿐이다. 성향 · 색은 그대로
  * → my-obsidian-vault / 50-Plans/K 러닝 노트.md
@@ -48,7 +47,6 @@ export type NotePayload = {
 type Row = { attemptId: string; attemptNo: number; completedAt: string | null; code: string | null; name: string | null; pomp?: Record<string, number> | null; runner?: string | null };
 
 export function NoteResult({ data, bare = false }: { data: NotePayload; bare?: boolean }) {
-  const router = useRouter();
   const session = useSession();
   const t = data.result.type;
   const [name, setName] = useState(data.custom?.name?.trim() || data.ownerName?.trim() || "러너");
@@ -86,8 +84,9 @@ export function NoteResult({ data, bare = false }: { data: NotePayload; bare?: b
     if (!seen && !reduce) setReveal(true);
   }, [data.attemptId]);
 
-  const [view, setView] = useState<"card" | "list">("card");
-  const [face, setFace] = useState<"front" | "back">("front");
+  /** 덱이 지금 보여 주는 것 — 머리글을 맞춘다 */
+  const [deck, setDeck] = useState<{ mode: "list" | "detail"; id: string }>({ mode: "detail", id: data.attemptId });
+  const onDeck = useCallback((s: { mode: "list" | "detail"; id: string }) => setDeck(s), []);
 
   // 모은 카드 — 회원만 서버에 쌓인다. 비회원은 이 한 장
   const [rows, setRows] = useState<Row[] | null>(null);
@@ -154,50 +153,8 @@ export function NoteResult({ data, bare = false }: { data: NotePayload; bare?: b
   return (
     <div className={`nt ${noteFontVars}`}>
       <div className="nt-shell">
-        <p className="nt-eyebrow">
-          <span>Running Note</span>
-          <span>{view === "card" ? `No. ${String(data.attemptNo).padStart(2, "0")}` : `${cards.length} cards`}</span>
-        </p>
-        {view === "card" ? (
-          <>
-            <h1 className="nt-head">
-              <span>{data.result.code}</span> {t?.name}
-            </h1>
-            {t?.subtitle ? <p className="nt-sub">{t.subtitle}</p> : null}
-            <Stage card={card} reveal={reveal} face={face} onFace={setFace} onList={() => setView("list")} />
-            <div className="nt-ctrl">
-              <button type="button" className="nt-chip" onClick={() => setFace(face === "front" ? "back" : "front")}>
-                ↺ {face === "front" ? "뒷면 보기" : "앞면 보기"}
-              </button>
-              <button type="button" className="nt-chip" onClick={() => setView("list")}>
-                ▤ 모은 카드 {cards.length}
-              </button>
-            </div>
-            <p className="nt-hint">← 밀면 뒷면 · 밀어서 → 모은 카드</p>
-          </>
-        ) : (
-          <>
-            <h1 className="nt-head">내가 모은 러닝 노트</h1>
-            <p className="nt-sub">
-              {session.status === "signed-in" ? "회차마다 한 장씩 쌓여요. 눌러서 자세히 봐요." : "가입하면 회차마다 카드가 쌓여요."}
-            </p>
-            <Wallet
-              cards={cards}
-              current={data.attemptId}
-              onPick={(id) => {
-                if (id === data.attemptId) {
-                  setFace("front");
-                  setView("card");
-                } else router.push(`/results/${id}`);
-              }}
-            />
-            <div className="nt-ctrl">
-              <button type="button" className="nt-chip" onClick={() => setView("card")}>
-                ← 이번 카드로
-              </button>
-            </div>
-          </>
-        )}
+        <DeckHead deck={deck} cards={cards} pageId={data.attemptId} subtitle={t?.subtitle ?? null} signedIn={session.status === "signed-in"} />
+        <NoteDeck cards={cards} initialId={data.attemptId} reveal={reveal} onChange={onDeck} />
       </div>
 
       <section className="nt-panel">
@@ -293,5 +250,54 @@ export function NoteResult({ data, bare = false }: { data: NotePayload; bare?: b
         </section>
       ) : null}
     </div>
+  );
+}
+
+/** 덱 위 머리글 — 상세면 그 카드의 코드 · 이름, 목록이면 모은 카드. 다른 회차를 꺼냈으면 그 결과로 가는 길 */
+function DeckHead({
+  deck,
+  cards,
+  pageId,
+  subtitle,
+  signedIn,
+}: {
+  deck: { mode: "list" | "detail"; id: string };
+  cards: NoteCardData[];
+  pageId: string;
+  subtitle: string | null;
+  signedIn: boolean;
+}) {
+  const c = cards.find((x) => x.attemptId === deck.id) ?? cards[cards.length - 1];
+  if (deck.mode === "list") {
+    return (
+      <>
+        <p className="nt-eyebrow">
+          <span>Running Note</span>
+          <span>{cards.length} cards</span>
+        </p>
+        <h1 className="nt-head">내가 모은 러닝 노트</h1>
+        <p className="nt-sub">{signedIn ? "회차마다 한 장씩 쌓여요. 눌러서 꺼내 봐요." : "가입하면 회차마다 카드가 쌓여요."}</p>
+      </>
+    );
+  }
+  return (
+    <>
+      <p className="nt-eyebrow">
+        <span>Running Note</span>
+        <span>No. {String(c?.attemptNo ?? 1).padStart(2, "0")}</span>
+      </p>
+      <h1 className="nt-head">
+        <span>{c?.code}</span> {c?.typeName}
+      </h1>
+      {c && c.attemptId !== pageId ? (
+        <p className="nt-sub">
+          <Link href={`/results/${c.attemptId}`} className="nt-link">
+            이 회차 자세히 보기 →
+          </Link>
+        </p>
+      ) : subtitle ? (
+        <p className="nt-sub">{subtitle}</p>
+      ) : null}
+    </>
   );
 }

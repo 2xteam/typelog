@@ -5,7 +5,7 @@ import { AXIS_EN, poleByCode, rgb, mix, ROAST, roastLevel, type AxisPick } from 
 import { dotDate, lookOf, type NoteCardData } from "./view";
 
 /**
- * 러너 카드 — 정체성은 **커피 테이스팅 카드**, 보여 주는 방식만 카드사(→ Stage.tsx).
+ * 러너 카드 — 정체성은 **커피 테이스팅 카드**, 보여 주는 방식만 카드사(→ NoteDeck.tsx).
  *
  * 앞면(레퍼런스: 원두 카드) — 메시 색 바탕 · 세리프 · 얇은 괘선 · 표. 여백 있게.
  * 뒷면(레퍼런스: 테이스팅 노트) — 물병에 4축이 층층이 차오른다 · 로스팅 포인트 · 커핑 노트.
@@ -20,15 +20,18 @@ const GRAIN =
 export function NoteCard({
   card,
   face = "front",
+  rot,
   pour = false,
 }: {
   card: NoteCardData;
   face?: "front" | "back";
+  /** 회전 각도(도) — 덱이 손가락을 따라 돌릴 때. 주면 `face` 대신 이 값으로 돈다 */
+  rot?: number;
   /** 뒷면 물병이 차오르는 연출 — 뒷면을 처음 볼 때 */
   pour?: boolean;
 }) {
   return (
-    <div className="nc" data-face={face}>
+    <div className="nc" data-face={rot === undefined ? face : undefined} style={rot === undefined ? undefined : { transform: `rotateY(${rot}deg)` }}>
       <CardFront card={card} />
       <CardBack card={card} pour={pour} />
     </div>

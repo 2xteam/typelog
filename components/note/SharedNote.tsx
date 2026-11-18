@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { AppIcon } from "@/components/AppIcon";
-import { Stage } from "./Stage";
+import { NoteDeck } from "./NoteDeck";
 import { buildCard } from "./view";
 import { noteFontVars } from "./fonts";
 import type { AxisDecl } from "./palette";
@@ -54,8 +54,7 @@ export function SharedNote({ note, children }: { note: SharedNoteData; children:
           {note.runner} 님의 러닝 노트예요
         </h1>
         <p className="nt-sub">{note.typeName}</p>
-        <Stage card={card} reveal={reveal} />
-        <p className="nt-hint">카드를 누르거나 ← 밀면 뒷면이 보여요</p>
+        <NoteDeck cards={[card]} reveal={reveal} allowList={false} />
         <div className="nt-share-cta">{children}</div>
       </div>
     </div>

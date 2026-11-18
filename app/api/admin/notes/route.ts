@@ -89,8 +89,8 @@ export async function GET(req: Request) {
       const c = a.result?.code ?? "";
       const pomp = Object.fromEntries((a.result?.outcomes ?? []).map((o) => [o.id, o.pomp]));
       const picks = pickAxes(axes, pomp, id);
-      const theme = cardTheme(picks.map((p) => p.color.hex));
       const mesh = meshCss(picks, id);
+      const theme = cardTheme(mesh.fills.length ? mesh.fills : picks.map((p) => p.color.hex));
       const u = a.owner.kind === "user" ? userById.get(String(a.owner.userId)) : undefined;
       const custom = (a.custom ?? {}) as { name?: string | null };
       return {

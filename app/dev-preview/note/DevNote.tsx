@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { NoteResult, type NotePayload } from "@/components/note/NoteResult";
-import { Wallet } from "@/components/note/Wallet";
+import { NoteDeck } from "@/components/note/NoteDeck";
 import { Wheel } from "@/components/note/Wheel";
 import { buildCard, lookOf } from "@/components/note/view";
 import { noteFontVars } from "@/components/note/fonts";
@@ -112,10 +112,10 @@ export function DevNote({ quiz, code, s, id, n }: { quiz: Q; code: string; s: st
       <div className={`nt ${noteFontVars}`} style={{ marginTop: 24 }}>
         <div className="nt-shell">
           <p className="nt-eyebrow">
-            <span>Wallet preview</span>
+            <span>Deck preview</span>
             <span>{wallet.length} cards</span>
           </p>
-          <Wallet cards={wallet} current={wallet[4].attemptId} onPick={() => {}} />
+          <NoteDeck cards={wallet} start="list" />
         </div>
         <div className="nt-shell" style={{ marginTop: 14 }}>
           <p className="nt-eyebrow">

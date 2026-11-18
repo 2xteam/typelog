@@ -20,7 +20,7 @@ export type NoteCardData = {
   goodWith: string[];
 };
 
-export type NoteLook = { theme: CardTheme; mesh: { image: string; base: string } };
+export type NoteLook = { theme: CardTheme; mesh: { image: string; base: string; fills: string[] } };
 
 export function buildCard(input: {
   attemptId: string;
@@ -47,10 +47,11 @@ export function buildCard(input: {
   };
 }
 
-export const lookOf = (c: NoteCardData): NoteLook => ({
-  theme: cardTheme(c.picks.map((p) => p.color.hex)),
-  mesh: meshCss(c.picks, c.attemptId),
-});
+/** 글자색은 메시에 쓴 색(중간색 포함) 전부에서 대비를 잰다 */
+export const lookOf = (c: NoteCardData): NoteLook => {
+  const mesh = meshCss(c.picks, c.attemptId);
+  return { theme: cardTheme(mesh.fills.length ? mesh.fills : c.picks.map((p) => p.color.hex)), mesh };
+};
 
 /** 「2026.11.18」 — 한국 시각 */
 export function dotDate(iso: string | null) {
