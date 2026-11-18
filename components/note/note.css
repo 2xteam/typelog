@@ -20,7 +20,7 @@
 /* ── 결과 껍데기 ── */
 .nt { max-width: 560px; margin: 0 auto 28px; color: var(--nt-ivory); font-family: var(--ko); }
 .nt-shell {
-  position: relative; overflow: hidden; border-radius: 28px; background: var(--nt-bg);
+  position: relative; overflow: hidden; isolation: isolate; border-radius: 28px; background: var(--nt-bg);
   padding: 18px 16px 20px; box-shadow: 0 30px 60px rgba(5, 4, 9, 0.35);
 }
 .nt-eyebrow {
@@ -46,7 +46,8 @@
 .nd {
   --cw: 280px;
   --glow: #6b4a2a; /* 가운데 카드의 첫 색으로 덮어쓴다 */
-  position: relative; margin: 4px -16px 0; overflow: hidden;
+  /* 가로만 자른다 — 세로는 열어 둬야 빛줄기가 위로 올라간다 */
+  position: relative; margin: 4px -16px 0; overflow-x: clip; overflow-y: visible;
   touch-action: pan-y; user-select: none; -webkit-user-select: none; cursor: grab;
 }
 .nd:active { cursor: grabbing; }
@@ -94,12 +95,41 @@
 .nd[data-reveal] .nd-slot[data-cur] .nd-rise,
 .nd[data-reveal] .nd-mirror[data-cur] .nd-rise { animation: nt-rise 2s 0.5s cubic-bezier(0.16, 0.84, 0.24, 1) both; }
 .nd[data-reveal] .nd-slot[data-cur] .nc-front .nc-sheen { animation: nt-sweep 1.2s 2.35s ease-in-out both; }
-.nt-spot { position: absolute; inset: -6% 0 0; pointer-events: none;
-  background: radial-gradient(34% 40% at 50% 0%, rgba(255, 238, 214, 0.2), transparent 72%); }
+/*
+  핀 조명(2026-11-18 다시) — 사다리꼴 한 장을 흐리게 깔면 「어설프다」. 실제 무대 조명처럼:
+    ① 광원 — 위 가운데 따뜻한 빛 덩어리(::after)
+    ② 빛줄기 — 꼭짓점에서 퍼지는 원뿔(conic) 두 겹: 가운데 밝은 심 + 넓고 옅은 번짐. 가장자리는 각도로 부드럽게
+    ③ 거리 감쇠 — 아래로 갈수록 옅게(마스크), 빛 속에 떠 있는 먼지 결(노이즈)
+    ④ 바닥에 닿은 자국 — 바닥선에 넓은 타원 빛(.nt-floor::before)
+*/
+/* 빛은 무대 상자 밖(패널 위 모서리 너머)에서 시작한다 — 상자 안에만 그리면 제목 아래에서 가로로 잘려 보였다.
+   패널(.nt-shell)이 둥근 모서리로 자르고, z-index -1 로 제목 글자 뒤에 깔린다 */
+.nt-spot { position: absolute; left: 0; right: 0; top: -150px; bottom: 96px; pointer-events: none; z-index: -1; }
 .nt-spot::before {
-  content: ""; position: absolute; left: 50%; top: 0; width: 94%; height: 88%; transform: translateX(-50%);
-  background: linear-gradient(180deg, rgba(255, 236, 212, 0.13), rgba(255, 236, 212, 0) 88%);
-  clip-path: polygon(43% 0, 57% 0, 86% 100%, 14% 100%); filter: blur(10px);
+  content: ""; position: absolute; inset: 0;
+  background:
+    conic-gradient(from 164deg at 50% 0%, rgba(255, 240, 220, 0) 0deg, rgba(255, 240, 220, 0.06) 5deg, rgba(255, 244, 228, 0.15) 11deg, rgba(255, 248, 236, 0.2) 16deg, rgba(255, 244, 228, 0.15) 21deg, rgba(255, 240, 220, 0.06) 27deg, rgba(255, 240, 220, 0) 32deg),
+    conic-gradient(from 148deg at 50% 0%, rgba(255, 236, 212, 0) 0deg, rgba(255, 236, 212, 0.03) 10deg, rgba(255, 236, 212, 0.07) 22deg, rgba(255, 236, 212, 0.08) 32deg, rgba(255, 236, 212, 0.07) 42deg, rgba(255, 236, 212, 0.03) 54deg, rgba(255, 236, 212, 0) 64deg);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.75) 40%, rgba(0, 0, 0, 0.3) 78%, transparent 100%); mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.75) 40%, rgba(0, 0, 0, 0.3) 78%, transparent 100%);
+  filter: blur(6px);
+}
+.nt-spot::after {
+  content: ""; position: absolute; left: 50%; top: -40px; width: 70%; height: 150px; transform: translateX(-50%);
+  background: radial-gradient(closest-side, rgba(255, 248, 236, 0.5), rgba(255, 238, 214, 0.16) 45%, rgba(255, 230, 200, 0) 100%);
+}
+/* 빛 속 먼지 결 — 빛줄기 모양으로만 보이게 같은 원뿔로 가린다 */
+.nt-spot > i {
+  position: absolute; inset: 0; opacity: 0.55; mix-blend-mode: screen;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='h'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.0111 .0333' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .95 0 0 0 0 .88 0 0 0 .5 -.18'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23h%29'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  -webkit-mask-image: conic-gradient(from 152deg at 50% 0%, transparent 0deg, rgba(0, 0, 0, 0.6) 14deg, #000 28deg, rgba(0, 0, 0, 0.6) 42deg, transparent 56deg);
+  mask-image: conic-gradient(from 152deg at 50% 0%, transparent 0deg, rgba(0, 0, 0, 0.6) 14deg, #000 28deg, rgba(0, 0, 0, 0.6) 42deg, transparent 56deg);
+  animation: nt-haze 18s linear infinite;
+}
+@keyframes nt-haze { from { background-position: 0 0; } to { background-position: 60px 180px; } }
+.nt-floor::before {
+  content: ""; position: absolute; left: 50%; top: -26px; width: 96%; height: 64px; transform: translateX(-50%);
+  background: radial-gradient(closest-side, rgba(255, 240, 220, 0.24), rgba(255, 236, 212, 0.07) 60%, rgba(255, 236, 212, 0));
 }
 .nt-floor {
   position: absolute; left: 0; right: 0; bottom: 0; height: 110px; pointer-events: none;
@@ -264,9 +294,12 @@
   overflow: hidden; display: flex; flex-direction: column; font-family: var(--ko);
 }
 .np::before {
-  content: ""; position: absolute; left: 50%; top: -10%; width: 90%; height: 70%; transform: translateX(-50%); pointer-events: none;
-  background: linear-gradient(180deg, rgba(255, 236, 212, 0.09), rgba(255, 236, 212, 0) 85%);
-  clip-path: polygon(42% 0, 58% 0, 88% 100%, 12% 100%); filter: blur(12px);
+  content: ""; position: absolute; inset: 0 0 30%; pointer-events: none;
+  background: radial-gradient(70px 36px at 50% 0%, rgba(255, 248, 236, 0.55), rgba(255, 236, 212, 0) 100%),
+    conic-gradient(from 164deg at 50% 0%, rgba(255, 240, 220, 0) 0deg, rgba(255, 240, 220, 0.06) 5deg, rgba(255, 244, 228, 0.15) 11deg, rgba(255, 248, 236, 0.2) 16deg, rgba(255, 244, 228, 0.15) 21deg, rgba(255, 240, 220, 0.06) 27deg, rgba(255, 240, 220, 0) 32deg),
+    conic-gradient(from 148deg at 50% 0%, rgba(255, 236, 212, 0) 0deg, rgba(255, 236, 212, 0.03) 10deg, rgba(255, 236, 212, 0.07) 22deg, rgba(255, 236, 212, 0.08) 32deg, rgba(255, 236, 212, 0.07) 42deg, rgba(255, 236, 212, 0.03) 54deg, rgba(255, 236, 212, 0) 64deg);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.75) 40%, rgba(0, 0, 0, 0.3) 78%, transparent 100%); mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.75) 40%, rgba(0, 0, 0, 0.3) 78%, transparent 100%);
+  filter: blur(3px);
 }
 .np-top { position: relative; display: grid; grid-template-columns: 40px 1fr; align-items: center; gap: 10px; }
 .np-back { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--nt-line); font-size: 18px; background: rgba(255, 255, 255, 0.04); color: var(--nt-ivory); cursor: pointer; }
@@ -327,7 +360,7 @@
   .nt-eyebrow { letter-spacing: 0.2em; font-size: 11px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .nd[data-reveal] *, .np-stage, .np-gen-copy, .nw-rot, .nc-bottle .nc-layer { animation: none !important; }
+  .nd[data-reveal] *, .nt-spot > i, .np-stage, .np-gen-copy, .nw-rot, .nc-bottle .nc-layer { animation: none !important; }
   .nc, .nd-slot, .nd-rig { transition: none; }
 }
 
@@ -357,8 +390,11 @@
     radial-gradient(70% 60% at 100% 30%, rgba(34, 62, 168, 0.28), transparent 66%), linear-gradient(180deg, #0e0b17, #07060b);
   font-family: var(--rf-serif), serif;
 }
-.nx-spot { position: absolute; left: 50%; top: 0; width: 80%; height: 100%; transform: translateX(-50%);
-  background: linear-gradient(180deg, rgba(255, 236, 212, 0.1), rgba(255, 236, 212, 0) 80%); clip-path: polygon(40% 0, 60% 0, 92% 100%, 8% 100%); }
+.nx-spot { position: absolute; inset: 0;
+  background: radial-gradient(130px 64px at 50% 0%, rgba(255, 248, 236, 0.6), rgba(255, 236, 212, 0) 100%),
+    conic-gradient(from 164deg at 50% 0%, rgba(255, 240, 220, 0) 0deg, rgba(255, 240, 220, 0.06) 5deg, rgba(255, 244, 228, 0.15) 11deg, rgba(255, 248, 236, 0.2) 16deg, rgba(255, 244, 228, 0.15) 21deg, rgba(255, 240, 220, 0.06) 27deg, rgba(255, 240, 220, 0) 32deg),
+    conic-gradient(from 148deg at 50% 0%, rgba(255, 236, 212, 0) 0deg, rgba(255, 236, 212, 0.03) 10deg, rgba(255, 236, 212, 0.07) 22deg, rgba(255, 236, 212, 0.08) 32deg, rgba(255, 236, 212, 0.07) 42deg, rgba(255, 236, 212, 0.03) 54deg, rgba(255, 236, 212, 0) 64deg);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.75) 40%, rgba(0, 0, 0, 0.3) 78%, transparent 100%); mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.75) 40%, rgba(0, 0, 0, 0.3) 78%, transparent 100%); }
 .nx-head { position: relative; text-align: center; }
 .nx-head p { display: flex; justify-content: space-between; margin: 0; font: 600 15px/1 var(--nf-garamond), serif; letter-spacing: 0.34em; text-transform: uppercase; color: #e3c58c; }
 .nx-head h2 { margin: 22px 0 0; font: 700 34px/1.3 var(--rf-serif), serif; letter-spacing: -0.02em; }
