@@ -157,35 +157,31 @@ export function CardBack({ card, pour }: { card: NoteCardData; pour?: boolean })
 }
 
 /**
- * 내 단계 표시 — 러닝화(사용자 2026-11-18, 핀 대신). 레퍼런스 핀의 주황 → 노랑을 갑피에,
- * 흰 미드솔 · 짙은 밑창 · 끈 · 뒤꿈치 속도선. 브랜드처럼 보이는 줄무늬는 넣지 않는다. 동그라미 위에서 통통 뛴다
+ * 내 단계 표시 — 메달(사용자 2026-11-18, 러닝화 대신). 리본 두 갈래 + 금빛 원판 + 안쪽 고리 + 별.
+ * 위에서 살짝 흔들린다(저장 이미지 · 움직임 줄이기에선 멈춤)
  */
 function RoastPin() {
   const id = useId().replace(/:/g, "");
   return (
-    <svg className="nc-pin" viewBox="0 0 52 34" aria-hidden="true">
+    <svg className="nc-pin" viewBox="0 0 40 52" aria-hidden="true">
       <defs>
-        <linearGradient id={`p${id}`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#f3a06b" />
-          <stop offset="1" stopColor="#fbd94a" />
+        <linearGradient id={`m${id}`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#fff1a8" />
+          <stop offset=".45" stopColor="#f8c74a" />
+          <stop offset="1" stopColor="#e3962a" />
         </linearGradient>
       </defs>
-      {/* 속도선 */}
-      <path d="M1.5 13 H7 M0.5 17.5 H6 M2 22 H6.5" className="nc-pin-speed" />
-      {/* 갑피 */}
+      {/* 리본 */}
+      <path d="M11 1 H19 L24 20 H16 Z" className="nc-pin-ribbon-l" />
+      <path d="M21 1 H29 L24 20 H16 Z" className="nc-pin-ribbon-r" />
+      {/* 원판 */}
+      <circle cx="20" cy="34" r="15" fill={`url(#m${id})`} className="nc-pin-disc" />
+      <circle cx="20" cy="34" r="10.6" className="nc-pin-ring" />
       <path
-        d="M9 24.5 C8.6 20 9.8 15.5 12 12.2 L14.2 8.6 C15 7.2 16.8 6.9 18 7.9 L20.6 10.2 C22.4 11.8 25 12.4 27.4 12 C31.6 15.6 37.5 17.6 43.4 18.6 C46.6 19.2 48.6 21.2 48.6 24.5 Z"
-        fill={`url(#p${id})`}
-        className="nc-pin-upper"
+        d="M20 27.2 L21.9 31.4 L26.4 31.8 L23 34.8 L24 39.3 L20 36.9 L16 39.3 L17 34.8 L13.6 31.8 L18.1 31.4 Z"
+        className="nc-pin-star"
       />
-      {/* 뒤꿈치 탭 · 혀 */}
-      <path d="M12.6 11.4 L10.6 9.6" className="nc-pin-line" />
-      <path d="M20.6 10.2 C21.6 8.2 23.6 7.4 25.6 8 L27.4 12" className="nc-pin-line" />
-      {/* 끈 */}
-      <path d="M24.4 13.6 L27.6 12.2 M27 15.3 L30.2 13.9 M29.8 16.8 L33 15.6" className="nc-pin-lace" />
-      {/* 미드솔 · 밑창 */}
-      <path d="M8.6 24.5 H48.8 C49.6 24.5 50.2 25.2 50 26 L49.6 27.6 H8.8 Z" className="nc-pin-mid" />
-      <path d="M8.8 27.6 H49.6 C49.2 29.6 47.6 30.6 45.6 30.6 H12 C10.2 30.6 8.8 29.4 8.8 27.6 Z" className="nc-pin-sole" />
+      <path d="M11.5 27.5 A11 11 0 0 1 17 22.6" className="nc-pin-shine" />
     </svg>
   );
 }
