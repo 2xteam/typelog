@@ -101,7 +101,7 @@ export function NoteCollection({ slug }: { slug: string }) {
           <Link className="nt-chip" href="/records">
             ← 기록으로
           </Link>
-          <button type="button" className="nt-chip nt-chip--gold" onClick={() => void again()} disabled={starting}>
+          <button type="button" className="nt-chip nt-chip--main" onClick={() => void again()} disabled={starting}>
             {starting ? "여는 중…" : "한 장 더 내리기 ☕"}
           </button>
         </div>

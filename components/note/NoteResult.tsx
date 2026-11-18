@@ -253,7 +253,7 @@ export function NoteResult({
           <p className="nt-panel-eyebrow">Runner · 카드에 적힐 이름</p>
           <div className="nt-name">
             <input value={nameDraft} maxLength={10} onChange={(e) => setNameDraft(e.target.value)} placeholder="러너" aria-label="카드에 적힐 이름" />
-            <button type="button" className="nt-chip nt-chip--gold" onClick={() => void saveName()} disabled={nameDraft.trim() === name}>
+            <button type="button" className="nt-chip nt-chip--main" onClick={() => void saveName()} disabled={nameDraft.trim() === name}>
               바꾸기
             </button>
           </div>
