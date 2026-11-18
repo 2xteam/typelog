@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { getGuestKey } from "@/lib/guestKey";
 import { Wallet } from "./Wallet";
 import { buildCard, type NoteCardData } from "./view";
 import { noteFontVars } from "./fonts";
@@ -19,6 +20,29 @@ export function NoteCollection({ slug }: { slug: string }) {
   const router = useRouter();
   const [data, setData] = useState<{ title: string; axes: AxisDecl[]; rows: Row[]; total: number } | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
+  const [starting, setStarting] = useState(false);
+
+  /** 한 장 더 — 목록(/types)의 「해보기」와 같은 방식으로 새 회차를 연다 */
+  const again = async () => {
+    setStarting(true);
+    try {
+      const res = await fetch("/api/attempts", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ slug, guestKey: getGuestKey() }),
+      });
+      const json = (await res.json()) as { ok?: boolean; attemptId?: string; error?: string };
+      if (!res.ok || !json.ok || !json.attemptId) {
+        setMsg(json.error ?? "시작할 수 없어요.");
+        return;
+      }
+      router.push(`/play/${json.attemptId}`);
+    } catch {
+      setMsg("네트워크가 불안정해요.");
+    } finally {
+      setStarting(false);
+    }
+  };
 
   useEffect(() => {
     void (async () => {
@@ -69,9 +93,9 @@ export function NoteCollection({ slug }: { slug: string }) {
           <Link className="nt-chip" href="/records">
             ← 기록으로
           </Link>
-          <Link className="nt-chip nt-chip--gold" href={`/types/${slug}`}>
-            한 장 더 내리기 ☕
-          </Link>
+          <button type="button" className="nt-chip nt-chip--gold" onClick={() => void again()} disabled={starting}>
+            {starting ? "여는 중…" : "한 장 더 내리기 ☕"}
+          </button>
         </div>
       </div>
     </div>

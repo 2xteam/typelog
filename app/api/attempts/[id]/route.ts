@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { experienceOf } from "@/lib/experience";
 import { isHolo } from "@/components/run/holo";
 import mongoose from "mongoose";
 import { connectDB } from "@/lib/db";
@@ -107,7 +108,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
         emoji: quiz.cover?.emoji ?? null,
         /** 브랜드·나라 이름을 결과로 쓰는 질문지에 붙는 한 줄 */
         disclaimer: quiz.disclaimer ?? null,
-        experience: quiz.experience ?? null,
+        experience: experienceOf(quiz),
       },
       answers: (attempt.answers ?? []).map((a) => ({
         linkId: a.linkId,
@@ -150,7 +151,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
         : [];
 
       /** 러닝 기록 — 자격증의 「러너」 칸 · 러닝 노트 카드의 Runner 칸. 회원이면 닉네임 */
-      if ((quiz.experience === "running" || quiz.experience === "note") && attempt.owner.kind === "user" && attempt.owner.userId) {
+      if (experienceOf(quiz) !== null && attempt.owner.kind === "user" && attempt.owner.userId) {
         const u = await getUserModel().findById(attempt.owner.userId).select({ nickname: 1 }).lean();
         body.ownerName = (u as { nickname?: string | null } | null)?.nickname?.trim() || null;
       }

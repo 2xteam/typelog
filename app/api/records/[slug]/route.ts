@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { experienceOf } from "@/lib/experience";
 import { connectDB } from "@/lib/db";
 import { notFound, requireViewer, serverError } from "@/lib/auth";
 import { getQuizModel } from "@/models/Quiz";
@@ -65,7 +66,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
      * 러닝 노트 — 카드를 그리려면 축마다의 pomp 와 이름이 있어야 한다(색이 pomp · 기록 번호로 정해진다).
      * 문장은 보내지 않는다. 상세는 그 회차 결과 화면에서.
      */
-    const note = quiz.experience === "note";
+    const note = experienceOf(quiz) === "note";
     const nickname = note
       ? ((await getUserModel().findById(userId).select({ nickname: 1 }).lean()) as { nickname?: string | null } | null)?.nickname?.trim() || null
       : null;
@@ -101,7 +102,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
         slug: quiz.slug,
         title: quiz.title,
         emoji: quiz.cover?.emoji ?? null,
-        experience: quiz.experience ?? null,
+        experience: experienceOf(quiz),
         ...(note
           ? {
               axes: (quiz.outcomes ?? [])

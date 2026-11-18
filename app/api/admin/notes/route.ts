@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { experienceOf } from "@/lib/experience";
 import mongoose from "mongoose";
 import { connectDB } from "@/lib/db";
 import { badRequest, requireAdmin, serverError } from "@/lib/auth";
@@ -138,7 +139,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json({
       ok: true,
-      quiz: { slug: quiz.slug, title: quiz.title, experience: quiz.experience ?? null },
+      quiz: { slug: quiz.slug, title: quiz.title, experience: experienceOf(quiz) },
       total,
       page,
       pages: Math.ceil(total / SIZE),

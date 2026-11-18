@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { experienceOf } from "@/lib/experience";
 import { connectDB } from "@/lib/db";
 import { requireAdmin, badRequest, conflict, notFound, serverError } from "@/lib/auth";
 import { getQuizModel } from "@/models/Quiz";
@@ -24,7 +25,7 @@ export async function GET(req: Request) {
         title: q.title,
         emoji: (q.cover as { emoji?: string | null } | undefined)?.emoji ?? null,
         /** 화면 방식 — admin 질문지 상세가 어떤 데이터 칸(러닝 자격증 · 러닝 노트)을 보여 줄지 정한다 */
-        experience: q.experience ?? null,
+        experience: experienceOf(q),
         status: q.status,
         schedule: q.schedule,
         itemCount: Array.isArray(q.items) ? q.items.length : 0,

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { experienceOf } from "@/lib/experience";
 import { connectDB } from "@/lib/db";
 import { getViewer, notFound, serverError } from "@/lib/auth";
 import { getQuizModel } from "@/models/Quiz";
@@ -57,7 +58,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ token: s
      * 사진은 본인 기기에만 있으므로 여기엔 없다(실루엣).
      */
     let run: Record<string, unknown> | null = null;
-    if (quiz.experience === "running" && attempt.result?.detail) {
+    if (experienceOf(quiz) === "running" && attempt.result?.detail) {
       const ans = (id: string) => (attempt.answers ?? []).find((a) => a.linkId === id)?.value as string | null | undefined;
       let name = ans("runner") ?? null;
       if (!name && attempt.owner?.kind === "user" && attempt.owner.userId) {
@@ -83,7 +84,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ token: s
      * 요약 · 팁 같은 긴 문장은 보내지 않는다. 나도 해 보게 만드는 자리다.
      */
     let note: Record<string, unknown> | null = null;
-    if (quiz.experience === "note" && attempt.result?.code) {
+    if (experienceOf(quiz) === "note" && attempt.result?.code) {
       let runner = (attempt.custom as { name?: string | null } | undefined)?.name?.trim() || null;
       if (!runner && attempt.owner?.kind === "user" && attempt.owner.userId) {
         const u = await getUserModel().findById(attempt.owner.userId).select({ nickname: 1 }).lean();
