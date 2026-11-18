@@ -19,12 +19,26 @@ const pending = new Map<string, Promise<string>>();
 const W = 630;
 const H = 1000;
 
+/**
+ * 한 장씩 차례로 — 모은 카드처럼 여러 장이 한꺼번에 뜨면 블러 SVG 를 동시에 그리느라 처음 몇 초가 멈췄다.
+ * 앞 장이 끝나고 한 프레임 쉰 뒤 다음 장을 그린다.
+ */
+let chain: Promise<unknown> = Promise.resolve();
+const nextFrame = () => new Promise<void>((r) => requestAnimationFrame(() => r()));
+
 function rasterize(svgUrl: string): Promise<string> {
   const hit = cache.get(svgUrl);
   if (hit) return Promise.resolve(hit);
   const wait = pending.get(svgUrl);
   if (wait) return wait;
-  const job = new Promise<string>((resolve, reject) => {
+  const job = chain.then(nextFrame).then(() => draw(svgUrl)).finally(() => pending.delete(svgUrl));
+  chain = job.catch(() => undefined);
+  pending.set(svgUrl, job);
+  return job;
+}
+
+function draw(svgUrl: string): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
     const src = svgUrl.replace(/^url\("?/, "").replace(/"?\)$/, "");
     const img = new Image();
     img.onload = () => {
@@ -44,9 +58,7 @@ function rasterize(svgUrl: string): Promise<string> {
     };
     img.onerror = reject;
     img.src = src;
-  }).finally(() => pending.delete(svgUrl));
-  pending.set(svgUrl, job);
-  return job;
+  });
 }
 
 /** SVG 메시 주소 → 그림 주소. 그리기 전엔 null(바탕색만), 실패하면 SVG 그대로 */

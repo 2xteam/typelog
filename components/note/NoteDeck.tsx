@@ -165,7 +165,21 @@ export function NoteDeck({
     setTilt({ rx: 0, ry: 0 });
   };
 
-  const visible = cards.map((c, i) => ({ c, i })).filter(({ i }) => Math.abs(i - center) <= 4);
+  /*
+    모은 카드가 많을 때 가볍게(2026-11-18): 가운데에서 3장까지만 그리고(그 너머는 어차피 투명),
+    바닥 반사는 가운데와 바로 옆에만, 뒷면은 꺼낸 카드에만.
+  */
+  /*
+    반사 상자 — 무대보다 아래로 EXT 만큼 길다(반사가 바닥선 아래로 내려가므로).
+    마스크는 아래에서부터 잰다: 바닥선 = EXT + 96px.
+      바닥선 위 0.15ch 까지 0.55 · 바닥선 0.48 · 아래 0.195ch 에서 0.14 · 아래 0.38ch 에서 0
+  */
+  const ext = Math.round(ch * 0.42);
+  const floorD = ext + 96;
+  const mask = `linear-gradient(to top, transparent ${floorD - ch * 0.38}px, rgba(0,0,0,.14) ${floorD - ch * 0.195}px, rgba(0,0,0,.48) ${floorD}px, rgba(0,0,0,.55) ${floorD + ch * 0.15}px, transparent ${floorD + ch * 0.16}px)`;
+  const reflectStyle = { height: `calc(100% + ${ext}px)`, "--ext": `${ext}px`, WebkitMaskImage: mask, maskImage: mask } as React.CSSProperties;
+
+  const visible = cards.map((c, i) => ({ c, i })).filter(({ i }) => Math.abs(i - center) <= 3);
   const glow = card?.picks[0]?.color.hex ?? "#6b4a2a";
 
   return (
@@ -194,6 +208,37 @@ export function NoteDeck({
         <div className="nt-spot" aria-hidden="true" />
         <div className="nt-floor" aria-hidden="true" />
         <div className="nt-pool" aria-hidden="true" />
+        {/*
+          바닥 반사 — 3D 에서 바닥면 기준으로 뒤집은 같은 카드. 가운데와 바로 옆에만.
+          반사들은 움직이지 않는 상자(.nd-reflect) 하나에 모으고 페이드 마스크도 그 상자에 한 번만 건다 —
+          반사 카드마다 마스크를 걸면 움직일 때마다 다시 계산해 모은 카드에서 크게 느려졌다(2026-11-18)
+        */}
+        <div className="nd-reflect" style={reflectStyle} aria-hidden="true">
+          {visible
+            .filter(({ i }) => Math.abs(i - center) <= 1.2)
+            .map(({ c, i }) => {
+              const p = slot(i);
+              const isCur = i === cur && mode === "detail";
+              const deg = isCur ? rot + flipDeg : 0;
+              const rigT = `rotateY(${p.ry}deg)${isCur && drag === null ? ` rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)` : ""}`;
+              return (
+                <div
+                  key={c.attemptId}
+                  className="nd-mirror"
+                  data-cur={isCur ? "true" : undefined}
+                  style={{ transform: `translateX(${p.x}px) translateY(${p.y}px) scale(${p.s})`, opacity: p.op, zIndex: p.z }}
+                >
+                  <div className="nd-flip">
+                    <div className="nd-rise">
+                      <div className="nd-rig" style={{ transform: rigT }}>
+                        <NoteCard card={c} rot={deg} back={isCur} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+        </div>
         {visible.map(({ c, i }) => {
           const p = slot(i);
           const isCur = i === cur && mode === "detail";
@@ -205,21 +250,11 @@ export function NoteDeck({
           const rigT = `rotateY(${p.ry}deg)${isCur && drag === null ? ` rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)` : ""}`;
           return (
             <div key={c.attemptId} className="nd-pair" style={{ zIndex: p.z }}>
-              {/* 바닥 반사 — 3D 에서 바닥면 기준으로 뒤집은 같은 카드 */}
-              <div className="nd-mirror" data-cur={isCur ? "true" : undefined} style={place} aria-hidden="true">
-                <div className="nd-flip">
-                  <div className="nd-rise">
-                    <div className="nd-rig" style={{ transform: rigT }}>
-                      <NoteCard card={c} rot={deg} />
-                    </div>
-                  </div>
-                </div>
-              </div>
               <div className="nd-slot" data-cur={isCur ? "true" : undefined} style={place}>
                 <i className="nd-shadow" style={{ transform: `scaleX(${(0.12 + 0.88 * Math.abs(Math.cos((deg * Math.PI) / 180))).toFixed(3)})` }} aria-hidden="true" />
                 <div className="nd-rise">
                   <div className="nd-rig" style={{ transform: rigT }}>
-                    <NoteCard card={c} rot={deg} pour={!!poured[c.attemptId]} />
+                    <NoteCard card={c} rot={deg} pour={!!poured[c.attemptId]} back={isCur || mode === "detail"} />
                   </div>
                 </div>
               </div>

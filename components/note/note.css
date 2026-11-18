@@ -75,14 +75,14 @@
   · 위로 카드 높이의 15% 더 — 멀어지는 쪽 아래 모서리는 바닥선보다 위로 올라가, 그 아래 반사가 잘렸다(2026-11-18)
   상자 높이 1.15ch: 바닥선(카드 아랫변)은 위에서 13.04%, 카드 가운데는 -30.43%, 카드 윗변은 -73.91%
 */
+/* 반사들을 담는 상자 — 움직이지 않는다. 페이드 마스크는 여기 한 번만(NoteDeck 이 상자 좌표로 넣는다) */
+.nd-reflect { position: absolute; left: 0; right: 0; top: 0; pointer-events: none; z-index: 0; --ext: 0px; }
 .nd-mirror {
   position: absolute; left: 50%; width: calc(var(--cw) * 2); margin-left: calc(var(--cw) * -1);
-  bottom: calc(96px - var(--cw) * 1.5873 - 2px); height: calc(var(--cw) * 1.5873 * 1.15);
+  bottom: calc(96px + var(--ext) - var(--cw) * 1.5873 - 2px); height: calc(var(--cw) * 1.5873 * 1.15);
   transform-origin: 50% 13.04%; perspective: 1300px; perspective-origin: 50% -30.43%;
   transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.45s ease;
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.48) 13.04%, rgba(0, 0, 0, 0.14) 30%, rgba(0, 0, 0, 0) 46%);
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.48) 13.04%, rgba(0, 0, 0, 0.14) 30%, rgba(0, 0, 0, 0) 46%);
-  /* 번짐 필터는 걷었다 — 3D 로 움직이는 큰 층에 필터를 걸면 모바일에서 매 프레임 다시 계산한다(끊김) */
+  /* 마스크 · 필터는 반사마다 걸지 않는다 — 움직이는 3D 층에 걸면 모바일에서 매 프레임 다시 계산한다(끊김) */
 }
 .nd-flip {
   position: absolute; left: 25%; top: -73.91%; width: 50%; height: 86.96%;
@@ -177,8 +177,10 @@
   background: linear-gradient(180deg, #f6f1e8, #d8cfc1 50%, #efe8dc);
 }
 .nc-scrim, .nc-sheen { position: absolute; inset: 0; pointer-events: none; }
-.nc-sheen {
-  inset: -30% -60%; opacity: 0; mix-blend-mode: soft-light;
+/* 반사광 — 처음 등장할 때만 그린다. 섞임 모드 층이 카드마다 상시 있으면 모은 카드에서 무겁다 */
+.nc-sheen { display: none; }
+.nd[data-reveal] .nd-slot[data-cur] .nc-sheen {
+  display: block; inset: -30% -60%; opacity: 0; mix-blend-mode: soft-light;
   background: linear-gradient(112deg, transparent 38%, rgba(255, 255, 255, 0.85) 50%, transparent 62%);
 }
 .nc-top, .nc-foot {

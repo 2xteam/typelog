@@ -27,6 +27,7 @@ export function NoteCard({
   face = "front",
   rot,
   pour = false,
+  back = true,
 }: {
   card: NoteCardData;
   face?: "front" | "back";
@@ -34,11 +35,13 @@ export function NoteCard({
   rot?: number;
   /** 뒷면 물병이 차오르는 연출 — 뒷면을 처음 볼 때 */
   pour?: boolean;
+  /** 뒷면을 그릴까 — 덱 목록의 카드는 앞면만 보이므로 안 그린다(모은 카드가 많을 때 가볍게) */
+  back?: boolean;
 }) {
   return (
     <div className="nc" data-face={rot === undefined ? face : undefined} style={rot === undefined ? undefined : { transform: `rotateY(${rot}deg)` }}>
       <CardFront card={card} />
-      <CardBack card={card} pour={pour} />
+      {back ? <CardBack card={card} pour={pour} /> : null}
       {/*
         두께 0.5mm(실물 카드 너비 54mm 기준) — 카드와 같은 둥근 판을 앞뒷면 사이에 겹쳐 쌓는다.
         옆면 두 장만 세우면 둥근 모서리가 비어 보였다(사용자 2026-11-18)

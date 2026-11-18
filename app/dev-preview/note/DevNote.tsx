@@ -4,6 +4,8 @@ import { useMemo } from "react";
 import { NoteResult, type NotePayload } from "@/components/note/NoteResult";
 import { SharedNote } from "@/components/note/SharedNote";
 import { buildCard, lookOf } from "@/components/note/view";
+import { NoteDeck } from "@/components/note/NoteDeck";
+import { noteFontVars } from "@/components/note/fonts";
 
 type Q = {
   quiz: { title: string; disclaimer: string | null };
@@ -81,7 +83,19 @@ export function DevNote({ quiz, code, s, id, n, view }: { quiz: Q; code: string;
       <p style={{ fontFamily: "monospace", fontSize: 12 }}>
         {t.code} s={s} id={id} n={n} · 글자 대비(가장 나쁜 곳) {look.theme.worst}:1 · {view === "shared" ? "공유 화면" : "결과 화면"}
       </p>
-      {view === "shared" ? (
+      {view === "collection" ? (
+        /* 모은 카드(기록 화면)와 같은 덱 목록 — 로그인 없이 속도 · 동작을 보려고 */
+        <div className={`nt ${noteFontVars}`}>
+          <div className="nt-shell">
+            <p className="nt-eyebrow">
+              <span>Running Note</span>
+              <span>{before.length + 1} cards</span>
+            </p>
+            <h1 className="nt-head">내가 모은 러닝 노트</h1>
+            <NoteDeck cards={[...before, buildCard({ attemptId: id, attemptNo: n, code: t.code, typeName: t.name, completedAt, runner: "미리보기", axes: quiz.outcomes, pomp, strengths: t.content.strengths, goodWith: t.content.goodWith })]} start="list" />
+          </div>
+        </div>
+      ) : view === "shared" ? (
         <SharedNote
           note={{
             attemptId: id,

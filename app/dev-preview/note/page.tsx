@@ -10,7 +10,7 @@ import { DevNote } from "./DevNote";
  *     s     축마다 진하게(1) · 은은하게(0) — 색이 「진하게 둘 / 은은하게 둘」 중에서 정해진다
  *     id    기록 번호 대신 — 바꾸면 같은 유형 안에서 색 · 메시 모양이 바뀐다
  *     n     회차(기본 5 — 앞의 네 장이 덱 목록에 들어간다)
- *     view  shared 면 공유 화면
+ *     view  shared 면 공유 화면 · collection 이면 모은 카드(덱 목록, n 장)
  */
 export const dynamic = "force-dynamic";
 
