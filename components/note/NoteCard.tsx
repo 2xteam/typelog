@@ -207,17 +207,22 @@ function RoastMedal({ colors }: { colors: string[] }) {
 }
 
 /**
- * 러닝 물병 — 실리콘 소프트 플라스크(레퍼런스: 러닝 조끼에 꽂는 접히는 물병).
- * 위에 바이트 밸브 · 링, 좁은 목, 아래로 갈수록 넓어지는 말랑한 몸통, 반투명 몸체, 옆 고리.
+ * 러닝 물병 — 요즘 가장 많이 쓰는 소프트 플라스크(레퍼런스, 사용자 2026-11-18). 하단 디테일이 핵심:
+ *   몸통은 어깨에서 아래로 살짝 좁아지는 허리 → 하단 양옆이 날개처럼 바깥으로 벌어지고,
+ *   가운데 접착 탭이 아래로 튀어나온 로켓 꼬리. 날개와 탭 사이는 안쪽으로 파인 홈.
+ *   가장자리를 따라 열접착 띠(안쪽 가는 선), 세로 「TIME TO RUN」, 맺힌 물방울, 왼쪽 위 마개 고리.
  * 4축이 아래(누구와)부터 위(마음)로 층층이 찬다. 진한 축은 층이 두껍다.
  */
 const FLASK =
-  "M24.6 20.6 L35.4 20.6 C35.8 24.4 41.6 27.2 42.6 34 C43.7 53 44.7 81 45.6 100 C46.2 112 42 116.6 33 116.8 L27 116.8 C18 116.6 13.8 112 14.4 100 C15.3 81 16.3 53 17.4 34 C18.4 27.2 24.2 24.4 24.6 20.6 Z";
+  "M25 20.6 L35 20.6 C35.4 24 40.6 26.4 41.8 32 C42.6 38 42.2 60 41.4 84 C41.2 90.4 42.6 96.4 45.2 101.6 L46.8 109 C47 110.2 46.2 110.8 45.2 110.4 L38.2 107 L32.8 113.6 L30.6 115.4 C30.2 115.7 29.8 115.7 29.4 115.4 L27.2 113.6 L21.8 107 L14.8 110.4 C13.8 110.8 13 110.2 13.2 109 L14.8 101.6 C17.4 96.4 18.8 90.4 18.6 84 C17.8 60 17.4 38 18.2 32 C19.4 26.4 24.6 24 25 20.6 Z";
+/** 열접착 띠 — 가장자리보다 안쪽으로 한 겹(옆선 · 하단 날개 · 탭) */
+const SEAM =
+  "M20.6 34 C20 42 20.2 62 20.8 84 C21 90.8 19.8 96.6 17.2 101.8 L16.2 106.8 L22.4 103.8 L28.2 111.2 L30 112.6 L31.8 111.2 L37.6 103.8 L43.8 106.8 L42.8 101.8 C40.2 96.6 39 90.8 39.2 84 C39.8 62 40 42 39.4 34";
 
 function Bottle({ picks, pour }: { picks: AxisPick[]; pour?: boolean }) {
   const id = useId().replace(/:/g, "");
   const top = 30;
-  const bottom = 116.8;
+  const bottom = 115.4;
   const full = (bottom - top) * 0.84;
   const weights = picks.map((p) => (p.strong ? 1 : 0.62));
   const sum = weights.reduce((a, b) => a + b, 0) || 1;
@@ -236,21 +241,21 @@ function Bottle({ picks, pour }: { picks: AxisPick[]; pour?: boolean }) {
         </clipPath>
         <linearGradient id={`g${id}`} x1="0" x2="1">
           <stop offset="0" stopColor="#fff" stopOpacity=".55" />
-          <stop offset=".18" stopColor="#fff" stopOpacity=".12" />
+          <stop offset=".22" stopColor="#fff" stopOpacity=".1" />
           <stop offset=".7" stopColor="#fff" stopOpacity="0" />
           <stop offset="1" stopColor="#000" stopOpacity=".08" />
         </linearGradient>
       </defs>
-      {/* 옆 고리 — 마개 링에서 나와 어깨로 */}
-      <path d="M37.4 14.2 C46.5 12.6 51.4 21.5 47.6 29.5 C46.2 32.5 44 33.6 42.7 33.2" className="nc-bottle-strap" />
-      {/* 바이트 밸브 — 위가 좁아지는 마개 꼭지, 가운데 틈 */}
+      {/* 마개 고리 — 왼쪽 위로 나온 끈 */}
+      <path d="M24 12.6 C17.6 11.4 14.2 15.4 16 19.4 C17.2 22 20.6 22.2 23.2 20.4" className="nc-bottle-strap" />
+      {/* 바이트 밸브 — 위가 좁아지는 꼭지, 가운데 틈 */}
       <path d="M27.6 10.4 L28.3 4.6 Q28.5 2.6 30 2.6 Q31.5 2.6 31.7 4.6 L32.4 10.4 Z" className="nc-bottle-valve" />
       <path d="M30 3.6 L30 6.2" className="nc-bottle-slit" />
       {/* 마개 — 홈이 파인 링 */}
       <rect x="23.2" y="10.2" width="13.6" height="5.6" rx="1.2" className="nc-bottle-cap" />
       <path d="M26 10.8 V15.2 M28.6 10.8 V15.2 M31.4 10.8 V15.2 M34 10.8 V15.2" className="nc-bottle-rib" />
       {/* 목 — 단단한 칼라 */}
-      <rect x="24.3" y="15.6" width="11.4" height="5.4" rx="0.8" className="nc-bottle-neck" />
+      <rect x="24.6" y="15.6" width="10.8" height="5.4" rx="0.8" className="nc-bottle-neck" />
       <g clipPath={`url(#b${id})`}>
         <rect x="0" y="0" width="60" height="120" fill="rgba(255,255,255,.42)" />
         <g className="nc-liquid">
@@ -261,11 +266,17 @@ function Bottle({ picks, pour }: { picks: AxisPick[]; pour?: boolean }) {
             </g>
           ))}
         </g>
-        {/* 말랑한 몸통의 주름 · 빛 */}
-        <path d="M18.5 44 C25 46 35 46 41.5 44" className="nc-bottle-crease" />
-        <path d="M17.8 70 C25 72.5 35 72.5 42.8 70" className="nc-bottle-crease" />
         <rect x="0" y="0" width="60" height="120" fill={`url(#g${id})`} />
-        <path d="M20 36 C19.2 60 18.6 84 18.4 104" className="nc-bottle-shine" />
+        {/* 열접착 띠 · 세로 글자 · 빛 · 물방울 */}
+        <path d={SEAM} className="nc-bottle-seam" />
+        <text x="0" y="0" transform="translate(35.6 46) rotate(90)" className="nc-bottle-text">
+          TIME TO RUN
+        </text>
+        <path d="M22.4 38 C21.8 56 22 74 22.8 88" className="nc-bottle-shine" />
+        <ellipse cx="25.2" cy="62" rx="0.9" ry="1.3" className="nc-bottle-drop" />
+        <ellipse cx="33.6" cy="80" rx="0.7" ry="1" className="nc-bottle-drop" />
+        <ellipse cx="28.4" cy="95" rx="1" ry="1.4" className="nc-bottle-drop" />
+        <ellipse cx="36.2" cy="40" rx="0.6" ry="0.9" className="nc-bottle-drop" />
       </g>
       <path d={FLASK} className="nc-bottle-line" />
     </svg>
