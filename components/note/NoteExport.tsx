@@ -35,7 +35,7 @@ export function NoteExport({ card, face }: { card: NoteCardData; face: "front" |
     setProgress(3);
     const fontEmbedCSS = await embedFontCSS(node, (k) => setProgress(3 + Math.round(k * 67)), FONT_VARS);
     setProgress(72);
-    const opts = { pixelRatio: 2, fontEmbedCSS, backgroundColor: which === "single" ? undefined : "#07060b" };
+    const opts = { pixelRatio: 2, fontEmbedCSS, backgroundColor: which === "single" ? undefined : "#0b0b24" };
     const ua = navigator.userAgent;
     if (/Safari/.test(ua) && !/Chrome|CriOS|Android/.test(ua)) {
       await toBlob(node, opts);

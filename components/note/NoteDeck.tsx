@@ -191,9 +191,7 @@ export function NoteDeck({
             : `러닝 노트 카드 ${face === "front" ? "앞면" : "뒷면"} — 왼쪽으로 밀면 뒤집히고 오른쪽으로 밀면 목록에 넣어요`
         }
       >
-        <div className="nt-spot" aria-hidden="true">
-          <i />
-        </div>
+        <div className="nt-spot" aria-hidden="true" />
         <div className="nt-floor" aria-hidden="true" />
         <div className="nt-pool" aria-hidden="true" />
         {visible.map(({ c, i }) => {

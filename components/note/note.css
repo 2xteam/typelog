@@ -10,9 +10,12 @@
   --nt-dim: #b9ae9c; /* 바탕 #0b0a10 위 8.9:1 */
   --nt-gold: #e3c58c; /* 바탕 위 11:1 */
   --nt-line: rgba(227, 197, 140, 0.2);
-  --nt-bg: radial-gradient(90% 55% at 8% 6%, rgba(112, 58, 196, 0.3), transparent 62%),
-    radial-gradient(90% 65% at 100% 38%, rgba(34, 62, 168, 0.26), transparent 66%),
-    linear-gradient(180deg, #0e0b17 0%, #09080e 60%, #050409 100%);
+  /* 스튜디오 벽(레퍼런스: 카드사 공개 사진) — 왼쪽 자홍 · 보라 빛, 오른쪽 짙은 파랑, 위는 어둡게 */
+  --nt-wall: radial-gradient(62% 46% at -6% 44%, rgba(170, 70, 216, 0.6), rgba(170, 70, 216, 0) 72%),
+    radial-gradient(58% 52% at 106% 50%, rgba(44, 84, 214, 0.55), rgba(44, 84, 214, 0) 72%),
+    radial-gradient(75% 38% at 50% 100%, rgba(96, 80, 200, 0.3), rgba(96, 80, 200, 0) 76%),
+    radial-gradient(130% 55% at 50% -12%, rgba(4, 4, 14, 0.75), rgba(4, 4, 14, 0) 62%);
+  --nt-bg: var(--nt-wall), linear-gradient(180deg, #0a0a1f 0%, #141340 62%, #0b0b24 100%);
   --en: var(--nf-garamond), "Times New Roman", serif;
   --ko: var(--rf-serif), "Noto Serif KR", serif;
 }
@@ -70,8 +73,9 @@
   bottom: calc(96px - var(--cw) * 1.5873 - 2px); height: calc(var(--cw) * 1.5873 * 1.15);
   transform-origin: 50% 13.04%; perspective: 1300px; perspective-origin: 50% -30.43%;
   transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.45s ease;
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.34) 0%, rgba(0, 0, 0, 0.34) 13.04%, rgba(0, 0, 0, 0) 39.1%);
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.34) 0%, rgba(0, 0, 0, 0.34) 13.04%, rgba(0, 0, 0, 0) 39.1%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.42) 0%, rgba(0, 0, 0, 0.42) 13.04%, rgba(0, 0, 0, 0) 42%);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.42) 0%, rgba(0, 0, 0, 0.42) 13.04%, rgba(0, 0, 0, 0) 42%);
+  filter: blur(2.2px);
 }
 .nd-flip {
   position: absolute; left: 25%; top: -73.91%; width: 50%; height: 86.96%;
@@ -96,50 +100,32 @@
 .nd[data-reveal] .nd-mirror[data-cur] .nd-rise { animation: nt-rise 2s 0.5s cubic-bezier(0.16, 0.84, 0.24, 1) both; }
 .nd[data-reveal] .nd-slot[data-cur] .nc-front .nc-sheen { animation: nt-sweep 1.2s 2.35s ease-in-out both; }
 /*
-  핀 조명(2026-11-18 다시) — 사다리꼴 한 장을 흐리게 깔면 「어설프다」. 실제 무대 조명처럼:
-    ① 광원 — 위 가운데 따뜻한 빛 덩어리(::after)
-    ② 빛줄기 — 꼭짓점에서 퍼지는 원뿔(conic) 두 겹: 가운데 밝은 심 + 넓고 옅은 번짐. 가장자리는 각도로 부드럽게
-    ③ 거리 감쇠 — 아래로 갈수록 옅게(마스크), 빛 속에 떠 있는 먼지 결(노이즈)
-    ④ 바닥에 닿은 자국 — 바닥선에 넓은 타원 빛(.nt-floor::before)
+  스튜디오(2026-11-18, 레퍼런스: 카드사 신상 카드 공개 사진을 그대로) — 빛줄기(핀 조명)는 없다.
+    벽   왼쪽 가운데 자홍 · 보라 빛, 오른쪽 짙은 파랑, 가운데 남보라, 위 모서리는 어둡게(.nt-spot)
+    바닥 벽보다 살짝 밝은 광택 남보라. 왼쪽엔 보라 · 오른쪽엔 파랑 빛이 비치고 아래로 어두워진다.
+         바닥선에 가는 빛 띠, 세로 결(광택 바닥의 미세한 줄)
+    반사 또렷한 거울이 아니라 흐릿하게 번진 반사(.nd-mirror 의 blur)
+  벽 조명은 무대 상자 밖(패널 위)까지 — 상자 안에만 그리면 제목 아래에서 잘린다. z-index -1 로 글자 뒤에.
 */
-/* 빛은 무대 상자 밖(패널 위 모서리 너머)에서 시작한다 — 상자 안에만 그리면 제목 아래에서 가로로 잘려 보였다.
-   패널(.nt-shell)이 둥근 모서리로 자르고, z-index -1 로 제목 글자 뒤에 깔린다 */
-.nt-spot { position: absolute; left: 0; right: 0; top: -150px; bottom: 96px; pointer-events: none; z-index: -1; }
-.nt-spot::before {
-  content: ""; position: absolute; inset: 0;
-  background:
-    conic-gradient(from 164deg at 50% 0%, rgba(255, 240, 220, 0) 0deg, rgba(255, 240, 220, 0.06) 5deg, rgba(255, 244, 228, 0.15) 11deg, rgba(255, 248, 236, 0.2) 16deg, rgba(255, 244, 228, 0.15) 21deg, rgba(255, 240, 220, 0.06) 27deg, rgba(255, 240, 220, 0) 32deg),
-    conic-gradient(from 148deg at 50% 0%, rgba(255, 236, 212, 0) 0deg, rgba(255, 236, 212, 0.03) 10deg, rgba(255, 236, 212, 0.07) 22deg, rgba(255, 236, 212, 0.08) 32deg, rgba(255, 236, 212, 0.07) 42deg, rgba(255, 236, 212, 0.03) 54deg, rgba(255, 236, 212, 0) 64deg);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.75) 40%, rgba(0, 0, 0, 0.3) 78%, transparent 100%); mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.75) 40%, rgba(0, 0, 0, 0.3) 78%, transparent 100%);
-  filter: blur(6px);
-}
-.nt-spot::after {
-  content: ""; position: absolute; left: 50%; top: -40px; width: 70%; height: 150px; transform: translateX(-50%);
-  background: radial-gradient(closest-side, rgba(255, 248, 236, 0.5), rgba(255, 238, 214, 0.16) 45%, rgba(255, 230, 200, 0) 100%);
-}
-/* 빛 속 먼지 결 — 빛줄기 모양으로만 보이게 같은 원뿔로 가린다 */
-.nt-spot > i {
-  position: absolute; inset: 0; opacity: 0.55; mix-blend-mode: screen;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='h'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.0111 .0333' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .95 0 0 0 0 .88 0 0 0 .5 -.18'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23h%29'/%3E%3C/svg%3E");
-  background-size: 180px 180px;
-  -webkit-mask-image: conic-gradient(from 152deg at 50% 0%, transparent 0deg, rgba(0, 0, 0, 0.6) 14deg, #000 28deg, rgba(0, 0, 0, 0.6) 42deg, transparent 56deg);
-  mask-image: conic-gradient(from 152deg at 50% 0%, transparent 0deg, rgba(0, 0, 0, 0.6) 14deg, #000 28deg, rgba(0, 0, 0, 0.6) 42deg, transparent 56deg);
-  animation: nt-haze 18s linear infinite;
-}
-@keyframes nt-haze { from { background-position: 0 0; } to { background-position: 60px 180px; } }
-.nt-floor::before {
-  content: ""; position: absolute; left: 50%; top: -26px; width: 96%; height: 64px; transform: translateX(-50%);
-  background: radial-gradient(closest-side, rgba(255, 240, 220, 0.24), rgba(255, 236, 212, 0.07) 60%, rgba(255, 236, 212, 0));
-}
+.nt-spot { position: absolute; left: 0; right: 0; top: -150px; bottom: 110px; pointer-events: none; z-index: -1; background: var(--nt-wall); }
 .nt-floor {
-  position: absolute; left: 0; right: 0; bottom: 0; height: 110px; pointer-events: none;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0) 26%), linear-gradient(180deg, #0c0a13, #050409);
-  box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.05);
+  position: absolute; left: 0; right: 0; top: calc(100% - 110px); bottom: -640px; pointer-events: none; z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(200, 182, 255, 0.2) 0, rgba(200, 182, 255, 0) 3px),
+    radial-gradient(58% 120px at 4% 0, rgba(170, 70, 216, 0.42), rgba(170, 70, 216, 0) 100%),
+    radial-gradient(58% 120px at 96% 0, rgba(44, 84, 214, 0.4), rgba(44, 84, 214, 0) 100%),
+    linear-gradient(180deg, #1d1a4c 0, #131138 70px, #0a0a1e 240px, #08081a 100%);
+}
+/* 광택 바닥의 세로 결 — 바닥선 가까이에만(아래까지 깔면 줄무늬로 보였다) */
+.nt-floor::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 150px;
+  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.022) 0 1px, rgba(255, 255, 255, 0) 1px 4px);
+  -webkit-mask-image: linear-gradient(to bottom, #000, transparent); mask-image: linear-gradient(to bottom, #000, transparent);
 }
 .nt-pool {
-  position: absolute; left: 50%; bottom: 72px; width: calc(var(--cw) * 1.5); height: 70px; transform: translateX(-50%);
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--glow) 70%, transparent), transparent);
-  filter: blur(14px); opacity: 0.75; pointer-events: none;
+  position: absolute; left: 50%; bottom: 82px; width: calc(var(--cw) * 1.3); height: 46px; transform: translateX(-50%);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--glow) 60%, transparent), transparent);
+  filter: blur(12px); opacity: 0.45; pointer-events: none;
 }
 /* ── 카드 ── */
 .nc {
@@ -294,12 +280,10 @@
   overflow: hidden; display: flex; flex-direction: column; font-family: var(--ko);
 }
 .np::before {
-  content: ""; position: absolute; inset: 0 0 30%; pointer-events: none;
-  background: radial-gradient(70px 36px at 50% 0%, rgba(255, 248, 236, 0.55), rgba(255, 236, 212, 0) 100%),
-    conic-gradient(from 164deg at 50% 0%, rgba(255, 240, 220, 0) 0deg, rgba(255, 240, 220, 0.06) 5deg, rgba(255, 244, 228, 0.15) 11deg, rgba(255, 248, 236, 0.2) 16deg, rgba(255, 244, 228, 0.15) 21deg, rgba(255, 240, 220, 0.06) 27deg, rgba(255, 240, 220, 0) 32deg),
-    conic-gradient(from 148deg at 50% 0%, rgba(255, 236, 212, 0) 0deg, rgba(255, 236, 212, 0.03) 10deg, rgba(255, 236, 212, 0.07) 22deg, rgba(255, 236, 212, 0.08) 32deg, rgba(255, 236, 212, 0.07) 42deg, rgba(255, 236, 212, 0.03) 54deg, rgba(255, 236, 212, 0) 64deg);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.75) 40%, rgba(0, 0, 0, 0.3) 78%, transparent 100%); mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.75) 40%, rgba(0, 0, 0, 0.3) 78%, transparent 100%);
-  filter: blur(3px);
+  /* 응시 화면은 바닥 없이 벽만 — 아래쪽을 바닥처럼 조금 밝게 */
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 26%; pointer-events: none;
+  background: linear-gradient(180deg, rgba(200, 182, 255, 0.14) 0, rgba(200, 182, 255, 0) 2px), linear-gradient(180deg, #1b194a, #0a0a1e);
+  opacity: 0.85;
 }
 .np-top { position: relative; display: grid; grid-template-columns: 40px 1fr; align-items: center; gap: 10px; }
 .np-back { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--nt-line); font-size: 18px; background: rgba(255, 255, 255, 0.04); color: var(--nt-ivory); cursor: pointer; }
@@ -360,7 +344,7 @@
   .nt-eyebrow { letter-spacing: 0.2em; font-size: 11px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .nd[data-reveal] *, .nt-spot > i, .np-stage, .np-gen-copy, .nw-rot, .nc-bottle .nc-layer { animation: none !important; }
+  .nd[data-reveal] *, .np-stage, .np-gen-copy, .nw-rot, .nc-bottle .nc-layer { animation: none !important; }
   .nc, .nd-slot, .nd-rig { transition: none; }
 }
 
@@ -386,15 +370,13 @@
 .nx-single { width: 540px; }
 .nx-spread {
   position: relative; width: 1080px; padding: 46px 70px 40px; box-sizing: border-box; overflow: hidden; color: #efe7da;
-  background: radial-gradient(70% 55% at 10% 0%, rgba(112, 58, 196, 0.32), transparent 62%),
-    radial-gradient(70% 60% at 100% 30%, rgba(34, 62, 168, 0.28), transparent 66%), linear-gradient(180deg, #0e0b17, #07060b);
+  --nt-wall: radial-gradient(62% 46% at -6% 44%, rgba(170, 70, 216, 0.6), rgba(170, 70, 216, 0) 72%),
+    radial-gradient(58% 52% at 106% 50%, rgba(44, 84, 214, 0.55), rgba(44, 84, 214, 0) 72%),
+    radial-gradient(130% 55% at 50% -12%, rgba(4, 4, 14, 0.75), rgba(4, 4, 14, 0) 62%);
+  background: linear-gradient(180deg, #0a0a1f 0%, #141340 62%, #0b0b24 100%);
   font-family: var(--rf-serif), serif;
 }
-.nx-spot { position: absolute; inset: 0;
-  background: radial-gradient(130px 64px at 50% 0%, rgba(255, 248, 236, 0.6), rgba(255, 236, 212, 0) 100%),
-    conic-gradient(from 164deg at 50% 0%, rgba(255, 240, 220, 0) 0deg, rgba(255, 240, 220, 0.06) 5deg, rgba(255, 244, 228, 0.15) 11deg, rgba(255, 248, 236, 0.2) 16deg, rgba(255, 244, 228, 0.15) 21deg, rgba(255, 240, 220, 0.06) 27deg, rgba(255, 240, 220, 0) 32deg),
-    conic-gradient(from 148deg at 50% 0%, rgba(255, 236, 212, 0) 0deg, rgba(255, 236, 212, 0.03) 10deg, rgba(255, 236, 212, 0.07) 22deg, rgba(255, 236, 212, 0.08) 32deg, rgba(255, 236, 212, 0.07) 42deg, rgba(255, 236, 212, 0.03) 54deg, rgba(255, 236, 212, 0) 64deg);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.75) 40%, rgba(0, 0, 0, 0.3) 78%, transparent 100%); mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.75) 40%, rgba(0, 0, 0, 0.3) 78%, transparent 100%); }
+.nx-spot { position: absolute; inset: 0; background: var(--nt-wall); }
 .nx-head { position: relative; text-align: center; }
 .nx-head p { display: flex; justify-content: space-between; margin: 0; font: 600 15px/1 var(--nf-garamond), serif; letter-spacing: 0.34em; text-transform: uppercase; color: #e3c58c; }
 .nx-head h2 { margin: 22px 0 0; font: 700 34px/1.3 var(--rf-serif), serif; letter-spacing: -0.02em; }
