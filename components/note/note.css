@@ -425,3 +425,44 @@
 .nx-pair .nx-card { filter: drop-shadow(0 22px 30px rgba(0, 0, 0, 0.55)); }
 .nx-pair figcaption { margin-top: 16px; text-align: center; font: 600 14px/1 var(--nf-garamond), serif; letter-spacing: 0.3em; text-transform: uppercase; color: #aeb1d8; }
 .nx-foot { position: relative; display: flex; justify-content: space-between; margin-top: 30px; font: 600 13px/1 var(--nf-garamond), serif; letter-spacing: 0.22em; text-transform: uppercase; color: #aeb1d8; }
+
+/* ── 로딩 ── */
+/* 카드 배경 그림을 만드는 동안(보통 한순간, 모은 카드처럼 여러 장이면 차례로) */
+.nc-loading {
+  position: absolute; inset: 0; overflow: hidden; display: grid; place-items: center; pointer-events: none;
+}
+.nc-loading::before {
+  content: ""; position: absolute; inset: 0 -60%;
+  background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.45) 50%, transparent 65%);
+  animation: nc-shimmer 1.3s ease-in-out infinite;
+}
+.nc-loading span {
+  position: relative; margin-top: 18cqw; padding: 1.4cqw 3.4cqw; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55); font: italic 600 3.4cqw/1 var(--en); letter-spacing: 0.08em; color: var(--ink);
+}
+@keyframes nc-shimmer { from { transform: translateX(-45%); } to { transform: translateX(45%); } }
+.nx .nc-loading { display: none; }
+
+/* 모은 카드를 불러오는 동안 — 덱 목록 자리 */
+.nt-skel { position: relative; height: calc(min(280px, 70vw) * 1.5873 * 0.56 + 150px); margin: 4px 0 0; }
+.nt-skel i {
+  position: absolute; bottom: 96px; left: 50%; width: calc(min(280px, 70vw) * 0.56); aspect-ratio: 63 / 100; border-radius: 14px;
+  background: linear-gradient(160deg, rgba(201, 184, 255, 0.22), rgba(120, 140, 255, 0.1));
+  border: 1px solid rgba(201, 184, 255, 0.18); animation: nt-breathe 1.4s ease-in-out infinite;
+}
+.nt-skel i:nth-child(1) { transform: translateX(-112%) scale(0.9); animation-delay: 0s; }
+.nt-skel i:nth-child(2) { transform: translateX(-50%); animation-delay: 0.18s; z-index: 1; }
+.nt-skel i:nth-child(3) { transform: translateX(12%) scale(0.9); animation-delay: 0.36s; }
+@keyframes nt-breathe { 50% { opacity: 0.45; } }
+
+/* 결과를 불러오는 동안(ResultView) */
+.nt-wait { display: grid; place-items: center; gap: 14px; min-height: 52vh; text-align: center; }
+.nt-wait p { margin: 0; font-size: 14px; color: var(--text-secondary, #6b6676); }
+.nt-wait i {
+  width: 34px; height: 34px; border-radius: 50%; border: 3px solid rgba(150, 47, 191, 0.18); border-top-color: #962fbf;
+  animation: nt-spin 0.9s linear infinite;
+}
+@keyframes nt-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .nc-loading::before, .nt-skel i, .nt-wait i { animation: none; }
+}

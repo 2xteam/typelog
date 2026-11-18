@@ -7,6 +7,7 @@ import { getGuestKey } from "@/lib/guestKey";
 import { useSession } from "@/lib/useSession";
 import { RunResult, type RunPayload } from "@/components/run/RunResult";
 import { NoteResult, type NotePayload } from "@/components/note/NoteResult";
+import "@/components/note/note.css";
 
 /**
  * 결과 화면.
@@ -228,7 +229,14 @@ export function ResultView({
       </Sheet>
     );
   }
-  if (!data) return null;
+  /* 불러오는 동안 — 전엔 빈 화면이었다(모바일에서 느릴 때 멈춘 것처럼 보였다) */
+  if (!data)
+    return (
+      <div className="nt-wait" role="status" aria-live="polite">
+        <i aria-hidden="true" />
+        <p>결과를 불러오는 중이에요…</p>
+      </div>
+    );
 
   const { result, quiz, attemptNo } = data;
   const t = result.type;

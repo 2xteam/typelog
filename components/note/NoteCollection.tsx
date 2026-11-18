@@ -90,7 +90,10 @@ export function NoteCollection({ slug }: { slug: string }) {
           <span>{data ? `${data.total} cards` : ""}</span>
         </p>
         <h1 className="nt-head">내가 모은 러닝 노트</h1>
-        <p className="nt-sub">{msg ?? (data && !cards.length ? "아직 카드가 없어요." : "회차마다 한 장씩 쌓여요. 눌러서 꺼내 봐요.")}</p>
+        <p className="nt-sub">
+          {msg ?? (!data ? "모은 카드를 불러오는 중이에요 ☕" : !cards.length ? "아직 카드가 없어요." : "회차마다 한 장씩 쌓여요. 눌러서 꺼내 봐요.")}
+        </p>
+        {!data && !msg ? <DeckSkeleton /> : null}
         {cards.length ? <NoteDeck cards={cards} start="list" onChange={setDeck} /> : null}
         {deck?.mode === "detail" ? (
           <p className="nt-sub">
@@ -108,6 +111,17 @@ export function NoteCollection({ slug }: { slug: string }) {
           </button>
         </div>
       </div>
+    </div>
+  );
+}
+
+/** 불러오는 동안 — 덱 목록 자리에 흐릿한 카드 세 장이 숨 쉬듯 깜빡인다 */
+export function DeckSkeleton() {
+  return (
+    <div className="nt-skel" role="status" aria-label="불러오는 중">
+      <i />
+      <i />
+      <i />
     </div>
   );
 }

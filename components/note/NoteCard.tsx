@@ -61,6 +61,7 @@ export const CardFront = memo(function CardFront({ card }: { card: NoteCardData 
   return (
     <div
       className="nc-face nc-front"
+      data-loading={meshImage ? undefined : "true"}
       style={
         {
           "--ink": theme.ink,
@@ -71,6 +72,12 @@ export const CardFront = memo(function CardFront({ card }: { card: NoteCardData 
         } as React.CSSProperties
       }
     >
+      {/* 배경 그림을 만드는 동안 — 빛이 지나가고 「블렌딩 중」(meshRaster 가 끝나면 사라진다) */}
+      {meshImage ? null : (
+        <div className="nc-loading" aria-hidden="true">
+          <span>Blending…</span>
+        </div>
+      )}
       {theme.scrim ? <div className="nc-scrim" style={{ background: theme.dark ? "#000" : "#fff", opacity: theme.scrim }} /> : null}
       <div className="nc-sheen" aria-hidden="true" />
       <header className="nc-top">
