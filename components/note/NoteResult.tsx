@@ -15,8 +15,8 @@ import "./note.css";
 /**
  * 러닝 노트 결과 — 무대 위 카드 한 장 + 아이덴티티 컬러 + 맛평가(긴 문장).
  *
- * - 카드 덱(→ NoteDeck.tsx): 목록과 상세가 한 무대. 오른쪽으로 밀면 뒷면, 왼쪽으로 밀면 줄 안으로(목록).
- *   회원은 지금까지의 카드가 좌우 줄로 놓이고, 누르면 그 카드를 꺼낸다. 처음 한 번 등장 연출
+ * - 카드: 이번 카드 한 장(→ NoteDeck.tsx, 목록 없음). 왼쪽으로 밀거나 누르면 뒤집힌다. 처음 한 번 등장 연출
+ * - 이름 바꾸기는 카드 바로 아래, 지난 카드는 「모은 카드 보기」(기록 화면의 덱 목록)
  * - 아이덴티티 컬러: 원판에서 내 색 자리를 비추기만 한다(바꿀 수 없다)
  * - 바꿀 수 있는 건 카드에 적힐 **이름**뿐이다. 성향 · 색은 그대로
  * → my-obsidian-vault / 50-Plans/K 러닝 노트.md
@@ -44,8 +44,6 @@ export type NotePayload = {
     outcomes: Outcome[];
   };
 };
-
-type Row = { attemptId: string; attemptNo: number; completedAt: string | null; code: string | null; name: string | null; pomp?: Record<string, number> | null; runner?: string | null };
 
 export function NoteResult({
   data,
@@ -94,49 +92,14 @@ export function NoteResult({
     if (!seen && !reduce) setReveal(true);
   }, [data.attemptId]);
 
-  /** 덱이 지금 보여 주는 것 — 머리글을 맞춘다 */
-  const [deck, setDeck] = useState<{ mode: "list" | "detail"; id: string; face: "front" | "back" }>({ mode: "detail", id: data.attemptId, face: "front" });
-  const onDeck = useCallback((s: { mode: "list" | "detail"; id: string; face: "front" | "back" }) => setDeck(s), []);
-
-  // 모은 카드 — 회원만 서버에 쌓인다. 비회원은 이 한 장
-  const [rows, setRows] = useState<Row[] | null>(null);
-  const [axesAll, setAxesAll] = useState<AxisDecl[] | null>(null);
-  useEffect(() => {
-    if (session.status !== "signed-in" || bare) return;
-    void (async () => {
-      try {
-        const res = await fetch(`/api/records/${data.quiz.slug}?limit=60`);
-        const json = await res.json();
-        if (res.ok && json.ok) {
-          setRows(json.attempts ?? []);
-          setAxesAll(json.quiz?.axes ?? null);
-        }
-      } catch {
-        /* 목록이 없어도 이 카드는 보인다 */
-      }
-    })();
-  }, [session.status, bare, data.quiz.slug]);
-
-  const cards: NoteCardData[] = useMemo(() => {
-    const others =
-      rows && axesAll
-        ? rows
-            .filter((r) => r.attemptId !== data.attemptId && r.code && r.pomp)
-            .map((r) =>
-              buildCard({
-                attemptId: r.attemptId,
-                attemptNo: r.attemptNo,
-                code: r.code!,
-                typeName: r.name ?? r.code!,
-                completedAt: r.completedAt,
-                runner: r.runner ?? name,
-                axes: axesAll,
-                pomp: r.pomp!,
-              }),
-            )
-        : [];
-    return [...(extraCards ?? []), ...others, card];
-  }, [rows, axesAll, card, data.attemptId, name, extraCards]);
+  /**
+   * 결과 화면은 **이번 카드 한 장**(사용자 2026-11-18) — 목록 없이 뒤집기만. 지난 카드는 「모은 카드 보기」(기록 화면).
+   * 개발용 미리보기는 extraCards 를 넘기지만 여기서는 쓰지 않는다.
+   */
+  void extraCards;
+  const [face, setFace] = useState<"front" | "back">("front");
+  const onDeck = useCallback((s: { face: "front" | "back" }) => setFace(s.face), []);
+  const signedIn = session.status === "signed-in";
 
   const [nameDraft, setNameDraft] = useState(name);
   const [nameMsg, setNameMsg] = useState<string | null>(null);
@@ -163,9 +126,38 @@ export function NoteResult({
   return (
     <div className={`nt ${noteFontVars}`}>
       <div className="nt-shell">
-        <DeckHead deck={deck} cards={cards} pageId={data.attemptId} subtitle={t?.subtitle ?? null} signedIn={session.status === "signed-in"} />
-        <NoteDeck cards={cards} initialId={data.attemptId} reveal={reveal} onChange={onDeck} />
-        {deck.mode === "detail" ? <NoteExport card={cards.find((c) => c.attemptId === deck.id) ?? card} face={deck.face} /> : null}
+        <p className="nt-eyebrow">
+          <span>Running Note</span>
+          <span>No. {String(data.attemptNo).padStart(2, "0")}</span>
+        </p>
+        <h1 className="nt-head">
+          <span>{card.code}</span> {card.typeName}
+        </h1>
+        {t?.subtitle ? <p className="nt-sub">{t.subtitle}</p> : null}
+        <NoteDeck cards={[card]} reveal={reveal} allowList={false} onChange={onDeck} />
+        {signedIn && !bare ? (
+          <div className="nt-ctrl">
+            <Link className="nt-chip" href={`/records/${data.quiz.slug}`}>
+              ▤ 모은 카드 보기
+            </Link>
+          </div>
+        ) : null}
+
+        {/* 카드에 적힐 이름 — 카드 바로 아래(사용자 2026-11-18) */}
+        {data.isOwner ? (
+          <div className="nt-namebox">
+            <p className="nt-panel-eyebrow">Runner · 카드에 적힐 이름</p>
+            <div className="nt-name">
+              <input value={nameDraft} maxLength={10} onChange={(e) => setNameDraft(e.target.value)} placeholder="러너" aria-label="카드에 적힐 이름" />
+              <button type="button" className="nt-chip nt-chip--main" onClick={() => void saveName()} disabled={nameDraft.trim() === name}>
+                바꾸기
+              </button>
+            </div>
+            <p className="nt-fine">이름만 바꿀 수 있어요. 성향과 색은 그대로예요.{nameMsg ? ` ${nameMsg}` : ""}</p>
+          </div>
+        ) : null}
+
+        <NoteExport card={card} face={face} />
       </div>
 
       <section className="nt-panel">
@@ -249,67 +241,6 @@ export function NoteResult({
         </section>
       ) : null}
 
-      {data.isOwner ? (
-        <section className="nt-panel nt-panel--slim">
-          <p className="nt-panel-eyebrow">Runner · 카드에 적힐 이름</p>
-          <div className="nt-name">
-            <input value={nameDraft} maxLength={10} onChange={(e) => setNameDraft(e.target.value)} placeholder="러너" aria-label="카드에 적힐 이름" />
-            <button type="button" className="nt-chip nt-chip--main" onClick={() => void saveName()} disabled={nameDraft.trim() === name}>
-              바꾸기
-            </button>
-          </div>
-          <p className="nt-fine">이름만 바꿀 수 있어요. 성향과 색은 그대로예요.{nameMsg ? ` ${nameMsg}` : ""}</p>
-        </section>
-      ) : null}
     </div>
-  );
-}
-
-/** 덱 위 머리글 — 상세면 그 카드의 코드 · 이름, 목록이면 모은 카드. 다른 회차를 꺼냈으면 그 결과로 가는 길 */
-function DeckHead({
-  deck,
-  cards,
-  pageId,
-  subtitle,
-  signedIn,
-}: {
-  deck: { mode: "list" | "detail"; id: string; face: "front" | "back" };
-  cards: NoteCardData[];
-  pageId: string;
-  subtitle: string | null;
-  signedIn: boolean;
-}) {
-  const c = cards.find((x) => x.attemptId === deck.id) ?? cards[cards.length - 1];
-  if (deck.mode === "list") {
-    return (
-      <>
-        <p className="nt-eyebrow">
-          <span>Running Note</span>
-          <span>{cards.length} cards</span>
-        </p>
-        <h1 className="nt-head">내가 모은 러닝 노트</h1>
-        <p className="nt-sub">{signedIn ? "회차마다 한 장씩 쌓여요. 눌러서 꺼내 봐요." : "가입하면 회차마다 카드가 쌓여요."}</p>
-      </>
-    );
-  }
-  return (
-    <>
-      <p className="nt-eyebrow">
-        <span>Running Note</span>
-        <span>No. {String(c?.attemptNo ?? 1).padStart(2, "0")}</span>
-      </p>
-      <h1 className="nt-head">
-        <span>{c?.code}</span> {c?.typeName}
-      </h1>
-      {c && c.attemptId !== pageId ? (
-        <p className="nt-sub">
-          <Link href={`/results/${c.attemptId}`} className="nt-link">
-            이 회차 자세히 보기 →
-          </Link>
-        </p>
-      ) : subtitle ? (
-        <p className="nt-sub">{subtitle}</p>
-      ) : null}
-    </>
   );
 }

@@ -48,10 +48,20 @@ export function buildCard(input: {
   };
 }
 
-/** 글자색은 메시에 쓴 색(중간색 포함) 전부에서 대비를 잰다 */
+/**
+ * 글자색은 메시에 쓴 색(중간색 포함) 전부에서 대비를 잰다.
+ * 카드마다 결과가 고정이라 한 번만 계산한다 — 카드를 끄는 동안 손가락이 움직일 때마다(앞 · 뒤 · 반사 4번)
+ * SVG 를 새로 만들어 모바일이 버벅였다(2026-11-18).
+ */
+const looks = new Map<string, NoteLook>();
 export const lookOf = (c: NoteCardData): NoteLook => {
+  const key = `${c.attemptId}|${c.picks.map((p) => p.color.hex).join(",")}`;
+  const hit = looks.get(key);
+  if (hit) return hit;
   const mesh = meshCss(c.picks, c.attemptId);
-  return { theme: cardTheme(mesh.fills.length ? mesh.fills : c.picks.map((p) => p.color.hex)), mesh };
+  const look = { theme: cardTheme(mesh.fills.length ? mesh.fills : c.picks.map((p) => p.color.hex)), mesh };
+  looks.set(key, look);
+  return look;
 };
 
 /** 이모티콘 · 변형 문자를 걷고 공백을 정리한다 */

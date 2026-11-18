@@ -82,15 +82,14 @@
   transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.45s ease;
   -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.48) 13.04%, rgba(0, 0, 0, 0.14) 30%, rgba(0, 0, 0, 0) 46%);
   mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.48) 13.04%, rgba(0, 0, 0, 0.14) 30%, rgba(0, 0, 0, 0) 46%);
-  /* 광택 바닥 — 가로로는 거의 안 퍼지고 세로로 길게 번진다(NoteDeck 의 SVG 필터 #nd-smear). 필터를 못 쓰면 흐리게만 */
-  filter: blur(2px);
-  filter: var(--smear, blur(2px));
+  /* 번짐 필터는 걷었다 — 3D 로 움직이는 큰 층에 필터를 걸면 모바일에서 매 프레임 다시 계산한다(끊김) */
 }
 .nd-flip {
   position: absolute; left: 25%; top: -73.91%; width: 50%; height: 86.96%;
   transform-origin: 50% 100%; transform: scaleY(-1); transform-style: preserve-3d;
 }
 .nd-rise, .nd-rig { transform-style: preserve-3d; }
+.nd-slot, .nd-mirror { will-change: transform; }
 /* 바닥에 닿는 그림자 — 돌지 않는다. 카드가 옆으로 돌수록 폭만 좁아진다(style 의 scaleX) */
 .nd-shadow {
   position: absolute; left: 6%; right: 6%; bottom: -10px; height: 22px; pointer-events: none;
@@ -140,7 +139,7 @@
   -webkit-mask-image: linear-gradient(to bottom, #000, transparent); mask-image: linear-gradient(to bottom, #000, transparent);
 }
 .nt-floor::after {
-  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 170px; mix-blend-mode: screen; opacity: 0.32;
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 170px; opacity: 0.22;
   background:
     linear-gradient(90deg, rgba(196, 110, 255, 0.6), rgba(140, 120, 240, 0.18) 50%, rgba(90, 130, 255, 0.5)),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.075 .0042' numOctaves='2' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.6 -.62'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23s%29'/%3E%3C/svg%3E");
@@ -215,7 +214,8 @@
 @keyframes nc-pour { from { transform: translateY(70px); } to { transform: none; } }
 .nc-blend ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2.2cqw; }
 .nc-blend li { display: grid; grid-template-columns: 4.4cqw 1fr; column-gap: 2cqw; align-items: center; }
-.nc-blend li i { width: 3.6cqw; height: 3.6cqw; border-radius: 50%; box-shadow: 0 0 0 0.45cqw var(--ink); grid-row: span 2; }
+/* 테두리는 border 로 — box-shadow 고리는 아이폰 이미지 저장에서 반쪽으로 깨졌다 */
+.nc-blend li i { box-sizing: border-box; width: 4.4cqw; height: 4.4cqw; border-radius: 50%; border: 0.45cqw solid var(--ink); grid-row: span 2; }
 .nc-blend li b { font: 700 3.8cqw/1.15 var(--ko); }
 .nc-blend li span { grid-column: 2; font: 500 3cqw/1.3 var(--ko); }
 .nc-roast { margin-top: 0; }
@@ -279,7 +279,8 @@
 .nt-fun { margin: 14px 0 0; padding: 12px 14px; border-radius: 14px; background: rgba(201, 184, 255, 0.07); font-size: 14px; line-height: 1.6; }
 .nt-heart { margin: 12px 0 0; font-size: 13px; line-height: 1.6; color: var(--nt-dim); }
 .nt-fine { margin: 10px 0 0; font-size: 12.5px; line-height: 1.6; color: var(--nt-dim); }
-.nt-name { display: flex; gap: 8px; margin-top: 12px; }
+.nt-namebox { position: relative; z-index: 2; margin-top: 16px; padding: 14px 4px 0; border-top: 1px solid var(--nt-line); }
+.nt-name { display: flex; gap: 8px; margin-top: 10px; }
 .nt-name input {
   flex: 1; min-width: 0; height: 46px; border-radius: 14px; border: 1px solid var(--nt-line); padding: 0 14px;
   background: rgba(255, 255, 255, 0.04); color: var(--nt-ivory); font: 600 16px var(--ko);

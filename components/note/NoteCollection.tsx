@@ -14,7 +14,7 @@ import "./note.css";
  * 기록 → 러닝 노트 — 지금까지 모은 카드를 좌우 줄로 놓고(덱 목록), 누르면 그 자리에서 꺼낸다(덱 상세).
  * 일반 질문지의 회차 목록(타임라인) 대신 이 화면을 쓴다.
  */
-type Row = { attemptId: string; attemptNo: number; completedAt: string | null; code: string | null; name: string | null; pomp?: Record<string, number> | null; runner?: string | null };
+type Row = { attemptId: string; attemptNo: number; completedAt: string | null; code: string | null; name: string | null; pomp?: Record<string, number> | null; runner?: string | null; strengths?: string[]; goodWith?: string[] };
 
 export function NoteCollection({ slug }: { slug: string }) {
   const router = useRouter();
@@ -75,6 +75,8 @@ export function NoteCollection({ slug }: { slug: string }) {
             runner: r.runner ?? "러너",
             axes: data!.axes,
             pomp: r.pomp!,
+            strengths: r.strengths,
+            goodWith: r.goodWith,
           }),
         ),
     [data],

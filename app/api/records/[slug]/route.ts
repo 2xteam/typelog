@@ -58,7 +58,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
     const codes = [...new Set(rows.map((a) => a.result?.code).filter(Boolean) as string[])];
     const types = await getResultTypeModel()
       .find({ quizId: quiz._id, code: { $in: codes } })
-      .select({ code: 1, name: 1, emoji: 1, color: 1 })
+      .select({ code: 1, name: 1, emoji: 1, color: 1, content: 1 })
       .lean();
     const byCode = new Map(types.map((t) => [t.code, t]));
 
@@ -91,6 +91,9 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
           ? {
               pomp: Object.fromEntries((a.result?.outcomes ?? []).map((o) => [o.id, o.pomp])),
               runner: (a.custom as { name?: string | null } | undefined)?.name?.trim() || nickname || "러너",
+              // 카드 뒷면 — 커핑 노트(강점 두 줄) · 잘 맞는 블렌드. 없으면 꺼낸 카드 뒷면이 비었다
+              strengths: ((t?.content as { strengths?: string[] } | undefined)?.strengths ?? []).slice(0, 2),
+              goodWith: ((t?.content as { goodWith?: string[] } | undefined)?.goodWith ?? []).slice(0, 2),
             }
           : {}),
       };

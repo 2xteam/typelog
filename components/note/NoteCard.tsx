@@ -1,8 +1,9 @@
 "use client";
 
-import { useId } from "react";
+import { memo, useId } from "react";
 import { AXIS_EN, poleByCode, rgb, mix, ROAST, roastLevel, type AxisPick } from "./palette";
 import { dotDate, lookOf, type NoteCardData } from "./view";
+import { useMeshImage } from "./meshRaster";
 
 /**
  * 러너 카드 — 정체성은 **커피 테이스팅 카드**, 보여 주는 방식만 카드사(→ NoteDeck.tsx).
@@ -18,7 +19,8 @@ const GRAIN =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E\")";
 
 /** 두께 판의 깊이 — 앞(+0.5) ~ 뒤(-0.5) 사이를 고르게 */
-const CORE = [-0.4, -0.27, -0.13, 0, 0.13, 0.27, 0.4];
+/* 판이 많을수록 모바일에서 무겁다 — 셋이면 옆에서 봐도 꽉 차 보인다 */
+const CORE = [-0.3, 0, 0.3];
 
 export function NoteCard({
   card,
@@ -48,8 +50,10 @@ export function NoteCard({
   );
 }
 
-export function CardFront({ card }: { card: NoteCardData }) {
+/* 앞 · 뒷면은 카드가 같으면 다시 그리지 않는다 — 끄는 동안엔 각도만 바뀐다(모바일 끊김) */
+export const CardFront = memo(function CardFront({ card }: { card: NoteCardData }) {
   const { theme, mesh } = lookOf(card);
+  const meshImage = useMeshImage(mesh.image);
   const letters = card.code.split("");
   return (
     <div
@@ -58,8 +62,8 @@ export function CardFront({ card }: { card: NoteCardData }) {
         {
           "--ink": theme.ink,
           backgroundColor: mesh.base,
-          // 메시에 입자가 들어 있어 앞면엔 GRAIN 을 따로 깔지 않는다
-          backgroundImage: mesh.image,
+          // 메시는 한 번 그린 그림으로(meshRaster) — SVG 필터 그대로면 모바일에서 끊긴다. 입자도 그 안에 있다
+          backgroundImage: meshImage ?? "none",
           backgroundSize: "100% 100%",
         } as React.CSSProperties
       }
@@ -97,9 +101,9 @@ export function CardFront({ card }: { card: NoteCardData }) {
       </footer>
     </div>
   );
-}
+});
 
-export function CardBack({ card, pour }: { card: NoteCardData; pour?: boolean }) {
+export const CardBack = memo(function CardBack({ card, pour }: { card: NoteCardData; pour?: boolean }) {
   const { theme } = lookOf(card);
   const level = roastLevel(card.picks);
   return (
@@ -153,7 +157,7 @@ export function CardBack({ card, pour }: { card: NoteCardData; pour?: boolean })
       </footer>
     </div>
   );
-}
+});
 
 /**
  * 내 단계 — 동그라미 자리에 들어가는 육각 메달(사용자 2026-11-18, 심플하게).
