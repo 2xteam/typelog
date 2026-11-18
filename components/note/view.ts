@@ -42,7 +42,8 @@ export function buildCard(input: {
     completedAt: input.completedAt,
     runner: input.runner,
     picks: pickAxes(input.axes, input.pomp, input.attemptId),
-    strengths: (input.strengths ?? []).slice(0, 2),
+    // 카드 뒷면 커핑 노트는 글자만 — 맛평가 문장의 이모티콘은 카드 아래 판에서만 보인다
+    strengths: (input.strengths ?? []).slice(0, 2).map(plain),
     goodWith: (input.goodWith ?? []).slice(0, 2),
   };
 }
@@ -52,6 +53,10 @@ export const lookOf = (c: NoteCardData): NoteLook => {
   const mesh = meshCss(c.picks, c.attemptId);
   return { theme: cardTheme(mesh.fills.length ? mesh.fills : c.picks.map((p) => p.color.hex)), mesh };
 };
+
+/** 이모티콘 · 변형 문자를 걷고 공백을 정리한다 */
+export const plain = (t: string) =>
+  t.replace(/[\p{Extended_Pictographic}\u{1F3FB}-\u{1F3FF}‍️]/gu, "").replace(/\s+/g, " ").trim();
 
 /** 「2026.11.18」 — 한국 시각 */
 export function dotDate(iso: string | null) {

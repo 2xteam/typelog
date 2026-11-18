@@ -199,7 +199,8 @@ export function NoteResult({
           <h2 className="nt-panel-title">
             {t.emoji} {t.name}
           </h2>
-          <p className="nt-panel-text">{t.content.summary}</p>
+          {/* 제목에 유형 이모지가 있으니 요약 첫머리의 같은 이모지는 뺀다 */}
+          <p className="nt-panel-text">{t.content.summary.startsWith(t.emoji) ? t.content.summary.slice(t.emoji.length).trim() : t.content.summary}</p>
           <dl className="nt-notes">
             <div>
               <dt>강점</dt>
@@ -242,7 +243,7 @@ export function NoteResult({
               </div>
             ) : null}
           </dl>
-          {t.content.funFact ? <p className="nt-fun">☕ {t.content.funFact}</p> : null}
+          {t.content.funFact ? <p className="nt-fun">{t.content.funFact}</p> : null}
           <p className="nt-heart">🫀 달리다 가슴이 아프거나 두근거리고 어지러우면 바로 멈추고 쉬어요. 기록보다 몸이 먼저예요.</p>
           {data.quiz.disclaimer ? <p className="nt-fine">{data.quiz.disclaimer}</p> : null}
         </section>
