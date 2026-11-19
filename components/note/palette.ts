@@ -329,6 +329,16 @@ export function glowOn(hex: string, bg = "#0B1430", target = 8) {
   return "#ffffff";
 }
 
+/**
+ * 카드 무대 바탕 — 첫 번째 색을 아주 어둡게(사용자 2026-11-19, 후보 5 「카드 첫 색의 어둠」). 강조 글자 · 버튼(glowOn)과
+ * 같은 계열이라 무대가 카드와 한 결이 된다. base 바탕 · top 바닥 윗단 · mid 바닥 중간
+ */
+export function stageOf(hex: string) {
+  const c = rgb(hex);
+  const dk = (k: number) => toHex(c.map((v) => v * k + 8 * (1 - k)) as RGB);
+  return { base: dk(0.1), top: dk(0.2), mid: dk(0.14) };
+}
+
 export const IVORY = "#f4ecdd";
 export const ESPRESSO = "#1d1510";
 /** 색 한 칸 위의 글자색 — 원판 라벨처럼 한 색 위에 올라가는 글자 */

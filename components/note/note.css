@@ -708,3 +708,11 @@ body:has(.nt), body:has(.np) { --bg-primary: linear-gradient(160deg, #E7DFEC 0%,
     radial-gradient(60% 90px at 50% 0, rgba(198, 208, 221, 0.1), rgba(198, 208, 221, 0) 100%),
     linear-gradient(180deg, #16224A 0, #0F1A3A 110px, #0B1430 240px, #0B1430 100%);
 }
+/* 무대 바탕 = 카드 첫 색의 어둠(사용자 2026-11-19, 후보 5). 값은 view.ts shellStyle — 없으면 네이비 */
+.nt-shell { background: var(--nt-wall), var(--st-base, #0B1430); }
+.nt-shell .nt-floor {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--nt-accent) 32%, transparent) 0, transparent 2px),
+    radial-gradient(60% 90px at 50% 0, rgba(198, 208, 221, 0.1), rgba(198, 208, 221, 0) 100%),
+    linear-gradient(180deg, var(--st-top, #16224A) 0, var(--st-mid, #0F1A3A) 110px, var(--st-base, #0B1430) 240px, var(--st-base, #0B1430) 100%);
+}

@@ -5,7 +5,8 @@ import { AppIcon } from "@/components/AppIcon";
 import { NoteDeck } from "./NoteDeck";
 import { buildCard } from "./view";
 import { noteFontVars } from "./fonts";
-import { glowOn, type AxisDecl } from "./palette";
+import { shellStyle } from "./view";
+import type { AxisDecl } from "./palette";
 import "./note.css";
 
 /**
@@ -37,7 +38,7 @@ export function SharedNote({ note, children }: { note: SharedNoteData; children:
 
   return (
     <div className={`nt ${noteFontVars}`}>
-      <div className="nt-shell" style={{ "--nt-accent": glowOn(card.picks[0]?.color.hex ?? "#D0FF41") } as React.CSSProperties}>
+      <div className="nt-shell" style={shellStyle(card.picks[0]?.color.hex)}>
         <div className="nt-share-brand">
           <AppIcon size={30} />
           {/* 어두운 무대라 앞 글자는 밝게(소개 화면 푸터의 myjane 워드마크와 같다) */}
