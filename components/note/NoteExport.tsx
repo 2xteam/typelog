@@ -22,7 +22,7 @@ import { kitOf, stageOf } from "./palette";
  */
 const FONT_VARS = ["--nf-garamond", "--rf-serif", "--rf-sans"];
 
-export function NoteExport({ card, face }: { card: NoteCardData; face: "front" | "back" }) {
+export function NoteExport({ card }: { card: NoteCardData; /** 예전엔 보던 면만 공유했다 — 지금은 쓰지 않는다 */ face?: "front" | "back" }) {
   const box = useRef<HTMLDivElement>(null);
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState<number | null>(null);
@@ -73,8 +73,9 @@ export function NoteExport({ card, face }: { card: NoteCardData; face: "front" |
     setBusy(true);
     setMsg(null);
     try {
-      const blob = await render("single");
-      const file = new File([blob], `${name}-${face}.png`, { type: "image/png" });
+      // 공유도 저장 이미지와 같은 앞뒤 양옆 한 장(사용자 2026-11-19 — 보던 면 한 장만 나가던 것을 바꿈)
+      const blob = await render("spread");
+      const file = new File([blob], `${name}.png`, { type: "image/png" });
       if (navigator.canShare?.({ files: [file] })) {
         await navigator.share({ files: [file] });
         setMsg(null);
@@ -121,9 +122,6 @@ export function NoteExport({ card, face }: { card: NoteCardData; face: "front" |
 
       {/* 화면 밖 — 찍기용 */}
       <div ref={box} className={`nx ${noteFontVars}`} aria-hidden="true">
-        <div className="nx-single">
-          <div className="nx-card">{face === "front" ? <CardFront card={card} /> : <CardBack card={card} />}</div>
-        </div>
         {/* 무대 색은 결과 화면과 같게(카드 첫 색의 어둠 · 밝은 강조, view.ts shellStyle). 위 제목(코드 · 이름)은 카드와 겹쳐 뺐다(사용자 2026-11-19) */}
         <div className="nx-spread" style={shellStyle(card.picks[0])}>
           <div className="nx-spot" />
