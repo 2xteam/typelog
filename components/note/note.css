@@ -696,3 +696,6 @@ body:has(.nt), body:has(.np) { --bg-primary: linear-gradient(160deg, #E7DFEC 0%,
 .nts.nt-panel::after { margin-top: 16px; }
 /* font 줄임말이 숫자 모양을 되돌린다 — 번호는 라이닝(가라몬드 기본은 키 낮은 옛 숫자) */
 .nts-label b, .nts-pairs b, .nt-head span { font-variant-numeric: lining-nums; }
+/* 섹션 라벨(01 STRENGTH · 강점 …)은 영문 · 숫자도 한글과 같은 Noto Sans(사용자 2026-11-19) */
+.nts-label { font-family: var(--ko); font-weight: 700; font-size: 11.5px; letter-spacing: 0.16em; }
+.nts-label b { font: 800 17px/1 var(--ko); letter-spacing: 0; font-variant-numeric: tabular-nums; }
