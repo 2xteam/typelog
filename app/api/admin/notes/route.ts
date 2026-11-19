@@ -8,7 +8,7 @@ import { getAttemptModel } from "@/models/Attempt";
 import { getQuizModel } from "@/models/Quiz";
 import { getResultTypeModel } from "@/models/ResultType";
 import { getUserModel } from "@/models/User";
-import { AXIS_EN, cardTheme, meshCss, pickAxes, ROAST, roastLevel, type AxisDecl } from "@/components/note/palette";
+import { AXIS_EN, cardTheme, meshCss, pickAxes, ROAST, roastLevel, type AxisDecl, lightestOf } from "@/components/note/palette";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -90,7 +90,7 @@ export async function GET(req: Request) {
       const pomp = Object.fromEntries((a.result?.outcomes ?? []).map((o) => [o.id, o.pomp]));
       const picks = pickAxes(axes, pomp, id);
       const mesh = meshCss(picks, id);
-      const theme = cardTheme(mesh.fills.length ? mesh.fills : picks.map((p) => p.color.hex));
+      const theme = cardTheme(mesh.fills.length ? mesh.fills : picks.map((p) => p.color.hex), lightestOf(picks[0]));
       const u = a.owner.kind === "user" ? userById.get(String(a.owner.userId)) : undefined;
       const custom = (a.custom ?? {}) as { name?: string | null };
       return {
@@ -107,6 +107,7 @@ export async function GET(req: Request) {
           scrim: theme.scrim,
           contrast: theme.worst,
           back: theme.back,
+          backInk: theme.backInk,
           meshImage: mesh.image,
           meshBase: mesh.base,
           roast: ROAST[roastLevel(picks)],

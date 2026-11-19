@@ -120,7 +120,7 @@ export const CardBack = memo(function CardBack({ card, pour }: { card: NoteCardD
   return (
     <div
       className="nc-face nc-back"
-      style={{ "--ink": theme.ink, backgroundColor: theme.back, backgroundImage: GRAIN } as React.CSSProperties}
+      style={{ "--ink": theme.backInk, backgroundColor: theme.back, backgroundImage: GRAIN } as React.CSSProperties}
     >
       <header className="nc-bhead">
         <p className="nc-eyebrow">Running Note</p>

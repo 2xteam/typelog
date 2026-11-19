@@ -1,5 +1,5 @@
 import type React from "react";
-import { cardTheme, glowOn, meshCss, pickAxes, stageOf, type AxisDecl, type AxisPick, type CardTheme } from "./palette";
+import { cardTheme, glowOn, lightestOf, meshCss, pickAxes, stageOf, type AxisDecl, type AxisPick, type CardTheme } from "./palette";
 
 /**
  * 카드 한 장에 필요한 것 — 결과 화면 · 모은 카드 · 공유 화면이 모두 이걸로 그린다.
@@ -60,7 +60,7 @@ export const lookOf = (c: NoteCardData): NoteLook => {
   const hit = looks.get(key);
   if (hit) return hit;
   const mesh = meshCss(c.picks, c.attemptId);
-  const look = { theme: cardTheme(mesh.fills.length ? mesh.fills : c.picks.map((p) => p.color.hex)), mesh };
+  const look = { theme: cardTheme(mesh.fills.length ? mesh.fills : c.picks.map((p) => p.color.hex), lightestOf(c.picks[0])), mesh };
   looks.set(key, look);
   return look;
 };
@@ -85,8 +85,9 @@ export function splitOutcomes(outcomes: { id: string; label?: string | null; pom
 }
 
 /** 카드 무대 색 — 첫 번째 색에서 강조(밝게) · 바탕(어둡게)을 뽑는다(사용자 2026-11-19). 색이 없으면 기본 네이비 · 라임 */
-export function shellStyle(hex: string | undefined): React.CSSProperties | undefined {
-  if (!hex) return undefined;
-  const st = stageOf(hex);
-  return { "--nt-accent": glowOn(hex), "--st-base": st.base, "--st-top": st.top, "--st-mid": st.mid } as React.CSSProperties;
+export function shellStyle(pick: AxisPick | undefined): React.CSSProperties | undefined {
+  if (!pick) return undefined;
+  const st = stageOf(pick.color.hex);
+  // 강조는 그 계열의 가장 옅은 색(이미 밝아 glowOn 은 대개 그대로 둔다) · 바탕은 고른 색을 어둡게
+  return { "--nt-accent": glowOn(lightestOf(pick) ?? pick.color.hex), "--st-base": st.base, "--st-top": st.top, "--st-mid": st.mid } as React.CSSProperties;
 }

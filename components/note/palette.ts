@@ -320,6 +320,12 @@ export function richer(hex: string) {
  * 네이비 무대 위 글자용 — 그 색을 흰색 쪽으로 밝혀 대비 target 이상이 되는 가장 진한 값(사용자 2026-11-19:
  * 무대의 라임 글자 → 첫 번째 색의 밝은 색). 이미 밝은 색은 그대로
  */
+/**
+ * 첫 번째 색 계열의 가장 옅은 색(색표 맨 오른쪽) — 무대 강조 글자 · 버튼 · 카드 뒷면 · 아래 판 바탕(사용자 2026-11-19).
+ * 고른 색 자체를 밝히면(glowOn) 주황 · 자홍 같은 진한 계열은 여전히 찐하게 보였다
+ */
+export const lightestOf = (p: AxisPick | undefined) => (p ? POLES[p.at.pole]?.colors[3]?.hex ?? p.color.hex : undefined);
+
 export function glowOn(hex: string, bg = "#0B1430", target = 8) {
   const c = rgb(hex);
   for (let t = 0; t <= 1; t += 0.04) {
@@ -356,15 +362,17 @@ export type CardTheme = {
   scrim: number;
   /** 가장 나쁜 곳의 대비(막을 덮은 뒤) — admin · 검사용 */
   worst: number;
-  /** 뒷면 바탕 — 첫 색을 막만큼 눌러 단색으로 */
+  /** 뒷면 바탕 — 첫 색 계열의 가장 옅은 색(색표 맨 오른쪽, 사용자 2026-11-19). 없으면 첫 색을 막만큼 눌러 단색으로 */
   back: string;
+  /** 뒷면 글자색 — 뒷면 바탕에 맞춰 IVORY/ESPRESSO 중 대비가 큰 쪽(앞면 ink 와 다를 수 있다) */
+  backInk: string;
 };
 
 /**
  * 4색 위에 어떤 글자색을 쓸지. 각 색 **모두**에서 대비를 재고 가장 나쁜 값으로 고른다
  * (메시라 글자 밑에 어느 색이 올지 모른다). 그래도 모자라면 막(scrim)을 덮어 맞춘다.
  */
-export function cardTheme(hexes: string[]): CardTheme {
+export function cardTheme(hexes: string[], backHex?: string): CardTheme {
   const cols = hexes.map(rgb);
   const worstOf = (ink: RGB, toward: RGB, k: number) => Math.min(...cols.map((c) => contrast(ink, mix(c, toward, k))));
   const cands = [
@@ -381,8 +389,8 @@ export function cardTheme(hexes: string[]): CardTheme {
       best = { ...c, scrim: Math.round(k * 100) / 100, worst: Math.round(w * 100) / 100 };
     }
   }
-  const back = toHex(mix(cols[0] ?? rgb("#222222"), best.toward, Math.min(0.75, best.scrim + 0.35)));
-  return { ink: best.ink, dark: best.dark, scrim: best.scrim, worst: best.worst, back };
+  const back = backHex ?? toHex(mix(cols[0] ?? rgb("#222222"), best.toward, Math.min(0.75, best.scrim + 0.35)));
+  return { ink: best.ink, dark: best.dark, scrim: best.scrim, worst: best.worst, back, backInk: backHex ? inkOn(backHex) : best.ink };
 }
 
 /** 응시 id → 고정된 난수열(mulberry32). 같은 카드면 언제 어디서 그려도 같은 값이 나온다 */

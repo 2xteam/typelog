@@ -38,7 +38,7 @@ export function SharedNote({ note, children }: { note: SharedNoteData; children:
 
   return (
     <div className={`nt ${noteFontVars}`}>
-      <div className="nt-shell" style={shellStyle(card.picks[0]?.color.hex)}>
+      <div className="nt-shell" style={shellStyle(card.picks[0])}>
         <div className="nt-share-brand">
           <AppIcon size={30} />
           {/* 어두운 무대라 앞 글자는 밝게(소개 화면 푸터의 myjane 워드마크와 같다) */}

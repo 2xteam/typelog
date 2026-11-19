@@ -127,11 +127,11 @@ export function NoteResult({
 
   /* 아래 판 둘은 카드 뒷면과 같은 바탕색 · 글자색 · 질감(사용자 2026-11-19) — 카드마다 다르다 */
   const backTheme = lookOf(card).theme;
-  const backStyle = { "--pb": backTheme.back, "--pi": backTheme.ink, backgroundImage: GRAIN } as React.CSSProperties;
+  const backStyle = { "--pb": backTheme.back, "--pi": backTheme.backInk, backgroundImage: GRAIN } as React.CSSProperties;
 
   return (
     <div className={`nt ${noteFontVars}`}>
-      <div className="nt-shell" style={shellStyle(card.picks[0]?.color.hex)}>
+      <div className="nt-shell" style={shellStyle(card.picks[0])}>
         <p className="nt-eyebrow">
           <span>Running Note</span>
           <span>No. {String(data.attemptNo).padStart(2, "0")}</span>
