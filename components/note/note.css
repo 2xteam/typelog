@@ -607,3 +607,32 @@ body:has(.nt), body:has(.np) { --bg-primary: linear-gradient(160deg, #E7DFEC 0%,
   .nt-head span { font-size: 26px; }
   .nt-panel { padding: 20px 18px 18px; }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   어두운 건 카드 무대뿐, 아래 판(아이덴티티 컬러 · 맛평가)은 밝게(사용자 2026-11-19 — 팔레트 페이지처럼).
+   팔레트 페이지(dev-preview/palette)의 밝은 칸과 같은 값: 흰 바탕 · 보랏빛 먹 글자 · 옅은 그림자.
+   라임은 밝은 바탕에서 글자로 못 쓴다(대비 1.1:1) → 판 안에서는 글자 대신 네이비, 라임은 면 표시로만
+   ══════════════════════════════════════════════════════════════════════════ */
+.nt-panel {
+  --nt-ivory: #241c2c;
+  --nt-dim: #5d5368;   /* 흰 바탕 위 7.4:1 */
+  --nt-accent: #0B1430;
+  --nt-line: rgba(36, 28, 44, 0.14);
+  --nt-rule: rgba(36, 28, 44, 0.16);
+  background: #FFFFFF; border: 0; color: var(--nt-ivory);
+  box-shadow: 0 10px 28px rgba(36, 28, 44, 0.1);
+}
+.nt-panel .nt-panel-eyebrow { color: #6E5C7A; } /* 흰 바탕 위 6.2:1 — 팔레트 페이지 라벨 톤 */
+.nt-panel .nt-panel-title { color: #0B1430; }
+.nt-panel .nt-panel-text { color: #241c2c; }
+.nt-panel::after { color: #6E5C7A; }
+/* 라임은 면 표시로 — 맛평가 한마디의 왼쪽 줄 · 색 칩 테두리 */
+.nt-fun { border-left: 3px solid #D0FF41; background: linear-gradient(90deg, rgba(208, 255, 65, 0.22), rgba(208, 255, 65, 0) 70%); padding: 8px 0 8px 14px; }
+.nt-swatches i { box-shadow: inset 0 0 0 1px rgba(36, 28, 44, 0.12); }
+.nt-panel .nt-notes dt { color: #0B1430; }
+/* 색 원판 — 밝은 바탕에서 조각 테두리 · 흐린 조각이 묻히지 않게 */
+.nt-panel .nw[data-lit] .nw-shade { opacity: 0.5; }
+.nt-panel .nw[data-lit] .nw-shade[data-on] path { stroke: #0B1430; stroke-width: 1.2; }
+.nt-panel .nw[data-lit] .nw-pole[data-on] > .nw-pole-seg { stroke: #0B1430; }
+/* 위 무대 그림자가 흰 판 머리에 회색으로 번지지 않게 판을 그림자 위로 */
+.nt-panel { position: relative; z-index: 1; }

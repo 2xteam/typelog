@@ -175,7 +175,8 @@ export function NoteResult({
               <i style={{ background: p.color.hex }} aria-hidden="true" />
               <div>
                 <b>{p.color.ko}</b>
-                <em>{p.color.en}</em>
+                {/* 새 색표는 이름이 영문 하나라 같으면 한 번만 */}
+                {p.color.en.toLowerCase() !== p.color.ko.toLowerCase() ? <em>{p.color.en}</em> : null}
                 <span>
                   {p.pole} · {p.strong ? "진하게" : "은은하게"} · {p.color.hex.toUpperCase()}
                 </span>
