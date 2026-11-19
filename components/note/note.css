@@ -531,3 +531,79 @@ body:has(.nt), body:has(.np) { --bg-primary: linear-gradient(160deg, #E7DFEC 0%,
 
 /* 한글은 카드 안쪽까지 Noto Sans KR(사용자 2026-11-18 — Noto Sans 또는 나눔스퀘어 중 Noto Sans). 영문은 카드 안 그대로 */
 .nc { --ko: var(--rf-sans), "Noto Sans KR", sans-serif; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   카드 밖 UI 를 카드 안쪽 패턴에 맞춘다(사용자 2026-11-19 — 바깥이 카드와 너무 따로 놀았다).
+   색은 위 디자이너 리뷰 그대로(네이비 + 라임), 생김새만 테이스팅 카드처럼:
+   · 영문 머리글 · 번호 · 유형 코드 · A/B 는 카드와 같은 세리프(Cormorant Garamond), 넓은 자간 대문자
+   · 채운 상자 · 둥근 알약 대신 가는 선(hairline)과 표 행 — 카드의 Runner/Who/… 표처럼
+   · 모서리는 카드처럼 작게(카드 4.6cqw ≈ 14px), 버튼도 알약이 아니라 카드 모서리
+   · 판 머리는 카드 뒷면 머리처럼 가운데 · 아래 줄, 판 끝은 「◆ … BY MYJANE」 줄
+   ══════════════════════════════════════════════════════════════════════════ */
+.nt, .np {
+  /* 한글이 섞이면 한글은 Noto Sans 로(가라몬드에 한글이 없어 기울임 · 대체 글꼴이 나온다) · 숫자는 라이닝 */
+  --nt-serif: var(--nf-garamond), var(--rf-sans), "Noto Sans KR", serif;
+  font-variant-numeric: lining-nums;
+  --nt-radius: 14px;
+  --nt-rule: rgba(198, 208, 221, 0.28);
+}
+/* 머리글 — 카드 윗줄(RUNNING NOTE · NO. 05)과 같은 글꼴 */
+.nt-eyebrow, .np-title, .nt-panel-eyebrow, .np-gen-eyebrow {
+  font-family: var(--nt-serif); font-weight: 600; letter-spacing: 0.24em; font-size: 12.5px; font-variant-numeric: lining-nums;
+}
+.nt-eyebrow { padding-bottom: 12px; border-bottom: 1px solid var(--nt-rule); }
+/* 유형 코드 — 카드 앞면 P S A F 처럼 세리프 · 넓은 자간 */
+.nt-head span { font: 500 30px/1 var(--nt-serif); letter-spacing: 0.42em; padding-left: 0.42em; margin-bottom: 10px; }
+
+/* 판 — 카드 뒷면처럼: 작은 모서리 · 가운데 머리 · 아래 가는 줄 */
+.nt-panel { border-radius: var(--nt-radius); padding: 24px 22px 20px; border-color: var(--nt-rule); }
+.nt-panel-eyebrow { text-align: center; padding-left: 0.3em; }
+.nt-panel > .nt-panel-title { text-align: center; padding-bottom: 14px; border-bottom: 1px solid var(--nt-rule); }
+.nt-panel > .nt-panel-lead, .nt-panel > .nt-panel-text { margin-top: 14px; }
+.nt-panel::after {
+  content: "◆  Blended by MyJane"; display: block; margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--nt-rule);
+  font: 600 11px/1 var(--nt-serif); letter-spacing: 0.26em; text-transform: uppercase; color: var(--nt-dim);
+}
+.nt-share-cta.nt-panel::after, .nt-panel--slim::after { display: none; }
+
+/* 내 네 가지 색 — 상자 넷 대신 카드 표처럼 줄로 */
+.nt-swatches { grid-template-columns: 1fr; gap: 0; margin-top: 4px; }
+.nt-swatches li { grid-template-columns: 34px 1fr; gap: 14px; padding: 12px 2px; border-radius: 0; background: none; border: 0; border-top: 1px solid var(--nt-rule); }
+.nt-swatches li:last-child { border-bottom: 1px solid var(--nt-rule); }
+.nt-swatches i { width: 34px; height: 34px; border-radius: 4px; }
+.nt-swatches div { display: grid; grid-template-columns: 1fr auto; column-gap: 10px; align-items: baseline; }
+.nt-swatches b { font: 600 15px/1.25 var(--nt-serif); letter-spacing: 0.08em; text-transform: uppercase; }
+.nt-swatches em { grid-column: 2; grid-row: 1; font: italic 500 14px/1.2 var(--nt-serif); }
+.nt-swatches span { grid-column: 1 / -1; font-size: 12px; }
+
+/* 맛평가 — 왼쪽 칸을 카드 표 머리처럼 */
+.nt-notes { margin-top: 16px; }
+.nt-notes div { border-top-color: var(--nt-rule); }
+.nt-notes div:last-child { border-bottom: 1px solid var(--nt-rule); }
+.nt-notes dt { font-weight: 700; font-size: 13px; letter-spacing: 0.06em; }
+.nt-fun { border-radius: 0; background: none; border-left: 2px solid var(--nt-accent); padding: 4px 0 4px 14px; }
+
+/* 이름 — 칸 대신 카드에 적히는 줄처럼 밑줄 하나 */
+.nt-namebox { border-top: 0; padding-top: 10px; }
+.nt-name input { border-radius: 0; border: 0; border-bottom: 1px solid var(--nt-rule); background: none; padding: 0 2px; font-size: 18px; }
+.nt-name input:focus { outline: 0; border-bottom-color: var(--nt-accent); }
+
+/* 버튼 · 칩 — 알약 대신 카드 모서리 */
+.nt-chip { border-radius: 10px; border-color: var(--nt-rule); background: none; }
+.nt-chip--main { background: var(--nt-grad); }
+.nt-btn { border-radius: 12px; font-weight: 700; letter-spacing: 0.02em; }
+.nt-actions .nt-btn { border-radius: 12px; }
+.nt-pills span { border-radius: 4px; border-color: var(--nt-rule); }
+
+/* 응시 — 보기 둘을 카드처럼: 작은 모서리, 위에 세리프 A/B 와 가는 줄 */
+.np-back { border-radius: 10px; border-color: var(--nt-rule); background: none; }
+.np-bar i { height: 2px; border-radius: 0; }
+.np-title { padding-top: 6px; }
+.np-tile { border-radius: var(--nt-radius); border-color: var(--nt-rule); background: rgba(255, 255, 255, 0.025); justify-content: flex-start; }
+.np-tile-mark { font: 500 40px/1 var(--nt-serif); padding-bottom: 12px; border-bottom: 1px solid var(--nt-rule); }
+.np-tile[data-chosen="true"] .np-tile-mark { border-bottom-color: var(--nt-accent); }
+.np-tile-text { margin-top: auto; }
+@media (max-width: 420px) {
+  .nt-head span { font-size: 26px; }
+  .nt-panel { padding: 20px 18px 18px; }
+}

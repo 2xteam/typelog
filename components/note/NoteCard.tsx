@@ -214,18 +214,27 @@ function Bottle({ picks, pour }: { picks: AxisPick[]; pour?: boolean }) {
   const sum = weights.reduce((a, b) => a + b, 0) || 1;
   // 물 — 4색이 아래(누구와)부터 위(마음)로 그라데이션으로 이어져 찬다(사용자 2026-11-18). 층 두께만큼 그 색이 길다
   const surface = bottom - full;
+  /*
+    층마다 제 색이 꽉 차고, 이웃 층과의 경계만 좁게 그라데이션으로 넘어간다(사용자 2026-11-19 — 경계가 너무 넓었다).
+    전에는 층 가운데끼리 이어서 층 전체가 섞이는 띠였다. 경계 띠 BAND(물 높이 단위)는 얇은 층의 40%를 넘지 않는다.
+    경계 한가운데에는 맑은 중간색(vividMix) — 그냥 이으면 회색빛으로 탁해진다
+  */
+  const BAND = 3.6;
+  const layers: { key: string; a: number; b: number; color: string }[] = [];
   let acc = 0;
-  const stops = picks.map((p, i) => {
+  picks.forEach((p, i) => {
     const h = (weights[i] / sum) * full;
-    const mid = acc + h / 2;
+    layers.push({ key: p.id, a: acc, b: acc + h, color: p.color.hex });
     acc += h;
-    return { key: p.id, offset: mid / full, color: p.color.hex };
   });
-  // 이웃한 두 색 사이에 맑은 중간색을 끼운다 — 그냥 이으면 가운데가 회색빛으로 탁해진다(vividMix)
-  const smooth = stops.flatMap((st, i) => {
-    const next = stops[i + 1];
-    if (!next) return [st];
-    return [st, { key: `${st.key}-m`, offset: (st.offset + next.offset) / 2, color: vividMix(st.color, next.color, 0.5) }];
+  const smooth: { key: string; offset: number; color: string }[] = [];
+  layers.forEach((l, i) => {
+    const prev = layers[i - 1];
+    const next = layers[i + 1];
+    const half = (o?: typeof l) => (o ? Math.min(BAND, 0.4 * Math.min(l.b - l.a, o.b - o.a)) / 2 : 0);
+    smooth.push({ key: `${l.key}-a`, offset: (l.a + half(prev)) / full, color: l.color });
+    smooth.push({ key: `${l.key}-b`, offset: (l.b - half(next)) / full, color: l.color });
+    if (next) smooth.push({ key: `${l.key}-m`, offset: l.b / full, color: vividMix(l.color, next.color, 0.5) });
   });
   /* 플랫 실루엣(사용자 2026-11-18) — 외곽선 · 그라데이션 · 반사광 · 물방울 · 안쪽 선 없이 면만.
      캡 · 칼라는 글자색 단색, 몸통은 옅은 면 위에 4색이 그라데이션으로 이어진 물 */
