@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { getGuestKey } from "@/lib/guestKey";
-import { loadPhoto, savePhoto } from "@/lib/runPhoto";
+import { loadPhoto, savePhoto, hasPhotoConsent, markPhotoConsent } from "@/lib/runPhoto";
 import type { RecordDetail } from "@/lib/record";
 import { runFontVars } from "./fonts";
 import { License } from "./License";
@@ -224,7 +224,8 @@ export function RunResult({
       const local = await loadPhoto(data.attemptId, kind);
       if (!alive) return;
       if (local) {
-        if (!done.current) await uploadPhoto(local, kind).then(() => (done.current = true)).catch(() => {});
+        // 동의하고 넣은 사진만 올린다 — 동의 표시가 없는 이전 기기 사진은 이 기기에서만
+        if (!done.current && hasPhotoConsent(data.attemptId)) await uploadPhoto(local, kind).then(() => (done.current = true)).catch(() => {});
         return;
       }
       if (!remoteUrl) return;
@@ -711,6 +712,7 @@ export function RunResult({
             <h1 className="run-q">사진을 넣어 주세요</h1>
             <PhotoStep
               onDone={async (blob, wide) => {
+                markPhotoConsent(data.attemptId);
                 await savePhoto(data.attemptId, blob, wide);
                 // 그 결과의 서버 사진도 바꾼다(얼굴 · 넓은 사진)
                 void uploadPhoto(blob).then(() => (photoUploaded.current = true)).catch(() => {});

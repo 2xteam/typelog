@@ -61,6 +61,26 @@ export async function loadPhoto(attemptId: string, kind: "face" | "wide" = "face
   }
 }
 
+/**
+ * 사진 저장 동의(사용자 2026-11-19) — 사진 단계의 「동의하고 …」 버튼을 누른 응시만 서버에 올린다.
+ * 비회원은 가입 동의가 없으니 여기서 받는다. 이 표시가 없는 기기 사진(이전 데이터)은 올리지 않는다
+ */
+export function markPhotoConsent(attemptId: string) {
+  try {
+    localStorage.setItem(`run-photo-consent:${attemptId}`, new Date().toISOString());
+  } catch {
+    /* 저장소를 못 쓰면 이번 화면에서 바로 올리는 것만 */
+  }
+}
+
+export function hasPhotoConsent(attemptId: string): boolean {
+  try {
+    return !!localStorage.getItem(`run-photo-consent:${attemptId}`);
+  } catch {
+    return false;
+  }
+}
+
 export async function deletePhoto(attemptId: string) {
   try {
     await tx("readwrite", (s) => s.delete(attemptId));

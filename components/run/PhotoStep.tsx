@@ -8,7 +8,8 @@ import { EYE_Y, FACE_H, FACE_OVAL, FACE_W, readImage } from "@/lib/runPhoto";
  *
  * 타원 안에 얼굴, 가로선에 눈을 맞추면 결과 화면 세 곳(자격증 · 신문 · 딱지)에 같은
  * 좌표로 들어간다. 끌어서 옮기고, 아래 막대나 두 손가락으로 키운다.
- * 사진은 기기에 둔다. 회원이면 결과 화면이 자격증 사진(얼굴 크롭)을 서버에도 올린다 → lib/runPhoto.ts · RunResult
+ * 사진은 그 결과에 저장한다(회원 · 비회원). 비회원은 가입 동의가 없으니 고르기 버튼이 곧 동의다 —
+ * 「동의하고 …」 를 눌러야 고를 수 있고, 건너뛰기는 그대로 둔다 → lib/runPhoto.ts markPhotoConsent
  */
 
 const VIEW = 0.5; // 화면은 출력(600×720)의 절반 크기로 보여 준다
@@ -126,13 +127,19 @@ export function PhotoStep({
           </svg>
         </div>
         <p className="run-sub">📸 얼굴이 잘 보이는 사진이면 더 재밌어요. 본인 사진을 넣어 주세요 😊</p>
-        <p className="run-fine">🔒 사진은 이 결과에 저장돼요. 다시 열어도 보이고, 회원이면 다른 기기에서도 보여요.</p>
+        <p className="run-fine">
+          🔒 사진은 결과 화면에 쓰려고 이 결과에 함께 저장돼요. 다시 열어도 보이고, 회원이면 다른 기기에서도 보여요.
+          지워 달라고 하면 바로 지워요 ·{" "}
+          <a href="https://www.myjane.co.kr/legal/privacy" target="_blank" rel="noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>
+            개인정보처리방침
+          </a>
+        </p>
         <div className="run-actions">
           <button type="button" className="run-btn run-btn--main" onClick={() => fileRef.current?.click()}>
-            사진 고르기
+            동의하고 사진 고르기
           </button>
           <button type="button" className="run-btn" onClick={() => camRef.current?.click()}>
-            지금 찍기
+            동의하고 지금 찍기
           </button>
           <button type="button" className="run-link" onClick={onSkip}>
             사진 없이 할게요

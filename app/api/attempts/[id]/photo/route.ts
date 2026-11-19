@@ -45,14 +45,21 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     const body = Buffer.from(await req.arrayBuffer());
     if (!body.length || body.length > (wide ? 3_000_000 : 1_500_000)) return badRequest("사진 크기가 맞지 않아요.");
 
-    const key = `typelog/run/${id}${wide ? "-wide" : ""}-${crypto.randomBytes(9).toString("hex")}.jpg`;
+    // 포털 키 규칙(<응시 id>-<영숫자 12~32>)에 맞춰 넓은 사진은 무작위 앞에 w 를 붙인다 → myjane/app/api/storage/typelog-photo
+    const key = `typelog/run/${id}-${wide ? "w" : ""}${crypto.randomBytes(9).toString("hex")}.jpg`;
     const { url } = await portal("POST", key, body);
 
     const c = (attempt.custom ?? {}) as { photoKey?: string; photoWideKey?: string };
     const old = wide ? c.photoWideKey : c.photoKey;
     await Attempt.updateOne(
       { _id: attempt._id },
-      { $set: wide ? { "custom.photoWideUrl": url, "custom.photoWideKey": key } : { "custom.photoUrl": url, "custom.photoKey": key } },
+      {
+        $set: {
+          ...(wide ? { "custom.photoWideUrl": url, "custom.photoWideKey": key } : { "custom.photoUrl": url, "custom.photoKey": key }),
+          // 사진 단계에서 「동의하고 …」 를 눌러야 올라온다 — 그 시각(마지막 동의)
+          "custom.photoConsentAt": new Date(),
+        },
+      },
     );
     if (old && old !== key) void portal("DELETE", old).catch(() => {});
 

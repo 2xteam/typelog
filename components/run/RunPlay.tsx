@@ -3,7 +3,7 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getGuestKey } from "@/lib/guestKey";
-import { savePhoto } from "@/lib/runPhoto";
+import { savePhoto, markPhotoConsent } from "@/lib/runPhoto";
 import { formatClock } from "@/lib/record";
 import { PhotoStep } from "@/components/run/PhotoStep";
 import { Generating } from "@/components/run/Generating";
@@ -17,7 +17,7 @@ import "./run.css";
  *
  * - 답은 매 화면 저장한다(일반 질문지와 같다). 단 **키·몸무게는 저장하지 않는다** —
  *   들고 있다가 끝낼 때 채점에만 보낸다(`transient`)
- * - 사진은 기기에 둔다. 회원이면 결과 화면에서 자격증 사진(얼굴 크롭)을 서버에도 올린다 → lib/runPhoto.ts
+ * - 사진은 기기에 두고, 동의했으면 결과 화면이 그 결과에도 올린다(회원 · 비회원) → lib/runPhoto.ts
  * - 대회 이름은 **신문이 나온 사람에게만** 묻는다. 서버가 돌려준 `preview` 로 정한다
  *
  * → my-obsidian-vault / 50-Plans/J 러닝 기록 급수.md
@@ -208,6 +208,7 @@ export function RunPlay({
             <h1 className="run-q">사진을 넣어 주세요</h1>
             <PhotoStep
               onDone={async (blob, wide) => {
+                markPhotoConsent(attemptId);
                 await savePhoto(attemptId, blob, wide);
                 go(1);
               }}
