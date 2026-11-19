@@ -181,12 +181,19 @@ export function NoteResult({
         <div className="nt-wheel">
           <Wheel picks={card.picks} mode="identity" />
         </div>
-        {/* 색 이름 · 성향은 카드 뒷면에 있다 — 여기서는 원판에서 찾기 쉬운 색 코드만 */}
-        <ul className="nt-hexes">
+        {/* 색 목록은 이전 줄 목록으로(사용자 2026-11-19 — 색 코드 한 줄보다 이쪽이 낫다) */}
+        <ul className="nt-swatches">
           {card.picks.map((p) => (
             <li key={p.id}>
               <i style={{ background: p.color.hex }} aria-hidden="true" />
-              {p.color.hex.toUpperCase()}
+              <div>
+                <b>{p.color.ko}</b>
+                {/* 새 색표는 이름이 영문 하나라 같으면 한 번만 */}
+                {p.color.en.toLowerCase() !== p.color.ko.toLowerCase() ? <em>{p.color.en}</em> : null}
+                <span>
+                  {p.pole} · {p.strong ? "진하게" : "은은하게"} · {p.color.hex.toUpperCase()}
+                </span>
+              </div>
             </li>
           ))}
         </ul>
