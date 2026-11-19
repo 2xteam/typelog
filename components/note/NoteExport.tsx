@@ -4,9 +4,9 @@ import { useCallback, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { embedFontCSS } from "@/components/run/RunResult";
 import { CardBack, CardFront } from "./NoteCard";
-import { dotDate, type NoteCardData } from "./view";
+import { dotDate, type NoteCardData, shellStyle } from "./view";
 import { noteFontVars } from "./fonts";
-import { kitOf } from "./palette";
+import { kitOf, stageOf } from "./palette";
 
 /**
  * 러닝 노트 이미지 — 화면 밖에 반듯하게(3D 없이) 그려 두고 찍는다(러닝 자격증과 같은 html-to-image 방식).
@@ -36,7 +36,7 @@ export function NoteExport({ card, face }: { card: NoteCardData; face: "front" |
     setProgress(3);
     const fontEmbedCSS = await embedFontCSS(node, (k) => setProgress(3 + Math.round(k * 67)), FONT_VARS);
     setProgress(72);
-    const opts = { pixelRatio: 2, fontEmbedCSS, backgroundColor: which === "single" ? undefined : "#0b0b24" };
+    const opts = { pixelRatio: 2, fontEmbedCSS, backgroundColor: which === "single" ? undefined : card.picks[0] ? stageOf(card.picks[0].color.hex).base : "#0b0b24" };
     const ua = navigator.userAgent;
     if (/Safari/.test(ua) && !/Chrome|CriOS|Android/.test(ua)) {
       await toBlob(node, opts);
@@ -46,9 +46,9 @@ export function NoteExport({ card, face }: { card: NoteCardData; face: "front" |
     setProgress(100);
     if (!blob) throw new Error("이미지를 만들지 못했어요.");
     return blob;
-  }, []);
+  }, [card]);
 
-  const name = `myjane-running-note-${card.code}-${String(card.attemptNo).padStart(2, "0")}`;
+  const name = `myjane-${kitOf(card.picks).id === "kids" ? "mbti" : "running"}-note-${card.code}-${String(card.attemptNo).padStart(2, "0")}`;
 
   const save = async () => {
     setBusy(true);
@@ -124,29 +124,27 @@ export function NoteExport({ card, face }: { card: NoteCardData; face: "front" |
         <div className="nx-single">
           <div className="nx-card">{face === "front" ? <CardFront card={card} /> : <CardBack card={card} />}</div>
         </div>
-        <div className="nx-spread">
+        {/* 무대 색은 결과 화면과 같게(카드 첫 색의 어둠 · 밝은 강조, view.ts shellStyle). 위 제목(코드 · 이름)은 카드와 겹쳐 뺐다(사용자 2026-11-19) */}
+        <div className="nx-spread" style={shellStyle(card.picks[0])}>
           <div className="nx-spot" />
           <header className="nx-head">
             <p>
               <span>{kitOf(card.picks).brand}</span>
               <span>No. {String(card.attemptNo).padStart(2, "0")}</span>
             </p>
-            <h2>
-              <b>{card.code}</b> {card.typeName}
-            </h2>
           </header>
           <div className="nx-pair">
             <figure>
               <div className="nx-card">
                 <CardFront card={card} />
               </div>
-              <figcaption>Front · 앞면</figcaption>
+              <figcaption>Front</figcaption>
             </figure>
             <figure>
               <div className="nx-card">
                 <CardBack card={card} />
               </div>
-              <figcaption>Back · 뒷면</figcaption>
+              <figcaption>Back</figcaption>
             </figure>
           </div>
           <footer className="nx-foot">

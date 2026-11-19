@@ -757,3 +757,16 @@ body:has(.nt), body:has(.np) { --bg-primary: linear-gradient(160deg, #E7DFEC 0%,
 .nc-bean { width: 9.5cqw; height: 9.5cqw; }
 /* 에스프레소 잔은 물병보다 키가 작아 머리 아래가 붙고 아래만 비었다 — 위를 더 띄운다(사용자 2026-11-19) */
 .nc-back .nc-blend:has(.nc-cupsvg) { margin-top: 11cqw; }
+
+/* 저장 이미지 — 결과 화면과 같은 패턴(사용자 2026-11-19 — 예전 보라 · 파랑 무대 · 라벤더 글자, 카드 세리프가 빠져 있었다) */
+/* 카드는 .nc 틀 없이 그려지므로 카드 글꼴 변수를 여기서 준다(.nc 와 같게) */
+.nx-card { --en: var(--nf-garamond), "Times New Roman", serif; --ko: var(--rf-sans), "Noto Sans KR", sans-serif; }
+.nx-spread {
+  --nt-wall: radial-gradient(70% 34% at 50% 0%, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0) 70%);
+  background: linear-gradient(180deg, var(--st-top, #16224A) 0%, var(--st-base, #0B1430) 46%, var(--st-base, #0B1430) 100%);
+  color: #F0EEE9;
+}
+.nx-head p { font-family: var(--nf-garamond), serif; font-size: 17px; letter-spacing: 0.3em; color: var(--nt-accent, #D0FF41); padding-bottom: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.16); font-variant-numeric: lining-nums; }
+.nx-pair { margin-top: 40px; }
+.nx-pair figcaption { font-family: var(--nf-garamond), serif; font-size: 15px; color: var(--nt-accent, #D0FF41); opacity: 0.85; }
+.nx-foot { white-space: nowrap; gap: 24px; color: rgba(240, 238, 233, 0.62); font-size: 12px; letter-spacing: 0.18em; }
