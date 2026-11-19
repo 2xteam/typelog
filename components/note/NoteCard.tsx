@@ -124,7 +124,6 @@ export const CardBack = memo(function CardBack({ card, pour }: { card: NoteCardD
     >
       <header className="nc-bhead">
         <p className="nc-eyebrow">Running Note</p>
-        <p className="nc-btitle">러닝 노트</p>
       </header>
 
       <section className="nc-blend">

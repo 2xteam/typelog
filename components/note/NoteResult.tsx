@@ -138,6 +138,11 @@ export function NoteResult({
           카드 밖: 원판 · 색 코드 · 요약 · 조심 · 한 잔 더 · 블렌드 설명 · 알고 보면 — 카드에 없는 것만
           무대 위에는 머리 대신 「모은 카드」 길 하나
         */}
+        {/* 맨 위 띠는 살린다(사용자 2026-11-19) — 제목 · 코드 · 소개만 걷는다 */}
+        <p className="nt-eyebrow">
+          <span>Running Note</span>
+          <span>No. {String(data.attemptNo).padStart(2, "0")}</span>
+        </p>
         <h1 className="sr-only">
           {card.code} {card.typeName}
         </h1>
