@@ -660,9 +660,9 @@ body:has(.nt), body:has(.np) { --bg-primary: linear-gradient(160deg, #E7DFEC 0%,
 /* ── 맛평가 판(사용자 2026-11-19 — 단조로움을 걷는다). 색은 .nt-panel--back(카드 뒷면) 그대로 ── */
 .nts { padding: 26px 22px 20px; }
 .nts .nt-panel-eyebrow { text-align: left; padding-left: 0; }
-.nts-hero { margin-top: 18px; display: grid; gap: 10px; justify-items: start; }
-.nts-emoji { font-size: 40px; line-height: 1; }
-.nts-title { margin: 0; font: 800 27px/1.28 var(--ko); letter-spacing: -0.035em; word-break: keep-all; color: var(--pi); }
+.nts-hero { margin-top: 16px; display: flex; align-items: center; gap: 10px; }
+.nts-emoji { flex: none; font-size: 28px; line-height: 1; }
+.nts-title { margin: 0; font: 800 clamp(19px, 5.6vw, 25px)/1.3 var(--ko); letter-spacing: -0.035em; word-break: keep-all; color: var(--pi); }
 .nts-lead {
   position: relative; margin: 16px 0 0; padding: 0 0 22px; border-bottom: 1px solid var(--nt-rule);
   font: 500 18px/1.65 var(--ko); letter-spacing: -0.02em; word-break: keep-all; color: var(--pi);
