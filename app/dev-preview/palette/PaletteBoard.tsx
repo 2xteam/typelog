@@ -2,9 +2,10 @@
 
 import { useMemo, useState } from "react";
 import { NoteDeck } from "@/components/note/NoteDeck";
-import { buildCard } from "@/components/note/view";
+import { buildCard, lookOf, shellStyle } from "@/components/note/view";
+import { GRAIN } from "@/components/note/NoteCard";
 import { noteFontVars } from "@/components/note/fonts";
-import { POLES } from "@/components/note/palette";
+import { POLES, glowOn, lightestOf, stageOf } from "@/components/note/palette";
 import "@/components/note/note.css";
 import "./palette.css";
 
@@ -59,6 +60,7 @@ export function PaletteBoard({ quiz }: { quiz: Q }) {
       goodWith: type.content.goodWith,
     });
   }, [quiz, type, strong, key]);
+  const theme = lookOf(card).theme;
 
   const allRandom = () => {
     setCode(quiz.resultTypes[Math.floor(Math.random() * quiz.resultTypes.length)].code);
@@ -125,6 +127,13 @@ export function PaletteBoard({ quiz }: { quiz: Q }) {
             </button>
           </div>
 
+          <p className="pp-label">STAGE · 무대 · 뒷면에 쓰는 색(첫 색 계열에서)</p>
+          <div className="pp-chips pp-chips--col">
+            <Chip name="강조 · 버튼" hex={glowOn(lightestOf(card.picks[0]) ?? "#D0FF41")} role="첫 색 계열의 가장 옅은 색" />
+            <Chip name="카드 뒷면 · 아래 판" hex={theme.back} role={`글자 ${theme.backInk}`} />
+            {card.picks[0] ? <Chip name="무대 바탕" hex={stageOf(card.picks[0].color.hex).base} role="고른 첫 색을 아주 어둡게" /> : null}
+          </div>
+
           <p className="pp-label">IDENTITY COLOR · 이 카드의 색</p>
           <div className="pp-chips pp-chips--col">
             {card.picks.map((p) => (
@@ -134,7 +143,8 @@ export function PaletteBoard({ quiz }: { quiz: Q }) {
         </section>
 
         <section className="nt pp-nt">
-          <div className="nt-shell">
+          {/* 결과 화면과 같은 무대 색 · 버튼 · 아래 판(사용자 2026-11-19 — 팔레트에서도 같게) */}
+          <div className="nt-shell" style={shellStyle(card.picks[0])}>
             <p className="nt-eyebrow">
               <span>Running Note</span>
               <span>No. 05</span>
@@ -144,7 +154,35 @@ export function PaletteBoard({ quiz }: { quiz: Q }) {
             </h1>
             <p className="nt-sub">{type.subtitle}</p>
             <NoteDeck key={card.attemptId + card.code + strong.join("")} cards={[card]} allowList={false} />
+            <div className="nt-namebox">
+              <p className="nt-panel-eyebrow">Runner · 카드에 적힐 이름</p>
+              <div className="nt-name">
+                <input defaultValue="미리보기" aria-label="카드에 적힐 이름(보기용)" />
+                <button type="button" className="nt-chip nt-chip--main">바꾸기</button>
+              </div>
+            </div>
+            <div className="nt-actions">
+              <button type="button" className="nt-btn nt-btn--main">공유하기</button>
+              <button type="button" className="nt-btn nt-btn--ghost">이미지 저장</button>
+            </div>
           </div>
+          <section className="nt-panel nt-panel--back" style={{ "--pb": theme.back, "--pi": theme.backInk, backgroundImage: GRAIN } as React.CSSProperties}>
+            <p className="nt-panel-eyebrow">Identity Color · 아이덴티티 컬러</p>
+            <h2 className="nt-panel-title">성향이 내린 나만의 네 가지 색</h2>
+            <ul className="nt-swatches">
+              {card.picks.map((p) => (
+                <li key={p.id}>
+                  <i style={{ background: p.color.hex }} aria-hidden="true" />
+                  <div>
+                    <b>{p.color.ko}</b>
+                    <span>
+                      {p.pole} · {p.strong ? "진하게" : "은은하게"} · {p.color.hex.toUpperCase()}
+                    </span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
         </section>
       </div>
 
