@@ -55,6 +55,8 @@ type Payload = {
   result: Result;
   /** 게스트 본인이 볼 때만 온다 → lib/claimToken.ts */
   claimToken?: string | null;
+  /** 본인 기록인가 — 비회원도 이 브라우저 식별자로 본인이면 true. 결과 링크 공유는 본인만 */
+  isOwner?: boolean;
 };
 
 export function ResultView({
@@ -241,47 +243,30 @@ export function ResultView({
   const { result, quiz, attemptNo } = data;
   const t = result.type;
   const isGuest = session.status !== "signed-in";
-  /**
-   * 가입 후 이 결과로 돌아와야 이관 표를 쓸 수 있다. 그래서 `next` 에 표를 실어
-   * 둔다 — 운영 도메인에서는 포털로 갔다 돌아오므로 주소 말고는 실을 곳이 없다.
-   */
-  const signupHref = data.claimToken
-    ? `/login?next=${encodeURIComponent(`/results/${attemptId}?claim=${data.claimToken}`)}`
-    : `/login?next=${encodeURIComponent(`/results/${attemptId}`)}`;
+  /* 가입 안내는 결과 화면에 두지 않는다 — 참여하려고 할 때만(공유 링크 첫 화면, 사용자 2026-11-19) */
 
   /** 러닝 노트 — 무대 위 커피 카드(러너 블렌드) */
   if (quiz.experience === "note") {
     return (
       <>
-        {isGuest && !bare ? (
-          <Sheet tone="gold" eyebrow="SAVE" headline="가입하면 카드가 쌓여요">
-            <p className="lead">가입하지 않으면 이 러닝 노트는 다시 볼 수 없어요. 가입하면 회차마다 카드가 모여요.</p>
-            <div style={{ marginTop: 16 }}>
-              <Link className="btn btn--primary" href={signupHref}>
-                가입하고 모으기 →
-              </Link>
-            </div>
-          </Sheet>
-        ) : null}
         <NoteResult data={data as unknown as NotePayload} bare={bare} />
         <Sheet center eyebrow="AGAIN" headline={bare ? "다른 타입도 궁금하죠?" : "다시 해볼까요?"}>
           <div style={{ display: "flex", gap: 10, marginTop: 18, justifyContent: "center", flexWrap: "wrap" }}>
             <Link className="btn btn--primary" href="/types">
               {bare ? "타입로그 둘러보기 →" : "다른 것도 해보기 →"}
             </Link>
-            {!isGuest ? (
-              <>
-                <button type="button" className="btn btn--ghost" onClick={() => void share()}>
-                  결과 링크 만들기
-                </button>
-                {!bare ? (
-                  <Link className="btn btn--ghost" href={`/records/${quiz.slug}`}>
-                    모은 카드 보기
-                  </Link>
-                ) : null}
-              </>
+            {data.isOwner ? (
+              <button type="button" className="btn btn--ghost" onClick={() => void share()}>
+                결과 링크 공유하기
+              </button>
+            ) : null}
+            {!isGuest && !bare ? (
+              <Link className="btn btn--ghost" href={`/records/${quiz.slug}`}>
+                모은 카드 보기
+              </Link>
             ) : null}
           </div>
+          {data.isOwner ? <p className="result-fineprint">🔗 이 결과는 링크로 공유할 수 있어요. 받은 사람도 바로 참여해 볼 수 있어요.</p> : null}
           {shareBox}
           {!bare ? <p className="result-fineprint">🔗 결과 링크로는 이 러닝 노트 카드가 보여요.</p> : null}
         </Sheet>
@@ -293,16 +278,6 @@ export function ResultView({
   if (quiz.experience === "running") {
     return (
       <>
-        {isGuest && !bare ? (
-          <Sheet tone="gold" eyebrow="SAVE" headline="가입하면 기록이 쌓여요">
-            <p className="lead">가입하지 않으면 이 기록은 다시 볼 수 없어요.</p>
-            <div style={{ marginTop: 16 }}>
-              <Link className="btn btn--primary" href={signupHref}>
-                가입하고 기록하기 →
-              </Link>
-            </div>
-          </Sheet>
-        ) : null}
         <RunResult data={data as unknown as RunPayload} bare={bare} registerBeforeShare={registerBeforeShare} />
         {/* 다른 질문지와 같은 마무리 — 결과 링크로 들어온 사람은 가입 없이 해 볼 수 있다 */}
         <Sheet center eyebrow="AGAIN" headline={bare ? "다른 타입도 궁금하죠?" : "다시 해볼까요?"}>
@@ -310,19 +285,18 @@ export function ResultView({
             <Link className="btn btn--primary" href="/types">
               {bare ? "타입로그 둘러보기 →" : "다른 것도 해보기 →"}
             </Link>
-            {!isGuest ? (
-              <>
-                <button type="button" className="btn btn--ghost" onClick={() => void share()}>
-                  결과 링크 만들기
-                </button>
-                {!bare ? (
-                  <Link className="btn btn--ghost" href="/records">
-                    내 기록 보기
-                  </Link>
-                ) : null}
-              </>
+            {data.isOwner ? (
+              <button type="button" className="btn btn--ghost" onClick={() => void share()}>
+                결과 링크 공유하기
+              </button>
+            ) : null}
+            {!isGuest && !bare ? (
+              <Link className="btn btn--ghost" href="/records">
+                내 기록 보기
+              </Link>
             ) : null}
           </div>
+          {data.isOwner ? <p className="result-fineprint">🔗 이 결과는 링크로 공유할 수 있어요. 받은 사람도 바로 참여해 볼 수 있어요.</p> : null}
           {shareBox}
           {!bare ? (
             <p className="result-fineprint">
@@ -336,16 +310,6 @@ export function ResultView({
 
   return (
     <>
-      {isGuest ? (
-        <Sheet tone="gold" eyebrow="SAVE" headline="가입하여 나의 타입을 기록해요">
-          <p className="lead">가입하지 않으면 기록은 다시볼 수 없어요.</p>
-          <div style={{ marginTop: 16 }}>
-            <Link className="btn btn--primary" href={signupHref}>
-              가입하고 기록하기 →
-            </Link>
-          </div>
-        </Sheet>
-      ) : null}
 
       <Sheet
         tone="dark"
@@ -445,19 +409,18 @@ export function ResultView({
           <Link className="btn btn--primary" href="/types">
             {bare ? "타입로그 둘러보기 →" : "다른 것도 해보기 →"}
           </Link>
-          {!isGuest ? (
-            <>
-              <button type="button" className="btn btn--ghost" onClick={() => void share()}>
-                결과 링크 만들기
-              </button>
-              {!bare ? (
-                <Link className="btn btn--ghost" href="/records">
-                  내 기록 보기
-                </Link>
-              ) : null}
-            </>
+          {data.isOwner ? (
+            <button type="button" className="btn btn--ghost" onClick={() => void share()}>
+              결과 링크 공유하기
+            </button>
+          ) : null}
+          {!isGuest && !bare ? (
+            <Link className="btn btn--ghost" href="/records">
+              내 기록 보기
+            </Link>
           ) : null}
         </div>
+        {data.isOwner ? <p className="result-fineprint">🔗 이 결과는 링크로 공유할 수 있어요. 받은 사람도 바로 참여해 볼 수 있어요.</p> : null}
         {shareBox}
         {/* 그 브랜드가 만들었거나 관련된 것처럼 읽히면 안 된다 */}
         {quiz.disclaimer ? <p className="result-fineprint">{quiz.disclaimer}</p> : null}

@@ -97,6 +97,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
         ? {
             issuer: attempt.custom.issuer ?? null,
             photoUrl: attempt.custom.photoUrl ?? null,
+            photoWideUrl: attempt.custom.photoWideUrl ?? null,
             holo: attempt.custom.holo ?? null,
             name: attempt.custom.name ?? null,
           }

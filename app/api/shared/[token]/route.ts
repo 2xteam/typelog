@@ -10,6 +10,7 @@ import { canStart } from "@/lib/schedule";
 import { ageLabel } from "@/lib/ageRange";
 import { flattenItems } from "@/lib/scoring";
 import type { Item } from "@/lib/quizTypes";
+import { signClaim } from "@/lib/claimToken";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -125,6 +126,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ token: s
       },
       open,
       guestUsed: await guestAlreadyPlayed(req, quiz._id),
+      /** 이 브라우저 · 계정으로 이 질문지에 참여한 기록 — 첫 화면에서 「기록 보기」로 그 결과로 보낸다 */
+      past: await pastRecord(req, quiz._id),
       notice: check.ok ? null : check.reason === "before_start" ? check.notice : "지금은 할 수 없어요.",
       friend: type
         ? { name: type.name, subtitle: type.subtitle ?? null, emoji: type.emoji }
@@ -147,4 +150,31 @@ async function guestAlreadyPlayed(req: Request, quizId: unknown): Promise<boolea
   if (await getViewer(req)) return false;
   const n = await getAttemptModel().countDocuments({ "owner.guestKey": guestKey, quizId });
   return n > 0;
+}
+
+/**
+ * 지난 참여 기록(사용자 2026-11-19) — 공유 링크로 다시 왔을 때 「기록 보기」 로 이전 결과(자격증)에 보낸다.
+ *   비회원  이 브라우저 식별자(guestKey)로 끝낸 가장 최근 응시. 가입하면 그 기록이 계정으로 옮겨지도록 이관 표도 준다
+ *   회원    끝낸 응시가 있으면 기록 화면으로
+ */
+async function pastRecord(req: Request, quizId: unknown): Promise<{ kind: "guest" | "member"; attemptId: string; claimToken: string | null; count: number } | null> {
+  const viewer = await getViewer(req);
+  const Attempt = getAttemptModel();
+  if (viewer) {
+    const filter = { "owner.userId": viewer.userId, quizId, status: "completed" as const };
+    const [latest, count] = await Promise.all([
+      Attempt.findOne(filter).sort({ completedAt: -1 }).select({ _id: 1 }).lean(),
+      Attempt.countDocuments(filter),
+    ]);
+    return latest ? { kind: "member", attemptId: String(latest._id), claimToken: null, count } : null;
+  }
+  const guestKey = new URL(req.url).searchParams.get("guestKey");
+  if (!guestKey) return null;
+  const filter = { "owner.kind": "guest", "owner.guestKey": guestKey, quizId, status: "completed" as const };
+  const [latest, count] = await Promise.all([
+    Attempt.findOne(filter).sort({ completedAt: -1 }).select({ _id: 1 }).lean(),
+    Attempt.countDocuments(filter),
+  ]);
+  if (!latest) return null;
+  return { kind: "guest", attemptId: String(latest._id), claimToken: signClaim(String(latest._id), guestKey), count };
 }

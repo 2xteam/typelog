@@ -32,10 +32,10 @@ export type RunPayload = {
   attemptId: string;
   /** 결과 링크가 이미 있나 — 있으면 사진을 바꿀 때 다시 올린다 */
   shared?: boolean;
-  custom?: { issuer?: string | null; photoUrl?: string | null; holo?: string | null } | null;
+  custom?: { issuer?: string | null; photoUrl?: string | null; photoWideUrl?: string | null; holo?: string | null } | null;
   /** 본인 기록인가 — 게스트도 본인이면 true */
   isOwner?: boolean;
-  /** 회원 기록인가 — 회원이면 자격증 사진을 서버에도 둔다 */
+  /** 회원 기록인가 */
   memberOwned?: boolean;
   attemptNo: number;
   ownerName?: string | null;
@@ -193,58 +193,56 @@ export function RunResult({
   const style = chosenStyle;
   const exportRef = useRef<HTMLDivElement>(null);
 
-  /** 자격증 사진(얼굴 크롭 JPEG)을 올린다 — 결과 링크의 자격증에 보이게 */
+  /** 사진을 그 결과에 올린다 — 얼굴 크롭(자격증 · 딱지 · 결과 링크) · 넓은 사진(신문 · 수배) */
   const uploadPhoto = useCallback(
-    async (blob?: Blob | null) => {
-      const b = blob ?? (await loadPhoto(data.attemptId));
+    async (blob?: Blob | null, kind: "face" | "wide" = "face") => {
+      const b = blob ?? (await loadPhoto(data.attemptId, kind));
       if (!b) return;
-      const res = await fetch(`/api/attempts/${data.attemptId}/photo?guestKey=${encodeURIComponent(getGuestKey())}`, {
-        method: "POST",
-        headers: { "content-type": "image/jpeg" },
-        body: b,
-      });
-      if (!res.ok) throw new Error("자격증 사진을 올리지 못했어요. 링크에는 사진 없이 보여요.");
+      const res = await fetch(
+        `/api/attempts/${data.attemptId}/photo?guestKey=${encodeURIComponent(getGuestKey())}${kind === "wide" ? "&kind=wide" : ""}`,
+        { method: "POST", headers: { "content-type": "image/jpeg" }, body: b },
+      );
+      if (!res.ok) throw new Error("사진을 저장하지 못했어요. 이 기기에서는 그대로 보여요.");
     },
     [data.attemptId],
   );
-  /** 이번 화면에서 이미 올렸나 — 같은 사진을 두 번 올리지 않는다 */
+  /** 이미 서버에 있나 — 같은 사진을 두 번 올리지 않는다 */
   const photoUploaded = useRef(!!data.custom?.photoUrl);
+  const wideUploaded = useRef(!!data.custom?.photoWideUrl);
   const runnerInput = useRef<HTMLInputElement>(null);
 
   /*
-    사진 — 기기(IndexedDB)에 먼저 찾는다. 회원 기록이면(사용자 2026-11-19):
-      · 기기에 있는데 서버에 아직 없으면 바로 올린다 → 다른 기기 · 기록 화면에서 다시 들어와도 보인다
-      · 기기에 없으면(다른 기기 · 브라우저) 서버에 둔 사진을 같은 출처로 받아 쓴다
-    서버에는 자격증용 얼굴 크롭 한 장만 있다. 신문 · 수배의 넓은 사진은 기기에만 — 없으면 얼굴 사진으로 그린다
+    사진은 그 결과에 저장한다 — 회원 · 비회원 모두(사용자 2026-11-19). 기기 저장소(IndexedDB)는 지워질 수 있다.
+      · 기기에 있는데 서버에 아직 없으면 올린다
+      · 기기에 없으면 서버에 둔 사진을 같은 출처로 받아 쓰고 기기에도 다시 둔다
+    본인만(canEdit). 결과 링크로 보는 남은 링크용 자격증 사진(공유 API)만 본다
   */
   useEffect(() => {
-    if (!data.memberOwned || !canEdit) return;
+    if (!canEdit) return;
     let alive = true;
-    void loadPhoto(data.attemptId).then(async (blob) => {
+    const sync = async (kind: "face" | "wide", done: { current: boolean }, remoteUrl: string | null | undefined, set: (u: string) => void) => {
+      const local = await loadPhoto(data.attemptId, kind);
       if (!alive) return;
-      if (blob) {
-        if (!photoUploaded.current) {
-          await uploadPhoto(blob)
-            .then(() => (photoUploaded.current = true))
-            .catch(() => {});
-        }
+      if (local) {
+        if (!done.current) await uploadPhoto(local, kind).then(() => (done.current = true)).catch(() => {});
         return;
       }
-      if (!data.custom?.photoUrl) return;
+      if (!remoteUrl) return;
       try {
-        const res = await fetch(`/api/attempts/${data.attemptId}/photo?guestKey=${encodeURIComponent(getGuestKey())}`);
+        const res = await fetch(`/api/attempts/${data.attemptId}/photo?guestKey=${encodeURIComponent(getGuestKey())}${kind === "wide" ? "&kind=wide" : ""}`);
         if (!res.ok || !alive) return;
         const remote = await res.blob();
-        setPhoto(await blobToDataUrl(remote));
-        await savePhoto(data.attemptId, remote);
+        set(await blobToDataUrl(remote));
       } catch {
         /* 사진 없이 그린다 */
       }
-    });
+    };
+    void sync("face", photoUploaded, data.custom?.photoUrl, setPhoto);
+    void sync("wide", wideUploaded, data.custom?.photoWideUrl, setPhotoWide);
     return () => {
       alive = false;
     };
-  }, [data.memberOwned, data.attemptId, data.custom?.photoUrl, canEdit, uploadPhoto]);
+  }, [data.attemptId, data.custom?.photoUrl, data.custom?.photoWideUrl, canEdit, uploadPhoto]);
 
   // 사진 — 이 기기에 있는 것
   useEffect(() => {
@@ -714,11 +712,9 @@ export function RunResult({
             <PhotoStep
               onDone={async (blob, wide) => {
                 await savePhoto(data.attemptId, blob, wide);
-                // 회원 기록 · 결과 링크가 이미 있으면 서버의 자격증 사진도 바꾼다
-                if (data.memberOwned || data.shared || photoUploaded.current)
-                  void uploadPhoto(blob)
-                    .then(() => (photoUploaded.current = true))
-                    .catch(() => {});
+                // 그 결과의 서버 사진도 바꾼다(얼굴 · 넓은 사진)
+                void uploadPhoto(blob).then(() => (photoUploaded.current = true)).catch(() => {});
+                if (wide) void uploadPhoto(wide, "wide").then(() => (wideUploaded.current = true)).catch(() => {});
                 setPhoto(await blobToDataUrl(blob));
                 setPhotoWide(wide ? await blobToDataUrl(wide) : null);
                 setEditPhoto(false);

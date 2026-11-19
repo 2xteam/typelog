@@ -126,7 +126,7 @@ export function PhotoStep({
           </svg>
         </div>
         <p className="run-sub">📸 얼굴이 잘 보이는 사진이면 더 재밌어요. 본인 사진을 넣어 주세요 😊</p>
-        <p className="run-fine">🔒 사진은 이 기기에 저장돼요. 회원이면 자격증 사진(얼굴 부분)이 계정에도 저장돼 다른 기기에서도 보여요.</p>
+        <p className="run-fine">🔒 사진은 이 결과에 저장돼요. 다시 열어도 보이고, 회원이면 다른 기기에서도 보여요.</p>
         <div className="run-actions">
           <button type="button" className="run-btn run-btn--main" onClick={() => fileRef.current?.click()}>
             사진 고르기

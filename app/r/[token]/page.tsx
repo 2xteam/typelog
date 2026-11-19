@@ -35,6 +35,8 @@ type Shared = {
   open: boolean;
   /** 비회원 한 번을 이미 썼나 — 그러면 처음부터 가입 안내 */
   guestUsed?: boolean;
+  /** 이 브라우저(비회원) · 계정(회원)으로 이 질문지에 참여한 기록 */
+  past?: { kind: "guest" | "member"; attemptId: string; claimToken: string | null; count: number } | null;
   notice: string | null;
   friend: { name: string; subtitle: string | null; emoji: string } | null;
   /** 러닝 기록 — 자격증으로 보여 준다 */
@@ -42,6 +44,31 @@ type Shared = {
   note?: SharedNoteData | null;
   run?: { attemptId: string; attemptNo: number; code: string; detail: RecordDetail; completedAt: string | null; name: string; issuer?: string | null; photoUrl?: string | null; holo?: string | null } | null;
 };
+
+/**
+ * 참여하려고 할 때만 가입을 권한다(사용자 2026-11-19).
+ *   가입하기  비회원 지난 기록이 있으면 가입 뒤 그 결과로 돌아와 계정으로 옮긴다(이관 표)
+ *   기록 보기 비회원은 이 링크 안의 지난 결과, 회원은 기록 화면
+ */
+function PastActions({ token, past, slug, btn, ghost }: { token: string; past: Shared["past"]; slug: string; btn: string; ghost: string }) {
+  const next = past?.kind === "guest" && past.claimToken ? `/results/${past.attemptId}?claim=${past.claimToken}` : `/r/${token}`;
+  const recordHref = past ? (past.kind === "guest" ? `/r/${token}/result/${past.attemptId}` : `/records/${slug}`) : null;
+  return (
+    <div style={{ display: "flex", gap: 10, marginTop: 14, justifyContent: "center", flexWrap: "wrap" }}>
+      <a className={btn} href={signupUrl(next)}>
+        가입하고 더 하기 →
+      </a>
+      {recordHref ? (
+        <a className={ghost} href={recordHref}>
+          📜 지난 기록 보기
+        </a>
+      ) : null}
+      <a className={ghost} href={loginUrl(next)}>
+        이미 회원이면 로그인
+      </a>
+    </div>
+  );
+}
 
 export default function SharedLanding({ params }: { params: Promise<{ token: string }> }) {
   const { token } = use(params);
@@ -62,9 +89,9 @@ export default function SharedLanding({ params }: { params: Promise<{ token: str
           return;
         }
         setData(json);
-        // 비회원 한 번을 이미 썼으면 처음부터 안내 + 가입 버튼
+        // 비회원 한 번을 이미 썼으면 처음부터 안내 + 가입 · 기록 보기 버튼
         if (json.guestUsed) {
-          setMsg("가입하지 않으면 한 번만 해볼 수 있어요. 가입하면 다시 할 수 있어요.");
+          setMsg("이미 참여한 기록이 있어요. 가입하면 더 할 수 있어요 — 지난 기록도 계정으로 옮겨져요.");
           setNeedSignup(true);
         }
       } catch {
@@ -120,6 +147,14 @@ export default function SharedLanding({ params }: { params: Promise<{ token: str
           {data.quiz.estimatedMinutes ? <span>약 {data.quiz.estimatedMinutes}분</span> : null}
           <span>가입 없이 한 번</span>
         </div>
+        {data.past?.kind === "member" ? (
+          <p className="nt-panel-lead">
+            📜 이 질문지에 {data.past.count}번 참여했어요 ·{" "}
+            <a className="nt-link" href={`/records/${data.quiz.slug}`}>
+              지난 기록 보기
+            </a>
+          </p>
+        ) : null}
         {data.open && !needSignup ? (
           <div style={{ marginTop: 20 }}>
             <button type="button" className="nt-btn" onClick={() => void start()} disabled={busy}>
@@ -130,16 +165,7 @@ export default function SharedLanding({ params }: { params: Promise<{ token: str
           <p className="nt-fine">{data.notice ?? "지금은 할 수 없어요."}</p>
         )}
         {msg ? <p className="nt-fine">{msg}</p> : null}
-        {needSignup ? (
-          <div style={{ display: "flex", gap: 10, marginTop: 14, justifyContent: "center", flexWrap: "wrap" }}>
-            <a className="nt-btn" href={signupUrl(`/r/${token}`)}>
-              가입하고 다시 하기 →
-            </a>
-            <a className="nt-btn nt-btn--ghost" href={loginUrl(`/r/${token}`)}>
-              이미 회원이면 로그인
-            </a>
-          </div>
-        ) : null}
+        {needSignup ? <PastActions token={token} past={data.past ?? null} slug={data.quiz.slug} btn="nt-btn" ghost="nt-btn nt-btn--ghost" /> : null}
         {data.quiz.disclaimer ? <p className="nt-fine">{data.quiz.disclaimer}</p> : null}
       </SharedNote>
     );
@@ -216,6 +242,12 @@ export default function SharedLanding({ params }: { params: Promise<{ token: str
           <span className="pill">가입 없이 한 번</span>
         </div>
 
+        {data.past?.kind === "member" ? (
+          <p className="lead" style={{ marginTop: 12 }}>
+            📜 이 질문지에 {data.past.count}번 참여했어요 ·{" "}
+            <a href={`/records/${data.quiz.slug}`}>지난 기록 보기</a>
+          </p>
+        ) : null}
         {data.open && !needSignup ? (
           <div style={{ marginTop: 20 }}>
             <button
@@ -234,16 +266,7 @@ export default function SharedLanding({ params }: { params: Promise<{ token: str
         )}
 
         {msg ? <p className="quiz-msg">{msg}</p> : null}
-        {needSignup ? (
-          <div style={{ display: "flex", gap: 10, marginTop: 14, justifyContent: "center", flexWrap: "wrap" }}>
-            <a className="btn btn--primary" href={signupUrl(`/r/${token}`)}>
-              가입하고 다시 하기 →
-            </a>
-            <a className="btn btn--ghost" href={loginUrl(`/r/${token}`)}>
-              이미 회원이면 로그인
-            </a>
-          </div>
-        ) : null}
+        {needSignup ? <PastActions token={token} past={data.past ?? null} slug={data.quiz.slug} btn="btn btn--primary" ghost="btn btn--ghost" /> : null}
         {data.quiz.disclaimer ? (
           <p className="result-fineprint">{data.quiz.disclaimer}</p>
         ) : null}

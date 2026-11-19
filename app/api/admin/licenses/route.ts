@@ -178,7 +178,10 @@ export async function POST(req: Request) {
     const match = { _id: { $in: ids.map((id) => new mongoose.Types.ObjectId(id)) }, quizId: quiz._id };
     const targets = await Attempt.find(match).select({ custom: 1 }).lean();
     const keys = targets
-      .map((a) => (a.custom as { photoKey?: string | null } | undefined)?.photoKey)
+      .flatMap((a) => {
+        const c = (a.custom ?? {}) as { photoKey?: string | null; photoWideKey?: string | null };
+        return [c.photoKey, c.photoWideKey];
+      })
       .filter((k): k is string => !!k);
 
     const r = await Attempt.deleteMany(match);
