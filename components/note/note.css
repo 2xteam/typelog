@@ -222,11 +222,15 @@
 .nc-bottle-rib-dark { stroke: color-mix(in srgb, var(--ink) 45%, transparent); stroke-width: 0.5; }
 .nc-bottle-capshine { stroke: rgba(255, 255, 255, 0.9); stroke-width: 0.9; stroke-linecap: round; }
 .nc-bottle-seam { fill: none; stroke: color-mix(in srgb, var(--ink) 35%, transparent); stroke-width: 0.45; stroke-linejoin: round; }
-.nc-bottle-text { font: 700 4.4px var(--en); letter-spacing: 1.1px; fill: color-mix(in srgb, var(--ink) 55%, transparent); }
+.nc-bottle-text { font: 800 4.4px var(--rf-sans), sans-serif; letter-spacing: 1.1px; fill: color-mix(in srgb, var(--ink) 60%, transparent); }
 .nc-bottle-drop { fill: rgba(255, 255, 255, 0.75); stroke: color-mix(in srgb, var(--ink) 25%, transparent); stroke-width: 0.25; }
 .nc-bottle-shine { fill: none; stroke: rgba(255, 255, 255, 0.75); stroke-width: 1.4; stroke-linecap: round; }
 .nc-bottle-line { fill: none; stroke: var(--ink); stroke-width: 0.9; }
-.nc-bottle[data-pour] .nc-layer { animation: nc-pour 0.7s cubic-bezier(0.3, 0.7, 0.3, 1) both; }
+/* 플랫 실루엣 물병 */
+.nc-bottle-solid { fill: var(--ink); }
+.nc-bottle-solid--soft { fill: color-mix(in srgb, var(--ink) 55%, transparent); }
+.nc-bottle-body { fill: color-mix(in srgb, var(--ink) 12%, transparent); }
+.nc-bottle[data-pour] .nc-layer { animation: nc-pour 1.2s cubic-bezier(0.3, 0.7, 0.3, 1) both; }
 @keyframes nc-pour { from { transform: translateY(70px); } to { transform: none; } }
 .nc-blend ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2.2cqw; }
 .nc-blend li { display: grid; grid-template-columns: 4.4cqw 1fr; column-gap: 2cqw; align-items: center; }
@@ -251,11 +255,9 @@
 .nc-roast li span { font: 600 2.8cqw/1 var(--ko); white-space: nowrap; }
 .nc-roast li[data-on="true"] span { font-weight: 800; }
 /* 내 단계 메달 — 심플한 육각 스틸. 판 가운데가 선 높이에 오도록 위를 끌어올린다 */
-.nc-medal { position: relative; z-index: 1; width: 10.5cqw; height: 10.5cqw; flex: none; margin: -3.46cqw -2.15cqw -0.84cqw; overflow: visible;
-  filter: drop-shadow(0 0.3cqw 0.4cqw rgba(0, 0, 0, 0.22)); }
-.nc-medal-plate { stroke: #6f777f; stroke-width: 0.6; stroke-linejoin: round; }
-.nc-medal-line { fill: none; stroke: rgba(255, 255, 255, 0.7); stroke-width: 0.6; stroke-linejoin: round; }
-.nc-medal-t { font: 700 5.4px var(--en); letter-spacing: 0.6px; fill: #3c434a; }
+.nc-medal { position: relative; z-index: 1; width: 10.5cqw; height: 10.5cqw; flex: none; margin: -3.46cqw -2.15cqw -0.84cqw; overflow: visible; }
+.nc-medal-plate { fill: #A3ABB5; }
+.nc-medal-t { font: 800 5.4px var(--rf-sans), sans-serif; letter-spacing: 0.6px; fill: #ffffff; }
 .nc-cup { margin-top: 0; min-height: 15cqw; }
 .nc-cup p:not(.nc-label) { margin: 0 0 0.8cqw; font: 500 3.4cqw/1.45 var(--ko); word-break: keep-all; }
 .nc-bfoot { padding-top: 2.6cqw; border-top: 0.3cqw solid var(--rule); display: flex; justify-content: space-between; align-items: baseline; gap: 2cqw; }
@@ -480,3 +482,52 @@
 @media (prefers-reduced-motion: reduce) {
   .nc-loading::before, .nt-skel i, .nt-wait i { animation: none; }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   디자이너 리뷰(2026-11-18) — 화면 전체를 단색 + 단톤으로.
+   · 무대 · 선택 화면 · 판 · 버튼: 미드나잇 네이비 한 색, 포인트는 볼트 라임 하나(보라 · 파랑 섞임을 걷음)
+   · 카드(앞 · 뒷면)는 예전 디자인 그대로 — 섞임 배경 · 세리프(사용자 2026-11-18). 색만 새 색표
+   · 카드 바깥 글꼴은 Noto Sans
+   · 페이지 바탕은 보라를 톤 다운해 핑크와 섞은 차분하고 경쾌한 바탕
+   (이 블록이 위쪽 값들을 덮는다 — 되돌리려면 이 블록만 걷으면 된다)
+   ══════════════════════════════════════════════════════════════════════════ */
+body:has(.nt), body:has(.np) { --bg-primary: linear-gradient(160deg, #E7DFEC 0%, #EFD9E2 55%, #E4DCEE 100%); background: #E9DFEA; }
+.nt, .np, .nt-making {
+  --nt-ivory: #F0EEE9;
+  --nt-dim: #C6D0DD; /* #0B1430 위 11.6:1 */
+  --nt-accent: #D0FF41; /* #0B1430 위 16:1 */
+  --nt-line: rgba(198, 208, 221, 0.2);
+  --nt-grad: #D0FF41;
+  --nt-glow: rgba(208, 255, 65, 0.22);
+  --nt-wall: radial-gradient(70% 34% at 50% 0%, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0) 70%);
+  --nt-bg: var(--nt-wall), #0B1430;
+  --en: var(--rf-sans), "Noto Sans KR", sans-serif;
+  --ko: var(--rf-sans), "Noto Sans KR", sans-serif;
+}
+/* 포인트 위 글자는 네이비 */
+.nt-btn, .nt-chip--main, .nt-actions .nt-btn--main { color: #0B1430; box-shadow: 0 10px 26px var(--nt-glow); }
+.nt-btn--ghost, .nt-actions .nt-btn--ghost { color: var(--nt-ivory); background: transparent; border: 1px solid rgba(198, 208, 221, 0.32); box-shadow: none; }
+.nt-making-bar i { background: #D0FF41; }
+.np-tile[data-chosen="true"] { background: rgba(208, 255, 65, 0.1); border-color: #D0FF41; box-shadow: 0 0 0 1px #D0FF41, 0 14px 34px rgba(208, 255, 65, 0.16); }
+.np-tile:hover:not(:disabled) { border-color: rgba(208, 255, 65, 0.55); }
+.np::before { background: linear-gradient(180deg, rgba(198, 208, 221, 0.12) 0, rgba(198, 208, 221, 0) 2px), linear-gradient(180deg, #121D40, #0B1430); }
+.nt-panel { background: #0F1A3A; border-color: var(--nt-line); }
+.nt-head span { color: var(--nt-accent); }
+.nt-skel i { background: rgba(198, 208, 221, 0.12); border-color: rgba(198, 208, 221, 0.16); }
+/* 무대 바닥 — 단색 네이비, 바닥선 한 줄과 아래로 어두워지기만 */
+.nt-floor {
+  background:
+    linear-gradient(180deg, rgba(208, 255, 65, 0.3) 0, rgba(208, 255, 65, 0) 2px),
+    radial-gradient(60% 90px at 50% 0, rgba(198, 208, 221, 0.1), rgba(198, 208, 221, 0) 100%),
+    linear-gradient(180deg, #16224A 0, #0F1A3A 110px, #0B1430 240px, #0B1430 100%);
+}
+.nt-floor::after, .nt-floor::before { display: none; }
+.nt-pool { opacity: 0.25; }
+/* 색 원판 — 가운데 · 표시도 단톤 + 라임 */
+.nw-hole { fill: #0B1430; stroke: rgba(198, 208, 221, 0.3); }
+.nw-center, .nw-mark { fill: #D0FF41; }
+
+/* 뒷면 로스팅 원 — 네이비 위에서도 보이게 테두리 */
+
+/* 한글은 카드 안쪽까지 Noto Sans KR(사용자 2026-11-18 — Noto Sans 또는 나눔스퀘어 중 Noto Sans). 영문은 카드 안 그대로 */
+.nc { --ko: var(--rf-sans), "Noto Sans KR", sans-serif; }

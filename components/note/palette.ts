@@ -122,54 +122,59 @@ const DEEP: Pole[] = [
 ];
 
 /** 밝은 톤 — 같은 계열 · 같은 자리, 밝고 맑은 캔디 톤(레퍼런스: 테이스팅 노트 포스터 — 밝기는 높이고 채도는 지킨다). 앞 두 색이 조금 더 진하다 */
+/*
+  디자이너 리뷰(2026-11-18) — 레퍼런스 팔레트(Sun Glare · Exuberant Orange · Blue Violet · Cloud Dancer ·
+  Elite Blue · Volt Lime · Silver Cloud · Pace Fire · Finish Kick 등) 중심의 네온 · 스포츠 톤.
+  이름은 영문 대문자(Pantone 칩처럼), ko 자리에도 같은 이름을 둔다.
+*/
 const LIGHT_COLORS: Record<string, Pole["colors"]> = {
   C: [
-    { ko: "코럴", en: "Coral", hex: "#ff9b85" },
-    { ko: "살몬", en: "Salmon", hex: "#ffa48f" },
-    { ko: "피치", en: "Peach", hex: "#ffbb94" },
-    { ko: "애프리콧", en: "Apricot", hex: "#ffc580" },
+    { ko: "PACE FIRE", en: "Pace Fire", hex: "#FF5C34" },
+    { ko: "EXUBERANT ORANGE", en: "Exuberant Orange", hex: "#FF7A45" },
+    { ko: "CORAL KICK", en: "Coral Kick", hex: "#FF9472" },
+    { ko: "START LINE", en: "Start Line", hex: "#FFE3D8" },
   ],
   F: [
-    { ko: "허니", en: "Honey", hex: "#ffd36b" },
-    { ko: "레몬", en: "Lemon", hex: "#ffe470" },
-    { ko: "버터", en: "Butter", hex: "#ffe98f" },
-    { ko: "바닐라", en: "Vanilla", hex: "#fff0b0" },
+    { ko: "SUN GLARE", en: "Sun Glare", hex: "#E4FF1A" },
+    { ko: "LEMON POP", en: "Lemon Pop", hex: "#FFE14D" },
+    { ko: "BRIGHT BUTTER", en: "Bright Butter", hex: "#F7E86A" },
+    { ko: "SOFT GLOW", en: "Soft Glow", hex: "#FFF3B0" },
   ],
   L: [
-    { ko: "라임", en: "Lime", hex: "#c4ec7e" },
-    { ko: "피스타치오", en: "Pistachio", hex: "#cdea93" },
-    { ko: "말차 라테", en: "Matcha Latte", hex: "#d6efa9" },
-    { ko: "티 그린", en: "Tea Green", hex: "#e0f5bd" },
+    { ko: "VOLT LIME", en: "Volt Lime", hex: "#D0FF41" },
+    { ko: "FINISH KICK", en: "Finish Kick", hex: "#C8D955" },
+    { ko: "LIME MINT", en: "Lime Mint", hex: "#A8E66B" },
+    { ko: "PALE LIME", en: "Pale Lime", hex: "#E6F5B8" },
   ],
   P: [
-    { ko: "민트", en: "Mint", hex: "#8fe8cf" },
-    { ko: "터콰이즈", en: "Turquoise", hex: "#8adfe0" },
-    { ko: "아쿠아", en: "Aqua", hex: "#a7efe4" },
-    { ko: "시폼", en: "Seafoam", hex: "#c0f4e9" },
+    { ko: "TURQUOISE DASH", en: "Turquoise Dash", hex: "#33D1C6" },
+    { ko: "SKY RUN", en: "Sky Run", hex: "#6FC3F2" },
+    { ko: "AQUA TINT", en: "Aqua Tint", hex: "#9BE3E0" },
+    { ko: "ICE MIST", en: "Ice Mist", hex: "#D4F1F4" },
   ],
   R: [
-    { ko: "스카이", en: "Sky", hex: "#9fcdff" },
-    { ko: "콘플라워", en: "Cornflower", hex: "#aebdff" },
-    { ko: "파우더 블루", en: "Powder Blue", hex: "#bcd8ff" },
-    { ko: "아이스", en: "Ice", hex: "#d2e5ff" },
+    { ko: "ELITE BLUE", en: "Elite Blue", hex: "#0250B0" },
+    { ko: "TRACK BLUE", en: "Track Blue", hex: "#2F6FE0" },
+    { ko: "COBALT POP", en: "Cobalt Pop", hex: "#5A8DFF" },
+    { ko: "SILVER CLOUD", en: "Silver Cloud", hex: "#C6D0DD" },
   ],
   A: [
-    { ko: "라벤더", en: "Lavender", hex: "#cdb0ff" },
-    { ko: "라일락", en: "Lilac", hex: "#e2b0f5" },
-    { ko: "페리윙클", en: "Periwinkle", hex: "#c3c0ff" },
-    { ko: "모브 미스트", en: "Mauve Mist", hex: "#ebcaf7" },
+    { ko: "BLUE VIOLET", en: "Blue Violet", hex: "#685BC7" },
+    { ko: "ULTRA VIOLET", en: "Ultra Violet", hex: "#7B6CF2" },
+    { ko: "LILAC NEON", en: "Lilac Neon", hex: "#A98BFF" },
+    { ko: "LAVENDER FOG", en: "Lavender Fog", hex: "#D9D2F7" },
   ],
   S: [
-    { ko: "핫 핑크", en: "Hot Pink", hex: "#ff8fc0" },
-    { ko: "로즈", en: "Rose", hex: "#ffa0bf" },
-    { ko: "버블검", en: "Bubblegum", hex: "#ffb3d4" },
-    { ko: "체리 블라썸", en: "Cherry Blossom", hex: "#ffc8dc" },
+    { ko: "HOT MAGENTA", en: "Hot Magenta", hex: "#FF3EA5" },
+    { ko: "ROSE SPRINT", en: "Rose Sprint", hex: "#FF6F9F" },
+    { ko: "PEACH PINK", en: "Peach Pink", hex: "#FF9BB8" },
+    { ko: "BLUSH", en: "Blush", hex: "#FFD3E0" },
   ],
   I: [
-    { ko: "카라멜", en: "Caramel", hex: "#f1bd84" },
-    { ko: "라테", en: "Latte", hex: "#ebc39b" },
-    { ko: "오트", en: "Oat", hex: "#f3dcbc" },
-    { ko: "샌드", en: "Sand", hex: "#f5e3c4" },
+    { ko: "CONCRETE", en: "Concrete", hex: "#8A9099" },
+    { ko: "GRAPHITE", en: "Graphite", hex: "#5E646C" },
+    { ko: "CLOUD DANCER", en: "Cloud Dancer", hex: "#F0EEE9" },
+    { ko: "SAND DUNE", en: "Sand Dune", hex: "#E4DCCB" },
   ],
 };
 

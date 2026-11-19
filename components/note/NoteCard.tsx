@@ -1,7 +1,7 @@
 "use client";
 
 import { memo, useId } from "react";
-import { AXIS_EN, poleByCode, rgb, mix, ROAST, roastLevel, type AxisPick } from "./palette";
+import { AXIS_EN, poleByCode, rgb, mix, ROAST, roastLevel, type AxisPick, vividMix } from "./palette";
 import { dotDate, lookOf, type NoteCardData } from "./view";
 import { useMeshImage } from "./meshRaster";
 
@@ -54,6 +54,7 @@ export function NoteCard({
 }
 
 /* 앞 · 뒷면은 카드가 같으면 다시 그리지 않는다 — 끄는 동안엔 각도만 바뀐다(모바일 끊김) */
+/* 앞면 — 예전 디자인 그대로(섞임 배경 · 세리프 · 표, 사용자 2026-11-18). 색은 새 색표 */
 export const CardFront = memo(function CardFront({ card }: { card: NoteCardData }) {
   const { theme, mesh } = lookOf(card);
   const meshImage = useMeshImage(mesh.image);
@@ -147,7 +148,7 @@ export const CardBack = memo(function CardBack({ card, pour }: { card: NoteCardD
         <ol>
           {ROAST.map((r, i) => (
             <li key={r} data-on={i === level} aria-current={i === level ? "step" : undefined}>
-              {i === level ? <RoastMedal colors={card.picks.map((p) => p.color.hex)} /> : <i aria-hidden="true" />}
+              {i === level ? <RoastMedal colors={[...card.picks].sort((a, b) => Number(b.strong) - Number(a.strong)).map((p) => p.color.hex)} /> : <i aria-hidden="true" />}
               <span>{r}</span>
             </li>
           ))}
@@ -170,35 +171,22 @@ export const CardBack = memo(function CardBack({ card, pour }: { card: NoteCardD
 });
 
 /**
- * 내 단계 — 동그라미 자리에 들어가는 육각 메달(사용자 2026-11-18, 심플하게).
- * 스틸 판 한 장(은은한 금속 그라디언트) + 가는 안쪽 선 + 가운데 작은 「RUN」.
- * 리본은 카드 앞면과 같은 아이덴티티 컬러 그라디언트(내 4색).
+ * 내 단계 — 동그라미 자리에 들어가는 육각 메달. 플랫하게(사용자 2026-11-18 — 입체 표현 빼고 심플):
+ * 단색 리본 두 갈래(진하게 나온 색 먼저 — 연한 색은 바탕에 묻힌다) + 단색 육각판 + 가운데 작은 「RUN」. 그라데이션 · 테두리 · 그림자 없음.
  */
 function RoastMedal({ colors }: { colors: string[] }) {
-  const id = useId().replace(/:/g, "");
   const hex = (r: number) =>
     Array.from({ length: 6 }, (_, k) => {
       const a = ((k * 60 - 90) * Math.PI) / 180;
       return `${(20 + Math.cos(a) * r).toFixed(2)},${(25 + Math.sin(a) * r).toFixed(2)}`;
     }).join(" ");
-  const stops = colors.length ? colors : ["#9aa2ab"];
+  const c1 = colors[0] ?? "#9aa2ab";
+  const c2 = colors[1] ?? c1;
   return (
     <svg className="nc-medal" viewBox="0 0 40 40" aria-hidden="true">
-      <defs>
-        <linearGradient id={`r${id}`} x1="0" y1="0" x2="1" y2="0">
-          {stops.map((c, k) => (
-            <stop key={k} offset={stops.length > 1 ? k / (stops.length - 1) : 0} stopColor={c} />
-          ))}
-        </linearGradient>
-        <linearGradient id={`s${id}`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#e9ecef" />
-          <stop offset=".55" stopColor="#bcc3ca" />
-          <stop offset="1" stopColor="#8d959d" />
-        </linearGradient>
-      </defs>
-      <path d="M14.5 0 H25.5 L23 12 H17 Z" fill={`url(#r${id})`} />
-      <polygon points={hex(13)} fill={`url(#s${id})`} className="nc-medal-plate" />
-      <polygon points={hex(10.2)} className="nc-medal-line" />
+      <path d="M14.5 0 H20 L20 12 H17 Z" fill={c1} />
+      <path d="M20 0 H25.5 L23 12 H20 Z" fill={c2} />
+      <polygon points={hex(13)} className="nc-medal-plate" />
       <text x="20" y="27.2" textAnchor="middle" className="nc-medal-t">
         RUN
       </text>
@@ -208,12 +196,12 @@ function RoastMedal({ colors }: { colors: string[] }) {
 
 /**
  * 러닝 물병 — 소프트 플라스크(레퍼런스 쉐입, 사용자 2026-11-18).
- * 투명한 원통형 캡 · 넓은 칼라 링 · 둥글게 넓어지는 어깨 · 위가 조금 넓고 아래로 살짝 좁아지는 긴 몸통 ·
- * 둥근 바닥과 가운데 아래 작은 고리 탭. 세로 「MY JANE」, 맺힌 물방울.
+ * 투명한 원통형 캡 · 넓은 칼라 링 · 비스듬히 꺾인 어깨 · 위가 조금 넓고 아래로 살짝 좁아지는 긴 몸통 ·
+ * 각진 어깨 · 작게만 둥근 모서리(사용자 2026-11-18 — 약간 각지게, 바닥 고리는 뺌). 세로 「MY JANE」.
  * 4축이 아래(누구와)부터 위(마음)로 층층이 찬다. 진한 축은 층이 두껍다.
  */
 const FLASK =
-  "M22.6 20 L37.4 20 C38.2 22.6 41.6 24.4 43.2 28.4 C44 30.6 44.2 33.6 44 38 L42.6 104 C42.5 109.8 39.6 113 33.4 113.2 L26.6 113.2 C20.4 113 17.5 109.8 17.4 104 L16 38 C15.8 33.6 16 30.6 16.8 28.4 C18.4 24.4 21.8 22.6 22.6 20 Z";
+  "M23 20 L37 20 L43.2 28.6 Q44 29.8 44 31.4 L42.8 108.6 Q42.7 113.2 38.6 113.2 L21.4 113.2 Q17.3 113.2 17.2 108.6 L16 31.4 Q16 29.8 16.8 28.6 Z";
 /** 안쪽 가는 선 — 말랑한 몸통의 가장자리 두께 */
 const SEAM = "M18.4 36 C18.3 50 18.8 80 19.6 103.6 C19.8 108.4 22 110.8 26.8 111 L33.2 111 C38 110.8 40.2 108.4 40.4 103.6 C41.2 80 41.7 50 41.6 36";
 
@@ -224,59 +212,52 @@ function Bottle({ picks, pour }: { picks: AxisPick[]; pour?: boolean }) {
   const full = (bottom - top) * 0.84;
   const weights = picks.map((p) => (p.strong ? 1 : 0.62));
   const sum = weights.reduce((a, b) => a + b, 0) || 1;
-  let y = bottom;
-  const layers = picks.map((p, i) => {
+  // 물 — 4색이 아래(누구와)부터 위(마음)로 그라데이션으로 이어져 찬다(사용자 2026-11-18). 층 두께만큼 그 색이 길다
+  const surface = bottom - full;
+  let acc = 0;
+  const stops = picks.map((p, i) => {
     const h = (weights[i] / sum) * full;
-    y -= h;
-    const light = mix(rgb(p.color.hex), [255, 255, 255], 0.12).map(Math.round).join(",");
-    return { key: p.id, y, h, fill: `rgb(${light})` };
+    const mid = acc + h / 2;
+    acc += h;
+    return { key: p.id, offset: mid / full, color: p.color.hex };
   });
+  // 이웃한 두 색 사이에 맑은 중간색을 끼운다 — 그냥 이으면 가운데가 회색빛으로 탁해진다(vividMix)
+  const smooth = stops.flatMap((st, i) => {
+    const next = stops[i + 1];
+    if (!next) return [st];
+    return [st, { key: `${st.key}-m`, offset: (st.offset + next.offset) / 2, color: vividMix(st.color, next.color, 0.5) }];
+  });
+  /* 플랫 실루엣(사용자 2026-11-18) — 외곽선 · 그라데이션 · 반사광 · 물방울 · 안쪽 선 없이 면만.
+     캡 · 칼라는 글자색 단색, 몸통은 옅은 면 위에 4색이 그라데이션으로 이어진 물 */
   return (
     <svg className="nc-bottle" viewBox="0 0 60 120" aria-hidden="true" data-pour={pour ? "true" : undefined}>
       <defs>
         <clipPath id={`b${id}`}>
           <path d={FLASK} />
         </clipPath>
-        <linearGradient id={`g${id}`} x1="0" x2="1">
-          <stop offset="0" stopColor="#fff" stopOpacity=".55" />
-          <stop offset=".22" stopColor="#fff" stopOpacity=".1" />
-          <stop offset=".7" stopColor="#fff" stopOpacity="0" />
-          <stop offset="1" stopColor="#000" stopOpacity=".08" />
+        <linearGradient id={`w${id}`} gradientUnits="userSpaceOnUse" x1="0" y1={bottom} x2="0" y2={surface}>
+          {smooth.map((st) => (
+            <stop key={st.key} offset={st.offset.toFixed(3)} stopColor={st.color} />
+          ))}
         </linearGradient>
       </defs>
-      {/* 바닥 고리 탭 — 가운데 아래로 작은 고리 */}
-      <path d="M27.4 112.6 L27.6 115.2 C27.8 117.6 32.2 117.6 32.4 115.2 L32.6 112.6" className="nc-bottle-tab" />
-      <ellipse cx="30" cy="115" rx="1.2" ry="0.9" className="nc-bottle-hole" />
-      {/* 투명한 원통형 캡 — 윗테 · 가운데 띠 */}
-      <path d="M25.2 3.6 C25.2 2.6 26 2 27 2 L33 2 C34 2 34.8 2.6 34.8 3.6 L35.2 13.4 L24.8 13.4 Z" className="nc-bottle-valve" />
-      <path d="M25.4 5.4 H34.6" className="nc-bottle-rib-dark" />
-      <path d="M27.2 4 V12" className="nc-bottle-capshine" />
-      {/* 넓은 칼라 링 */}
-      <rect x="22" y="13" width="16" height="7.4" rx="1.6" className="nc-bottle-neck" />
-      <path d="M22.4 16.6 H37.6" className="nc-bottle-rib-dark" />
+      <path d="M25.2 3.6 C25.2 2.6 26 2 27 2 L33 2 C34 2 34.8 2.6 34.8 3.6 L35.2 13.4 L24.8 13.4 Z" className="nc-bottle-solid nc-bottle-solid--soft" />
+      <rect x="22" y="13" width="16" height="7.4" rx="1.6" className="nc-bottle-solid" />
       <g clipPath={`url(#b${id})`}>
-        <rect x="0" y="0" width="60" height="120" fill="rgba(255,255,255,.42)" />
+        <rect x="0" y="0" width="60" height="120" className="nc-bottle-body" />
         <g className="nc-liquid">
-          {layers.map((l, i) => (
-            <g key={l.key} style={{ animationDelay: `${0.25 + i * 0.28}s` }} className="nc-layer">
-              <rect x="0" y={l.y} width="60" height={l.h + 0.6} fill={l.fill} />
-              <path d={`M0 ${l.y + 0.6} Q15 ${l.y - 1.2} 30 ${l.y + 0.6} T60 ${l.y + 0.6}`} stroke="rgba(255,255,255,.45)" strokeWidth=".6" fill="none" />
-            </g>
-          ))}
+          {/* 윗면은 잔잔한 물결 — 몸통 폭 안에서 두 번 출렁인다 */}
+          <path
+            d={`M10 ${surface + 0.6} Q13.5 ${surface - 0.3} 17 ${surface + 0.6} T24 ${surface + 0.6} T31 ${surface + 0.6} T38 ${surface + 0.6} T45 ${surface + 0.6} T52 ${surface + 0.6} L52 ${bottom + 1} L10 ${bottom + 1} Z`}
+            fill={`url(#w${id})`}
+            className="nc-layer"
+            style={{ animationDelay: "0.25s" }}
+          />
         </g>
-        <rect x="0" y="0" width="60" height="120" fill={`url(#g${id})`} />
-        {/* 열접착 띠 · 세로 글자 · 빛 · 물방울 */}
-        <path d={SEAM} className="nc-bottle-seam" />
         <text x="0" y="0" transform="translate(35.6 54) rotate(90)" className="nc-bottle-text">
           MY JANE
         </text>
-        <path d="M20.6 34 C20.2 56 20.6 80 21.4 100" className="nc-bottle-shine" />
-        <ellipse cx="25.2" cy="62" rx="0.9" ry="1.3" className="nc-bottle-drop" />
-        <ellipse cx="33.6" cy="80" rx="0.7" ry="1" className="nc-bottle-drop" />
-        <ellipse cx="27.4" cy="104" rx="1" ry="1.4" className="nc-bottle-drop" />
-        <ellipse cx="36.2" cy="40" rx="0.6" ry="0.9" className="nc-bottle-drop" />
       </g>
-      <path d={FLASK} className="nc-bottle-line" />
     </svg>
   );
 }
