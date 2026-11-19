@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import { inkOn, POLES, type AxisPick } from "./palette";
 
+/** 원판 자리 순서 — 같은 축은 i 와 i+4. C/P 누구와 · S/L 거리 · A/I 빈도 · F/R 마음 */
+const WHEEL_ORDER = ["S", "C", "F", "I", "L", "P", "R", "A"];
+
 /**
  * 이름 있는 색 원판(레퍼런스: 커피 향미 원판).
  *   안쪽 고리 — 8개 극(크루형 · 즐김형 …)
@@ -51,6 +54,12 @@ export function Wheel({
   const mine = new Set(picks.map((p) => `${p.at.pole}:${p.at.shade}`));
   const myPoles = new Set(picks.map((p) => p.at.pole));
   const step = 360 / POLES.length;
+  /*
+    자리 — 한 축의 두 끝이 서로 마주 보게(4칸 떨어지게) 놓는다(사용자 2026-11-19 — 크루 ↔ 개인 · 즐김 ↔ 기록 · 중독 ↔ 간헐적이
+    엇갈려 있었다). 그 안에서 색이 이웃끼리 이어지도록: 단거리(분홍) · 크루(주황) · 즐김(노랑) · 간헐적(회색) |
+    장거리(라임) · 개인(청록) · 기록(파랑) · 중독(보라) → 다시 분홍. 회색만 노랑과 라임 사이에 끼인다
+  */
+  const slotOf = (code: string) => Math.max(0, WHEEL_ORDER.indexOf(code));
   const sub = step / 4;
 
   return (
@@ -66,7 +75,7 @@ export function Wheel({
       </defs>
       <g className="nw-rot">
         {POLES.map((pole, i) => {
-          const a0 = i * step;
+          const a0 = slotOf(pole.code) * step;
           const on = myPoles.has(i);
           const mid = a0 + step / 2;
           const flip = mid > 90 && mid < 270;
