@@ -743,3 +743,5 @@ body:has(.nt), body:has(.np) { --bg-primary: linear-gradient(160deg, #E7DFEC 0%,
 .nc-back .nc-bfoot { margin-bottom: 0; }
 /* 마지막 색 줄의 아래 줄과 판 끝 「◆ BLENDED BY」 위 줄이 겹쳐 두 줄로 보였다 — 판 끝 줄 하나만 */
 .nt-panel .nt-swatches li:last-child { border-bottom: 0; }
+/* 원판 바로 아래 첫 줄 위 선도 뺀다(사용자 2026-11-19) — 줄 사이 구분선만 */
+.nt-panel .nt-swatches li:first-child { border-top: 0; }
