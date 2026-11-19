@@ -316,6 +316,19 @@ export function richer(hex: string) {
 }
 
 /** 카드 글자색 후보 — 아이보리(어두운 카드) · 에스프레소(밝은 카드, 밝은 톤을 열 때) */
+/**
+ * 네이비 무대 위 글자용 — 그 색을 흰색 쪽으로 밝혀 대비 target 이상이 되는 가장 진한 값(사용자 2026-11-19:
+ * 무대의 라임 글자 → 첫 번째 색의 밝은 색). 이미 밝은 색은 그대로
+ */
+export function glowOn(hex: string, bg = "#0B1430", target = 8) {
+  const c = rgb(hex);
+  for (let t = 0; t <= 1; t += 0.04) {
+    const m = mix(c, [255, 255, 255], t);
+    if (contrast(m, rgb(bg)) >= target) return toHex(m);
+  }
+  return "#ffffff";
+}
+
 export const IVORY = "#f4ecdd";
 export const ESPRESSO = "#1d1510";
 /** 색 한 칸 위의 글자색 — 원판 라벨처럼 한 색 위에 올라가는 글자 */

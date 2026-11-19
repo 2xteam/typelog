@@ -10,7 +10,7 @@ import { Wheel } from "./Wheel";
 import { buildCard, lookOf, splitOutcomes, type NoteCardData } from "./view";
 import { GRAIN } from "./NoteCard";
 import { noteFontVars } from "./fonts";
-import type { AxisDecl } from "./palette";
+import { glowOn, type AxisDecl } from "./palette";
 import "./note.css";
 
 /**
@@ -130,7 +130,7 @@ export function NoteResult({
 
   return (
     <div className={`nt ${noteFontVars}`}>
-      <div className="nt-shell">
+      <div className="nt-shell" style={{ "--nt-accent": glowOn(card.picks[0]?.color.hex ?? "#D0FF41") } as React.CSSProperties}>
         <p className="nt-eyebrow">
           <span>Running Note</span>
           <span>No. {String(data.attemptNo).padStart(2, "0")}</span>
