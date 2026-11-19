@@ -35,6 +35,8 @@ export type RunPayload = {
   custom?: { issuer?: string | null; photoUrl?: string | null; holo?: string | null } | null;
   /** 본인 기록인가 — 게스트도 본인이면 true */
   isOwner?: boolean;
+  /** 회원 기록인가 — 회원이면 자격증 사진을 서버에도 둔다 */
+  memberOwned?: boolean;
   attemptNo: number;
   ownerName?: string | null;
   quiz: { slug: string; title: string; disclaimer: string | null };
@@ -209,7 +211,42 @@ export function RunResult({
   const photoUploaded = useRef(!!data.custom?.photoUrl);
   const runnerInput = useRef<HTMLInputElement>(null);
 
-  // 사진 — 이 기기에만 있다
+  /*
+    사진 — 기기(IndexedDB)에 먼저 찾는다. 회원 기록이면(사용자 2026-11-19):
+      · 기기에 있는데 서버에 아직 없으면 바로 올린다 → 다른 기기 · 기록 화면에서 다시 들어와도 보인다
+      · 기기에 없으면(다른 기기 · 브라우저) 서버에 둔 사진을 같은 출처로 받아 쓴다
+    서버에는 자격증용 얼굴 크롭 한 장만 있다. 신문 · 수배의 넓은 사진은 기기에만 — 없으면 얼굴 사진으로 그린다
+  */
+  useEffect(() => {
+    if (!data.memberOwned || !canEdit) return;
+    let alive = true;
+    void loadPhoto(data.attemptId).then(async (blob) => {
+      if (!alive) return;
+      if (blob) {
+        if (!photoUploaded.current) {
+          await uploadPhoto(blob)
+            .then(() => (photoUploaded.current = true))
+            .catch(() => {});
+        }
+        return;
+      }
+      if (!data.custom?.photoUrl) return;
+      try {
+        const res = await fetch(`/api/attempts/${data.attemptId}/photo?guestKey=${encodeURIComponent(getGuestKey())}`);
+        if (!res.ok || !alive) return;
+        const remote = await res.blob();
+        setPhoto(await blobToDataUrl(remote));
+        await savePhoto(data.attemptId, remote);
+      } catch {
+        /* 사진 없이 그린다 */
+      }
+    });
+    return () => {
+      alive = false;
+    };
+  }, [data.memberOwned, data.attemptId, data.custom?.photoUrl, canEdit, uploadPhoto]);
+
+  // 사진 — 이 기기에 있는 것
   useEffect(() => {
     /*
       사진은 data: 주소로 들고 있는다 — blob: 주소면 이미지를 그릴 때 다시 불러와야 하고,
@@ -677,8 +714,8 @@ export function RunResult({
             <PhotoStep
               onDone={async (blob, wide) => {
                 await savePhoto(data.attemptId, blob, wide);
-                // 결과 링크가 이미 있으면 링크의 자격증 사진도 바꾼다
-                if (data.shared || photoUploaded.current)
+                // 회원 기록 · 결과 링크가 이미 있으면 서버의 자격증 사진도 바꾼다
+                if (data.memberOwned || data.shared || photoUploaded.current)
                   void uploadPhoto(blob)
                     .then(() => (photoUploaded.current = true))
                     .catch(() => {});

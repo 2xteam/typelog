@@ -8,7 +8,7 @@ import { EYE_Y, FACE_H, FACE_OVAL, FACE_W, readImage } from "@/lib/runPhoto";
  *
  * 타원 안에 얼굴, 가로선에 눈을 맞추면 결과 화면 세 곳(자격증 · 신문 · 딱지)에 같은
  * 좌표로 들어간다. 끌어서 옮기고, 아래 막대나 두 손가락으로 키운다.
- * 사진은 서버로 가지 않는다 → lib/runPhoto.ts
+ * 사진은 기기에 둔다. 회원이면 결과 화면이 자격증 사진(얼굴 크롭)을 서버에도 올린다 → lib/runPhoto.ts · RunResult
  */
 
 const VIEW = 0.5; // 화면은 출력(600×720)의 절반 크기로 보여 준다
@@ -126,7 +126,7 @@ export function PhotoStep({
           </svg>
         </div>
         <p className="run-sub">📸 얼굴이 잘 보이는 사진이면 더 재밌어요. 본인 사진을 넣어 주세요 😊</p>
-        <p className="run-fine">🔒 사진은 이 기기에 저장돼요. 결과 링크를 만들면 자격증 사진만 함께 올라가요.</p>
+        <p className="run-fine">🔒 사진은 이 기기에 저장돼요. 회원이면 자격증 사진(얼굴 부분)이 계정에도 저장돼 다른 기기에서도 보여요.</p>
         <div className="run-actions">
           <button type="button" className="run-btn run-btn--main" onClick={() => fileRef.current?.click()}>
             사진 고르기

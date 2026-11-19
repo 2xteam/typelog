@@ -91,6 +91,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       attemptNo: attempt.attemptNo,
       status: attempt.status,
       isOwner: mine,
+      /** 회원 기록인가 — 회원이면 러닝 자격증 사진을 서버에도 둔다(다른 기기 · 기록 화면에서도 보이게) */
+      memberOwned: attempt.owner.kind === "user",
       custom: attempt.custom
         ? {
             issuer: attempt.custom.issuer ?? null,
