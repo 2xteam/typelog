@@ -251,7 +251,7 @@ function Cup({ picks, pour }: { picks: AxisPick[]; pour?: boolean }) {
         </linearGradient>
       </defs>
       {/* 손잡이 — 유리 고리(잔과 같은 옅은 면). 선이 아니라 잔 바깥에서 시작하는 면으로 — 선이면 잔 안으로 비쳐 들어갔다 */}
-      <path d="M51 14.2 C63.4 13.4 63.6 37.8 48.6 39.6 L49.4 35.8 C59 34.2 58.8 18.4 51 18.6 Z" className="nc-cup-handle" />
+      <path d="M50.8 14.2 C63.4 13.4 63.6 37.8 47.6 39.6 L48.6 35.8 C59 34.2 58.8 18.4 50.7 18.6 Z" className="nc-cup-handle" />
       {/* 유리 볼 */}
       <path d={GLASS} className="nc-bottle-body" />
       <g clipPath={`url(#c${id})`}>
