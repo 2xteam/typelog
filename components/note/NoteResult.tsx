@@ -7,7 +7,8 @@ import { useSession } from "@/lib/useSession";
 import { NoteDeck } from "./NoteDeck";
 import { NoteExport } from "./NoteExport";
 import { Wheel } from "./Wheel";
-import { buildCard, splitOutcomes, type NoteCardData } from "./view";
+import { buildCard, lookOf, splitOutcomes, type NoteCardData } from "./view";
+import { GRAIN } from "./NoteCard";
 import { noteFontVars } from "./fonts";
 import type { AxisDecl } from "./palette";
 import "./note.css";
@@ -123,6 +124,10 @@ export function NoteResult({
     }
   };
 
+  /* 아래 판 둘은 카드 뒷면과 같은 바탕색 · 글자색 · 질감(사용자 2026-11-19) — 카드마다 다르다 */
+  const backTheme = lookOf(card).theme;
+  const backStyle = { "--pb": backTheme.back, "--pi": backTheme.ink, backgroundImage: GRAIN } as React.CSSProperties;
+
   return (
     <div className={`nt ${noteFontVars}`}>
       <div className="nt-shell">
@@ -160,7 +165,7 @@ export function NoteResult({
         <NoteExport card={card} face={face} />
       </div>
 
-      <section className="nt-panel">
+      <section className="nt-panel nt-panel--back" style={backStyle}>
         <p className="nt-panel-eyebrow">Identity Color · 아이덴티티 컬러</p>
         <h2 className="nt-panel-title">성향이 내린 나만의 네 가지 색</h2>
         <p className="nt-panel-lead">
@@ -187,7 +192,7 @@ export function NoteResult({
       </section>
 
       {t ? (
-        <section className="nt-panel">
+        <section className="nt-panel nt-panel--back" style={backStyle}>
           <p className="nt-panel-eyebrow">Tasting · 맛평가</p>
           <h2 className="nt-panel-title">
             {t.emoji} {t.name}
