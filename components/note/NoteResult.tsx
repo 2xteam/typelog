@@ -132,22 +132,23 @@ export function NoteResult({
   return (
     <div className={`nt ${noteFontVars}`}>
       <div className="nt-shell" style={shellStyle(card.picks[0])}>
-        <p className="nt-eyebrow">
-          <span>Running Note</span>
-          <span>No. {String(data.attemptNo).padStart(2, "0")}</span>
-        </p>
-        <h1 className="nt-head">
-          <span>{card.code}</span> {card.typeName}
+        {/*
+          카드 안 · 밖 문구를 나눈다(사용자 2026-11-19 — 위 제목 · 코드 · 한 줄 소개가 카드 앞면과 겹쳤다).
+          카드 안: 번호 · 코드 · 유형 이름 · 영문 노트 · 축 표 · 색 · 로스팅 · 커핑(강점) · 블렌드 코드
+          카드 밖: 원판 · 색 코드 · 요약 · 조심 · 한 잔 더 · 블렌드 설명 · 알고 보면 — 카드에 없는 것만
+          무대 위에는 머리 대신 「모은 카드」 길 하나
+        */}
+        <h1 className="sr-only">
+          {card.code} {card.typeName}
         </h1>
-        {t?.subtitle ? <p className="nt-sub">{t.subtitle}</p> : null}
-        <NoteDeck cards={[card]} reveal={reveal} allowList={false} onChange={onDeck} />
         {signedIn && !bare ? (
-          <div className="nt-ctrl">
-            <Link className="nt-chip" href={`/records/${data.quiz.slug}`}>
-              ▤ 모은 카드 보기
+          <div className="nt-top">
+            <Link className="nt-toplink" href={`/records/${data.quiz.slug}`}>
+              ▤ 모은 카드 보기 <span aria-hidden="true">›</span>
             </Link>
           </div>
         ) : null}
+        <NoteDeck cards={[card]} reveal={reveal} allowList={false} onChange={onDeck} />
 
         {/* 카드에 적힐 이름 — 카드 바로 아래(사용자 2026-11-18) */}
         {data.isOwner ? (
@@ -175,18 +176,12 @@ export function NoteResult({
         <div className="nt-wheel">
           <Wheel picks={card.picks} mode="identity" />
         </div>
-        <ul className="nt-swatches">
+        {/* 색 이름 · 성향은 카드 뒷면에 있다 — 여기서는 원판에서 찾기 쉬운 색 코드만 */}
+        <ul className="nt-hexes">
           {card.picks.map((p) => (
             <li key={p.id}>
               <i style={{ background: p.color.hex }} aria-hidden="true" />
-              <div>
-                <b>{p.color.ko}</b>
-                {/* 새 색표는 이름이 영문 하나라 같으면 한 번만 */}
-                {p.color.en.toLowerCase() !== p.color.ko.toLowerCase() ? <em>{p.color.en}</em> : null}
-                <span>
-                  {p.pole} · {p.strong ? "진하게" : "은은하게"} · {p.color.hex.toUpperCase()}
-                </span>
-              </div>
+              {p.color.hex.toUpperCase()}
             </li>
           ))}
         </ul>
@@ -200,24 +195,16 @@ export function NoteResult({
             블렌드는 카드 코드처럼 큰 세리프 · 알고 보면은 옅은 칸 · 건강 안내는 작게 맨 끝
           */}
           <p className="nt-panel-eyebrow">Tasting · 맛평가</p>
-          <div className="nts-hero">
-            <span className="nts-emoji" aria-hidden="true">{t.emoji}</span>
-            <h2 className="nts-title">{t.name}</h2>
-          </div>
-          {/* 제목에 유형 이모지가 있으니 요약 첫머리의 같은 이모지는 뺀다 */}
-          <p className="nts-lead">{t.content.summary.startsWith(t.emoji) ? t.content.summary.slice(t.emoji.length).trim() : t.content.summary}</p>
+          {/* 유형 이름은 카드 앞면에 있다 — 여기서는 요약이 머리 */}
+          <p className="nts-lead">
+            <span className="nts-emoji" aria-hidden="true">{t.emoji}</span>{" "}
+            {t.content.summary.startsWith(t.emoji) ? t.content.summary.slice(t.emoji.length).trim() : t.content.summary}
+          </p>
 
-          <div className="nts-sec">
-            <p className="nts-label"><b>01</b> Strength <span>강점</span></p>
-            <ul className="nts-strong">
-              {t.content.strengths.map((s) => (
-                <li key={s}>{s}</li>
-              ))}
-            </ul>
-          </div>
+          {/* 강점은 카드 뒷면 「커핑 노트」에 있다 */}
           {t.content.cautions?.length ? (
             <div className="nts-sec">
-              <p className="nts-label"><b>02</b> Caution <span>조심</span></p>
+              <p className="nts-label"><b>01</b> Caution <span>조심</span></p>
               {t.content.cautions.map((s) => (
                 <p key={s} className="nts-body">{s}</p>
               ))}
@@ -225,7 +212,7 @@ export function NoteResult({
           ) : null}
           {t.content.tips?.length ? (
             <div className="nts-sec">
-              <p className="nts-label"><b>03</b> One More Cup <span>한 잔 더</span></p>
+              <p className="nts-label"><b>02</b> One More Cup <span>한 잔 더</span></p>
               {t.content.tips.map((s) => (
                 <p key={s} className="nts-body">{s}</p>
               ))}
@@ -233,7 +220,7 @@ export function NoteResult({
           ) : null}
           {data.result.goodWith.length ? (
             <div className="nts-sec">
-              <p className="nts-label"><b>04</b> Pairs Well <span>잘 맞는 블렌드</span></p>
+              <p className="nts-label"><b>03</b> Pairs Well <span>잘 맞는 블렌드</span></p>
               <ul className="nts-pairs">
                 {data.result.goodWith.map((g) => (
                   <li key={g.code}>
