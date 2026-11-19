@@ -749,9 +749,11 @@ body:has(.nt), body:has(.np) { --bg-primary: linear-gradient(160deg, #E7DFEC 0%,
 /* 어린이 MBTI 노트 — 커피잔 · 커피콩(사용자 2026-11-19). 물병 · 메달 자리에 같은 크기로 */
 .nc-cup-steam { fill: none; stroke: color-mix(in srgb, var(--ink) 40%, transparent); stroke-width: 1.6; stroke-linecap: round; }
 /* 손잡이는 유리 — 잔(.nc-bottle-body)과 같은 옅은 면 색 */
-.nc-cup-handle { fill: none; stroke: color-mix(in srgb, var(--ink) 12%, transparent); stroke-width: 3.4; stroke-linecap: round; }
+.nc-cup-handle { fill: color-mix(in srgb, var(--ink) 12%, transparent); stroke: none; }
 .nc-cupsvg .nc-bottle-text { font-size: 3.6px; letter-spacing: 1px; }
 .nc-bean { margin: -3.2cqw -2.15cqw -1cqw; }
 /* 커피잔은 가로로 넓어 같은 칸에서 작아 보인다 — 칸을 넓히고 콩도 메달만큼 */
 .nc-back .nc-blend:has(.nc-cupsvg) { grid-template-columns: 40cqw 1fr; gap: 4cqw; }
 .nc-bean { width: 9.5cqw; height: 9.5cqw; }
+/* 에스프레소 잔은 물병보다 키가 작아 머리 아래가 붙고 아래만 비었다 — 위를 더 띄운다(사용자 2026-11-19) */
+.nc-back .nc-blend:has(.nc-cupsvg) { margin-top: 11cqw; }

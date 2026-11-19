@@ -229,11 +229,12 @@ function layerStops(picks: AxisPick[], full: number, BAND = 3.6) {
  * 둥근 유리 볼 · 받침 없음 · 손잡이도 유리(따로 색 없이 잔과 같은 옅은 면). 물병과 같은 플랫 실루엣 —
  * 유리는 글자색을 옅게 깐 면, 안쪽에 4색이 아래(EI)부터 위(JP)로 층층이 찬다
  */
-const GLASS = "M5 9 H51 C51 31 46.5 51 28 51 C9.5 51 5 31 5 9 Z";
-const INNER = "M8.6 12 H47.4 C47.4 30.5 43.6 47.4 28 47.4 C12.4 47.4 8.6 30.5 8.6 12 Z";
+// 바닥은 평평하게(사용자 2026-11-19 — 둥근 바닥은 탁자에 놓으면 넘어질 것 같았다)
+const GLASS = "M5 9 H51 C51 29 48.6 42 43.4 48 Q41.6 50.6 38.4 50.6 H17.6 Q14.4 50.6 12.6 48 C7.4 42 5 29 5 9 Z";
+const INNER = "M8.6 12 H47.4 C47.4 29.5 45.3 41 40.9 45.6 Q39.6 47.2 37.4 47.2 H18.6 Q16.4 47.2 15.1 45.6 C10.7 41 8.6 29.5 8.6 12 Z";
 function Cup({ picks, pour }: { picks: AxisPick[]; pour?: boolean }) {
   const id = useId().replace(/:/g, "");
-  const bottom = 47.4;
+  const bottom = 47.2;
   const full = (bottom - 14) * 0.9;
   const surface = bottom - full;
   const smooth = layerStops(picks, full, 2.6);
@@ -249,8 +250,8 @@ function Cup({ picks, pour }: { picks: AxisPick[]; pour?: boolean }) {
           ))}
         </linearGradient>
       </defs>
-      {/* 손잡이 — 유리 고리(잔과 같은 옅은 면) */}
-      <path d="M49.4 15.5 C61 14.6 61.4 35 46.4 37.4" className="nc-cup-handle" />
+      {/* 손잡이 — 유리 고리(잔과 같은 옅은 면). 선이 아니라 잔 바깥에서 시작하는 면으로 — 선이면 잔 안으로 비쳐 들어갔다 */}
+      <path d="M51 14.2 C63.4 13.4 63.6 37.8 48.6 39.6 L49.4 35.8 C59 34.2 58.8 18.4 51 18.6 Z" className="nc-cup-handle" />
       {/* 유리 볼 */}
       <path d={GLASS} className="nc-bottle-body" />
       <g clipPath={`url(#c${id})`}>
