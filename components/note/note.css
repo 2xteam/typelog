@@ -699,3 +699,12 @@ body:has(.nt), body:has(.np) { --bg-primary: linear-gradient(160deg, #E7DFEC 0%,
 /* 섹션 라벨(01 STRENGTH · 강점 …)은 영문 · 숫자도 한글과 같은 Noto Sans(사용자 2026-11-19) */
 .nts-label { font-family: var(--ko); font-weight: 700; font-size: 11.5px; letter-spacing: 0.16em; }
 .nts-label b { font: 800 17px/1 var(--ko); letter-spacing: 0; font-variant-numeric: tabular-nums; }
+/* 무대 안 주 버튼(바꾸기 · 공유하기)도 강조 글자와 같은 색 — 첫 번째 색의 밝은 색(사용자 2026-11-19). 버튼 글자는 네이비 그대로 */
+.nt-shell { --nt-grad: var(--nt-accent); --nt-glow: color-mix(in srgb, var(--nt-accent) 24%, transparent); }
+/* 무대 바닥선도 같은 색(라임이 하나만 남아 튀었다) */
+.nt-shell .nt-floor {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--nt-accent) 32%, transparent) 0, transparent 2px),
+    radial-gradient(60% 90px at 50% 0, rgba(198, 208, 221, 0.1), rgba(198, 208, 221, 0) 100%),
+    linear-gradient(180deg, #16224A 0, #0F1A3A 110px, #0B1430 240px, #0B1430 100%);
+}
