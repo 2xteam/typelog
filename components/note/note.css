@@ -733,3 +733,11 @@ body:has(.nt), body:has(.np) { --bg-primary: linear-gradient(160deg, #E7DFEC 0%,
 .nt-shell .nt-ctrl { margin-top: 10px; }
 .nt-shell .nt-hint { margin-top: 8px; font-size: 12px; opacity: 0.85; }
 .nt .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+/* 뒷면 — 한글 제목을 뺀 뒤 머리 아래만 비었다(사용자 2026-11-19). 머리 ↔ 물병은 붙이고, 남는 자리는 아래 세 사이에 고르게 · 물병은 조금 크게 */
+.nc-back { justify-content: flex-start; }
+.nc-back .nc-bhead { padding-bottom: 3.2cqw; }
+.nc-back .nc-blend { margin-top: 6cqw; grid-template-columns: 32cqw 1fr; }
+.nc-back .nc-roast, .nc-back .nc-cup, .nc-back .nc-bfoot { margin-top: auto; }
+.nc-back .nc-roast { padding-top: 5cqw; }
+.nc-back .nc-cup { padding-top: 4cqw; }
+.nc-back .nc-bfoot { margin-bottom: 0; }
