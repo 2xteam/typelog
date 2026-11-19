@@ -188,6 +188,59 @@ export const poleByCode = (code: string) => POLES.find((p) => p.code === code) ?
 /** 카드 표의 왼쪽 칸 — 축 순서(who · dist · freq · mind)와 같다 */
 export const AXIS_EN: Record<string, string> = { who: "Who", dist: "Distance", freq: "Rhythm", mind: "Mind" };
 
+/*
+  어린이 MBTI 노트(사용자 2026-11-19 — 러닝 노트와 같은 패턴, 물병 → 커피잔 · 메달 → 커피콩).
+  축 EI · SN · TF · JP. 원판 자리(i ↔ i+4 가 한 축)에 맞춰 색이 이어지도록 계열을 정했다:
+  바깥(주황) · 지금(노랑) · 머리(초록) · 계획(청록) | 안(파랑) · 상상(보라) · 마음(분홍) · 그때(코랄) → 다시 주황.
+  앞 두 색이 「진하게」, 뒤 두 색이 「은은하게」, 맨 끝이 가장 옅은 색(무대 강조 · 카드 뒷면)
+*/
+const c4 = (...xs: [string, string][]) => xs.map(([en, hex]) => ({ ko: en.toUpperCase(), en, hex })) as Pole["colors"];
+const KIDS_POLES: Pole[] = [
+  { code: "E", ko: "바깥", note: "Outward", colors: c4(["Tangerine", "#FF7A1A"], ["Mango", "#FFA040"], ["Apricot", "#FFC58A"], ["Peach Cream", "#FFE6CF"]) },
+  { code: "I", ko: "안", note: "Inward", colors: c4(["Ocean", "#2F6FED"], ["Sky Blue", "#5B9BFF"], ["Baby Blue", "#A9CBFF"], ["Cloud", "#E1EDFF"]) },
+  { code: "S", ko: "지금", note: "Here", colors: c4(["Lemon Drop", "#FFD21F"], ["Banana", "#FFE15C"], ["Butter", "#FFEE9E"], ["Vanilla", "#FFF7D6"]) },
+  { code: "N", ko: "상상", note: "Dream", colors: c4(["Grape", "#7B4DFF"], ["Lavender Pop", "#A07CFF"], ["Lilac", "#CDB8FF"], ["Lilac Mist", "#EEE6FF"]) },
+  { code: "T", ko: "머리", note: "Head", colors: c4(["Apple Green", "#4CC94C"], ["Kiwi", "#8AD94A"], ["Mint Leaf", "#B9EBA6"], ["Pistachio", "#E2F7D8"]) },
+  { code: "F", ko: "마음", note: "Heart", colors: c4(["Bubblegum", "#FF4FA3"], ["Strawberry Milk", "#FF85BE"], ["Cotton Candy", "#FFB9DA"], ["Pink Cloud", "#FFE6F1"]) },
+  { code: "J", ko: "계획", note: "Plan", colors: c4(["Lagoon", "#14B8A6"], ["Seafoam", "#4FD1C5"], ["Aqua", "#A6EDE4"], ["Ice Mint", "#DDF8F4"]) },
+  { code: "P", ko: "그때", note: "Free", colors: c4(["Cherry", "#F2415A"], ["Watermelon", "#FF6F7E"], ["Coral Pink", "#FFA8B1"], ["Rose Milk", "#FFE1E4"]) },
+];
+
+/** 노트 한 벌 — 질문지마다 색 계열 · 축 이름 · 카드 문구 · 그림(물병/커피잔, 메달/커피콩)이 다르다 */
+export type KitId = "run" | "kids";
+export type NoteKit = {
+  id: KitId;
+  poles: Pole[];
+  axisEn: Record<string, string>;
+  /** 원판 자리 순서 — 같은 축은 i 와 i+4 */
+  wheelOrder: string[];
+  /** 카드 · 무대 영문 머리 */
+  brand: string;
+  /** 한글 이름(「러닝 노트」) */
+  brandKo: string;
+  /** 카드 표 첫 줄 */
+  person: string;
+  /** 이름이 없을 때 */
+  personKo: string;
+  vessel: "bottle" | "cup";
+  badge: "medal" | "bean";
+};
+export const KITS: Record<KitId, NoteKit> = {
+  run: {
+    id: "run", poles: POLES, axisEn: AXIS_EN, wheelOrder: ["S", "C", "F", "I", "L", "P", "R", "A"],
+    brand: "Running Note", brandKo: "러닝 노트", person: "Runner", personKo: "러너", vessel: "bottle", badge: "medal",
+  },
+  kids: {
+    id: "kids", poles: KIDS_POLES, axisEn: { EI: "Energy", SN: "Focus", TF: "Decide", JP: "Move" }, wheelOrder: ["E", "S", "T", "J", "I", "N", "F", "P"],
+    brand: "My Type Note", brandKo: "MBTI 노트", person: "Name", personKo: "나", vessel: "cup", badge: "bean",
+  },
+};
+/** 축 id 로 고른다 — EI 축이 있으면 어린이 MBTI */
+export const kitOfAxes = (axes: { id: string }[]): NoteKit => (axes.some((a) => a.id === "EI") ? KITS.kids : KITS.run);
+export const kitOf = (picks: AxisPick[]): NoteKit => KITS[picks[0]?.kit ?? "run"];
+/** 질문지 주소로 — 축을 아직 모르는 화면(응시 · 공유 첫 화면)용 */
+export const kitOfSlug = (slug: string | null | undefined): NoteKit => (slug === "kids-16type" ? KITS.kids : KITS.run);
+
 /** 축 하나의 결과 — 결과 API 의 outcomes(id · pomp · left · right)에서 만든다 */
 export type AxisPick = {
   id: string;
@@ -202,6 +255,12 @@ export type AxisPick = {
   color: NamedColor;
   /** 원판에서 찾기 — 몇 번째 계열의 몇 번째 색 */
   at: { pole: number; shade: number };
+  /** 어느 노트인가(색 계열 · 카드 문구) */
+  kit: KitId;
+  /** 카드 앞면 이탤릭 노트 줄의 낱말 */
+  note: string;
+  /** 그 계열의 가장 옅은 색(색표 맨 오른쪽) */
+  light: string;
 };
 
 export type AxisDecl = { id: string; label?: string | null; left?: { code: string; label?: string | null } | null; right?: { code: string; label?: string | null } | null };
@@ -229,7 +288,9 @@ export function pickAxes(axes: AxisDecl[], pomp: Record<string, number>, seed: s
     const side = left ? a.left : a.right;
     const pct = Math.round(left ? 100 - p : p);
     const strong = pct >= 90;
-    const poleIdx = POLES.findIndex((x) => x.code === side.code);
+    const kit = kitOfAxes(axes);
+    const poles = kit.poles;
+    const poleIdx = poles.findIndex((x) => x.code === side.code);
     if (poleIdx < 0) return [];
     const shade = (strong ? 0 : 2) + ((h >>> (i * 3)) & 1);
     return [
@@ -237,11 +298,14 @@ export function pickAxes(axes: AxisDecl[], pomp: Record<string, number>, seed: s
         id: a.id,
         label: a.label ?? a.id,
         code: side.code,
-        pole: side.label ?? POLES[poleIdx].ko,
+        pole: side.label ?? poles[poleIdx].ko,
         pct,
         strong,
-        color: POLES[poleIdx].colors[shade],
+        color: poles[poleIdx].colors[shade],
         at: { pole: poleIdx, shade },
+        kit: kit.id,
+        note: poles[poleIdx].note,
+        light: poles[poleIdx].colors[3].hex,
       },
     ];
   });
@@ -324,7 +388,7 @@ export function richer(hex: string) {
  * 첫 번째 색 계열의 가장 옅은 색(색표 맨 오른쪽) — 무대 강조 글자 · 버튼 · 카드 뒷면 · 아래 판 바탕(사용자 2026-11-19).
  * 고른 색 자체를 밝히면(glowOn) 주황 · 자홍 같은 진한 계열은 여전히 찐하게 보였다
  */
-export const lightestOf = (p: AxisPick | undefined) => (p ? POLES[p.at.pole]?.colors[3]?.hex ?? p.color.hex : undefined);
+export const lightestOf = (p: AxisPick | undefined) => (p ? p.light ?? p.color.hex : undefined);
 
 export function glowOn(hex: string, bg = "#0B1430", target = 8) {
   const c = rgb(hex);

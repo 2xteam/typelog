@@ -745,3 +745,12 @@ body:has(.nt), body:has(.np) { --bg-primary: linear-gradient(160deg, #E7DFEC 0%,
 .nt-panel .nt-swatches li:last-child { border-bottom: 0; }
 /* 원판 바로 아래 첫 줄 위 선도 뺀다(사용자 2026-11-19) — 줄 사이 구분선만 */
 .nt-panel .nt-swatches li:first-child { border-top: 0; }
+
+/* 어린이 MBTI 노트 — 커피잔 · 커피콩(사용자 2026-11-19). 물병 · 메달 자리에 같은 크기로 */
+.nc-cup-steam { fill: none; stroke: color-mix(in srgb, var(--ink) 40%, transparent); stroke-width: 1.6; stroke-linecap: round; }
+.nc-cup-handle { fill: none; stroke: var(--ink); stroke-width: 3.6; stroke-linecap: round; }
+.nc-cupsvg .nc-bottle-text { font-size: 3.6px; letter-spacing: 1px; }
+.nc-bean { margin: -3.2cqw -2.15cqw -1cqw; }
+/* 커피잔은 가로로 넓어 같은 칸에서 작아 보인다 — 칸을 넓히고 콩도 메달만큼 */
+.nc-back .nc-blend:has(.nc-cupsvg) { grid-template-columns: 40cqw 1fr; gap: 4cqw; }
+.nc-bean { width: 9.5cqw; height: 9.5cqw; }

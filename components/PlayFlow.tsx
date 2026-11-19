@@ -43,7 +43,7 @@ export function PlayFlow({
   const router = useRouter();
 
   const [items, setItems] = useState<Item[] | null>(null);
-  const [quiz, setQuiz] = useState<{ title: string; emoji: string | null; experience?: string | null } | null>(null);
+  const [quiz, setQuiz] = useState<{ slug?: string; title: string; emoji: string | null; experience?: string | null } | null>(null);
   /** 러닝 기록 — 다른 화면으로 넘긴다 */
   const [run, setRun] = useState<{ items: RunItem[]; answers: Answer[]; preview: string | null } | null>(null);
   /** 러닝 노트 — 어두운 무대의 선택 화면으로 넘긴다 */

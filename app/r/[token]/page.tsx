@@ -1,5 +1,6 @@
 "use client";
 
+import { kitOfSlug } from "@/components/note/palette";
 import { use, useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AppIcon } from "@/components/AppIcon";
@@ -158,7 +159,7 @@ export default function SharedLanding({ params }: { params: Promise<{ token: str
         {data.open && !needSignup ? (
           <div style={{ marginTop: 20 }}>
             <button type="button" className="nt-btn" onClick={() => void start()} disabled={busy}>
-              {busy ? "여는 중…" : "나의 러닝 노트 내리기 →"}
+              {busy ? "여는 중…" : `나의 ${kitOfSlug(data.quiz.slug).brandKo} 내리기 →`}
             </button>
           </div>
         ) : needSignup ? null : (

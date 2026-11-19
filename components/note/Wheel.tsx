@@ -1,10 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { inkOn, POLES, type AxisPick } from "./palette";
-
-/** 원판 자리 순서 — 같은 축은 i 와 i+4. C/P 누구와 · S/L 거리 · A/I 빈도 · F/R 마음 */
-const WHEEL_ORDER = ["S", "C", "F", "I", "L", "P", "R", "A"];
+import { inkOn, kitOf, type AxisPick } from "./palette";
 
 /**
  * 이름 있는 색 원판(레퍼런스: 커피 향미 원판).
@@ -53,6 +50,10 @@ export function Wheel({
 
   const mine = new Set(picks.map((p) => `${p.at.pole}:${p.at.shade}`));
   const myPoles = new Set(picks.map((p) => p.at.pole));
+  // 색 계열 · 자리 순서는 노트마다(러닝 · 어린이 MBTI) — palette.ts KITS. 같은 축은 i 와 i+4
+  const kit = kitOf(picks);
+  const POLES = kit.poles;
+  const WHEEL_ORDER = kit.wheelOrder;
   const step = 360 / POLES.length;
   /*
     자리 — 한 축의 두 끝이 서로 마주 보게(4칸 떨어지게) 놓는다(사용자 2026-11-19 — 크루 ↔ 개인 · 즐김 ↔ 기록 · 중독 ↔ 간헐적이

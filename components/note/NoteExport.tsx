@@ -6,6 +6,7 @@ import { embedFontCSS } from "@/components/run/RunResult";
 import { CardBack, CardFront } from "./NoteCard";
 import { dotDate, type NoteCardData } from "./view";
 import { noteFontVars } from "./fonts";
+import { kitOf } from "./palette";
 
 /**
  * 러닝 노트 이미지 — 화면 밖에 반듯하게(3D 없이) 그려 두고 찍는다(러닝 자격증과 같은 html-to-image 방식).
@@ -127,7 +128,7 @@ export function NoteExport({ card, face }: { card: NoteCardData; face: "front" |
           <div className="nx-spot" />
           <header className="nx-head">
             <p>
-              <span>Running Note</span>
+              <span>{kitOf(card.picks).brand}</span>
               <span>No. {String(card.attemptNo).padStart(2, "0")}</span>
             </p>
             <h2>

@@ -1,5 +1,5 @@
 import type React from "react";
-import { cardTheme, glowOn, lightestOf, meshCss, pickAxes, stageOf, type AxisDecl, type AxisPick, type CardTheme } from "./palette";
+import { cardTheme, glowOn, kitOfAxes, lightestOf, meshCss, pickAxes, stageOf, type AxisDecl, type AxisPick, type CardTheme } from "./palette";
 
 /**
  * 카드 한 장에 필요한 것 — 결과 화면 · 모은 카드 · 공유 화면이 모두 이걸로 그린다.
@@ -41,7 +41,8 @@ export function buildCard(input: {
     code: input.code,
     typeName: input.typeName,
     completedAt: input.completedAt,
-    runner: input.runner,
+    // 서버는 이름이 없으면 「러너」 를 준다 — 어린이 MBTI 노트에서는 그 노트의 기본 이름으로
+    runner: !input.runner || input.runner === "러너" ? kitOfAxes(input.axes).personKo : input.runner,
     picks: pickAxes(input.axes, input.pomp, input.attemptId),
     // 카드 뒷면 커핑 노트는 글자만 — 맛평가 문장의 이모티콘은 카드 아래 판에서만 보인다
     strengths: (input.strengths ?? []).slice(0, 2).map(plain),

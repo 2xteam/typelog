@@ -1,7 +1,7 @@
 "use client";
 
 import { memo, useId } from "react";
-import { AXIS_EN, poleByCode, rgb, mix, ROAST, roastLevel, type AxisPick, vividMix } from "./palette";
+import { kitOf, rgb, mix, ROAST, roastLevel, type AxisPick, vividMix } from "./palette";
 import { dotDate, lookOf, type NoteCardData } from "./view";
 import { useMeshImage } from "./meshRaster";
 
@@ -59,6 +59,7 @@ export const CardFront = memo(function CardFront({ card }: { card: NoteCardData 
   const { theme, mesh } = lookOf(card);
   const meshImage = useMeshImage(mesh.image);
   const letters = card.code.split("");
+  const kit = kitOf(card.picks);
   return (
     <div
       className="nc-face nc-front"
@@ -82,7 +83,7 @@ export const CardFront = memo(function CardFront({ card }: { card: NoteCardData 
       {theme.scrim ? <div className="nc-scrim" style={{ background: theme.dark ? "#000" : "#fff", opacity: theme.scrim }} /> : null}
       <div className="nc-sheen" aria-hidden="true" />
       <header className="nc-top">
-        <span>Running Note</span>
+        <span>{kit.brand}</span>
         <span>No. {String(card.attemptNo).padStart(2, "0")}</span>
       </header>
       <div className="nc-title">
@@ -92,16 +93,16 @@ export const CardFront = memo(function CardFront({ card }: { card: NoteCardData 
           ))}
         </p>
         <p className="nc-name">{card.typeName}</p>
-        <p className="nc-notes">{card.picks.map((p) => poleByCode(p.code)?.note ?? p.code).join(" / ")}</p>
+        <p className="nc-notes">{card.picks.map((p) => p.note ?? p.code).join(" / ")}</p>
       </div>
       <dl className="nc-table">
         <div>
-          <dt>Runner</dt>
+          <dt>{kit.person}</dt>
           <dd>{card.runner}</dd>
         </div>
         {card.picks.map((p) => (
           <div key={p.id}>
-            <dt>{AXIS_EN[p.id] ?? p.id}</dt>
+            <dt>{kit.axisEn[p.id] ?? p.id}</dt>
             <dd>{p.pole}</dd>
           </div>
         ))}
@@ -117,17 +118,20 @@ export const CardFront = memo(function CardFront({ card }: { card: NoteCardData 
 export const CardBack = memo(function CardBack({ card, pour }: { card: NoteCardData; pour?: boolean }) {
   const { theme } = lookOf(card);
   const level = roastLevel(card.picks);
+  const kit = kitOf(card.picks);
+  const badgeColors = [...card.picks].sort((a, b) => Number(b.strong) - Number(a.strong)).map((p) => p.color.hex);
   return (
     <div
       className="nc-face nc-back"
       style={{ "--ink": theme.backInk, backgroundColor: theme.back, backgroundImage: GRAIN } as React.CSSProperties}
     >
       <header className="nc-bhead">
-        <p className="nc-eyebrow">Running Note</p>
+        <p className="nc-eyebrow">{kit.brand}</p>
       </header>
 
       <section className="nc-blend">
-        <Bottle picks={card.picks} pour={pour} />
+        {/* 러닝은 물병, 어린이 MBTI 는 커피잔(사용자 2026-11-19) */}
+        {kit.vessel === "cup" ? <Cup picks={card.picks} pour={pour} /> : <Bottle picks={card.picks} pour={pour} />}
         <ul>
           {[...card.picks].reverse().map((p) => (
             <li key={p.id}>
@@ -147,7 +151,7 @@ export const CardBack = memo(function CardBack({ card, pour }: { card: NoteCardD
         <ol>
           {ROAST.map((r, i) => (
             <li key={r} data-on={i === level} aria-current={i === level ? "step" : undefined}>
-              {i === level ? <RoastMedal colors={[...card.picks].sort((a, b) => Number(b.strong) - Number(a.strong)).map((p) => p.color.hex)} /> : <i aria-hidden="true" />}
+              {i === level ? kit.badge === "bean" ? <RoastBean colors={badgeColors} /> : <RoastMedal colors={badgeColors} /> : <i aria-hidden="true" />}
               <span>{r}</span>
             </li>
           ))}
@@ -193,6 +197,96 @@ function RoastMedal({ colors }: { colors: string[] }) {
   );
 }
 
+/*
+  층마다 제 색이 꽉 차고, 이웃 층과의 경계만 좁게 그라데이션으로 넘어간다(사용자 2026-11-19 — 경계가 너무 넓었다).
+  경계 띠 BAND(물 높이 단위)는 얇은 층의 40%를 넘지 않는다. 경계 한가운데에는 맑은 중간색(vividMix) — 그냥 이으면 회색빛으로 탁해진다.
+  물병 · 커피잔이 함께 쓴다. 진한 축은 층이 두껍다(1 : 0.62)
+*/
+function layerStops(picks: AxisPick[], full: number, BAND = 3.6) {
+  const weights = picks.map((p) => (p.strong ? 1 : 0.62));
+  const sum = weights.reduce((a, b) => a + b, 0) || 1;
+  const layers: { key: string; a: number; b: number; color: string }[] = [];
+  let acc = 0;
+  picks.forEach((p, i) => {
+    const h = (weights[i] / sum) * full;
+    layers.push({ key: p.id, a: acc, b: acc + h, color: p.color.hex });
+    acc += h;
+  });
+  const out: { key: string; offset: number; color: string }[] = [];
+  layers.forEach((l, i) => {
+    const prev = layers[i - 1];
+    const next = layers[i + 1];
+    const half = (o?: typeof l) => (o ? Math.min(BAND, 0.4 * Math.min(l.b - l.a, o.b - o.a)) / 2 : 0);
+    out.push({ key: `${l.key}-a`, offset: (l.a + half(prev)) / full, color: l.color });
+    out.push({ key: `${l.key}-b`, offset: (l.b - half(next)) / full, color: l.color });
+    if (next) out.push({ key: `${l.key}-m`, offset: l.b / full, color: vividMix(l.color, next.color, 0.5) });
+  });
+  return out;
+}
+
+/**
+ * 커피잔 — 어린이 MBTI 노트의 그릇(사용자 2026-11-19, 러닝 노트의 물병 자리). 물병과 같은 플랫 실루엣:
+ * 받침 · 테두리 · 손잡이는 글자색 단색, 잔은 옅은 면 위에 4색이 아래(EI)부터 위(JP)로 층층이 찬다. 위에 김 두 줄
+ */
+const CUP = "M7 22 H49 L45 55.5 Q44.4 60 39.8 60 H16.2 Q11.6 60 11 55.5 Z";
+function Cup({ picks, pour }: { picks: AxisPick[]; pour?: boolean }) {
+  const id = useId().replace(/:/g, "");
+  const bottom = 60;
+  const full = (bottom - 25) * 0.9;
+  const surface = bottom - full;
+  const smooth = layerStops(picks, full, 3);
+  return (
+    <svg className="nc-bottle nc-cupsvg" viewBox="0 0 64 72" aria-hidden="true" data-pour={pour ? "true" : undefined}>
+      <defs>
+        <clipPath id={`c${id}`}>
+          <path d={CUP} />
+        </clipPath>
+        <linearGradient id={`w${id}`} gradientUnits="userSpaceOnUse" x1="0" y1={bottom} x2="0" y2={surface}>
+          {smooth.map((st) => (
+            <stop key={st.key} offset={st.offset.toFixed(3)} stopColor={st.color} />
+          ))}
+        </linearGradient>
+      </defs>
+      {/* 김 — 두 줄 */}
+      <path d="M22 15 C19 11 25 9 22 4" className="nc-cup-steam" />
+      <path d="M32 15 C29 11 35 9 32 4" className="nc-cup-steam" />
+      {/* 손잡이 */}
+      <path d="M47.6 29 C58.5 28.5 58.5 46.5 45.6 47" className="nc-cup-handle" />
+      <g clipPath={`url(#c${id})`}>
+        <rect x="0" y="0" width="64" height="72" className="nc-bottle-body" />
+        <g className="nc-liquid">
+          <path
+            d={`M4 ${surface + 0.5} Q8 ${surface - 0.3} 12 ${surface + 0.5} T20 ${surface + 0.5} T28 ${surface + 0.5} T36 ${surface + 0.5} T44 ${surface + 0.5} T52 ${surface + 0.5} L52 ${bottom + 1} L4 ${bottom + 1} Z`}
+            fill={`url(#w${id})`}
+            className="nc-layer"
+            style={{ animationDelay: "0.25s" }}
+          />
+        </g>
+      </g>
+      {/* 테두리 · 받침 */}
+      <rect x="5.4" y="20" width="45.2" height="3.4" rx="1.7" className="nc-bottle-solid" />
+      <rect x="2" y="61.6" width="52" height="4.2" rx="2.1" className="nc-bottle-solid" />
+      <text x="28" y="70.6" textAnchor="middle" className="nc-bottle-text">
+        MY JANE
+      </text>
+    </svg>
+  );
+}
+
+/**
+ * 내 단계 — 어린이 MBTI 노트는 메달 대신 커피콩(사용자 2026-11-19). 플랫: 진하게 나온 색의 콩 + 가운데 갈라진 선(그 색을 어둡게)
+ */
+function RoastBean({ colors }: { colors: string[] }) {
+  const c1 = colors[0] ?? "#7a4a2a";
+  const crease = `#${mix(rgb(c1), [20, 12, 8], 0.55).map((v) => Math.round(v).toString(16).padStart(2, "0")).join("")}`;
+  return (
+    <svg className="nc-medal nc-bean" viewBox="0 0 40 40" aria-hidden="true">
+      <ellipse cx="20" cy="24" rx="10.5" ry="13.5" transform="rotate(-28 20 24)" fill={c1} />
+      <path d="M15.2 13.2 C23.6 18.6 14.6 28.8 24.6 34.6" fill="none" stroke={crease} strokeWidth="2.4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 /**
  * 러닝 물병 — 소프트 플라스크(레퍼런스 쉐입, 사용자 2026-11-18).
  * 투명한 원통형 캡 · 넓은 칼라 링 · 비스듬히 꺾인 어깨 · 위가 조금 넓고 아래로 살짝 좁아지는 긴 몸통 ·
@@ -209,32 +303,9 @@ function Bottle({ picks, pour }: { picks: AxisPick[]; pour?: boolean }) {
   const top = 30;
   const bottom = 113.2;
   const full = (bottom - top) * 0.84;
-  const weights = picks.map((p) => (p.strong ? 1 : 0.62));
-  const sum = weights.reduce((a, b) => a + b, 0) || 1;
   // 물 — 4색이 아래(누구와)부터 위(마음)로 그라데이션으로 이어져 찬다(사용자 2026-11-18). 층 두께만큼 그 색이 길다
   const surface = bottom - full;
-  /*
-    층마다 제 색이 꽉 차고, 이웃 층과의 경계만 좁게 그라데이션으로 넘어간다(사용자 2026-11-19 — 경계가 너무 넓었다).
-    전에는 층 가운데끼리 이어서 층 전체가 섞이는 띠였다. 경계 띠 BAND(물 높이 단위)는 얇은 층의 40%를 넘지 않는다.
-    경계 한가운데에는 맑은 중간색(vividMix) — 그냥 이으면 회색빛으로 탁해진다
-  */
-  const BAND = 3.6;
-  const layers: { key: string; a: number; b: number; color: string }[] = [];
-  let acc = 0;
-  picks.forEach((p, i) => {
-    const h = (weights[i] / sum) * full;
-    layers.push({ key: p.id, a: acc, b: acc + h, color: p.color.hex });
-    acc += h;
-  });
-  const smooth: { key: string; offset: number; color: string }[] = [];
-  layers.forEach((l, i) => {
-    const prev = layers[i - 1];
-    const next = layers[i + 1];
-    const half = (o?: typeof l) => (o ? Math.min(BAND, 0.4 * Math.min(l.b - l.a, o.b - o.a)) / 2 : 0);
-    smooth.push({ key: `${l.key}-a`, offset: (l.a + half(prev)) / full, color: l.color });
-    smooth.push({ key: `${l.key}-b`, offset: (l.b - half(next)) / full, color: l.color });
-    if (next) smooth.push({ key: `${l.key}-m`, offset: l.b / full, color: vividMix(l.color, next.color, 0.5) });
-  });
+  const smooth = layerStops(picks, full);
   /* 플랫 실루엣(사용자 2026-11-18) — 외곽선 · 그라데이션 · 반사광 · 물방울 · 안쪽 선 없이 면만.
      캡 · 칼라는 글자색 단색, 몸통은 옅은 면 위에 4색이 그라데이션으로 이어진 물 */
   return (

@@ -6,6 +6,7 @@ import { SharedNote } from "@/components/note/SharedNote";
 import { buildCard, lookOf } from "@/components/note/view";
 import { NoteDeck } from "@/components/note/NoteDeck";
 import { noteFontVars } from "@/components/note/fonts";
+import { kitOfSlug } from "@/components/note/palette";
 
 type Q = {
   quiz: { title: string; disclaimer: string | null };
@@ -34,7 +35,7 @@ function pompOf(q: Q, code: string, s: string) {
  * 결과 화면 하나(덱 하나)만 그린다 — 앞의 회차 네 장이 덱 목록에 함께 들어간다.
  * 공유 화면은 `?view=shared` 로 따로 본다(한 화면에 스와이프 카드가 여럿이면 헷갈린다, 사용자 2026-11-18).
  */
-export function DevNote({ quiz, code, s, id, n, view }: { quiz: Q; code: string; s: string; id: string; n: number; view: string }) {
+export function DevNote({ quiz, slug, code, s, id, n, view }: { quiz: Q; slug: string; code: string; s: string; id: string; n: number; view: string }) {
   const t = quiz.resultTypes.find((x) => x.code === code) ?? quiz.resultTypes[0];
   const pomp = pompOf(quiz, t.code, s);
   const completedAt = useMemo(() => new Date().toISOString(), []);
@@ -44,7 +45,7 @@ export function DevNote({ quiz, code, s, id, n, view }: { quiz: Q; code: string;
     isOwner: true,
     ownerName: "미리보기",
     custom: null,
-    quiz: { slug: "runner-16type", title: quiz.quiz.title, disclaimer: quiz.quiz.disclaimer },
+    quiz: { slug, title: quiz.quiz.title, disclaimer: quiz.quiz.disclaimer ?? null },
     result: {
       code: t.code,
       completedAt,
@@ -61,7 +62,7 @@ export function DevNote({ quiz, code, s, id, n, view }: { quiz: Q; code: string;
   const before = useMemo(
     () =>
       Array.from({ length: Math.max(0, n - 1) }, (_, i) => {
-        const c = ["PSIF", "CSAF", "PLIR", "CLAR", "PSAR", "CLIF"][i % 6];
+        const c = quiz.resultTypes[(i * 5 + 3) % quiz.resultTypes.length].code;
         return buildCard({
           attemptId: `devdeck${i}${c}`,
           attemptNo: i + 1,
@@ -88,10 +89,10 @@ export function DevNote({ quiz, code, s, id, n, view }: { quiz: Q; code: string;
         <div className={`nt ${noteFontVars}`}>
           <div className="nt-shell">
             <p className="nt-eyebrow">
-              <span>Running Note</span>
+              <span>{kitOfSlug(slug).brand}</span>
               <span>{before.length + 1} cards</span>
             </p>
-            <h1 className="nt-head">내가 모은 러닝 노트</h1>
+            <h1 className="nt-head">내가 모은 {kitOfSlug(slug).brandKo}</h1>
             <NoteDeck cards={[...before, buildCard({ attemptId: id, attemptNo: n, code: t.code, typeName: t.name, completedAt, runner: "미리보기", axes: quiz.outcomes, pomp, strengths: t.content.strengths, goodWith: t.content.goodWith })]} start="list" />
           </div>
         </div>
@@ -115,7 +116,7 @@ export function DevNote({ quiz, code, s, id, n, view }: { quiz: Q; code: string;
           <h2 className="nt-panel-title">{quiz.quiz.title}</h2>
           <div style={{ marginTop: 20 }}>
             <button type="button" className="nt-btn">
-              나의 러닝 노트 내리기 →
+              나의 {kitOfSlug(slug).brandKo} 내리기 →
             </button>
           </div>
         </SharedNote>

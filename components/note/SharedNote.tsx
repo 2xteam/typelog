@@ -6,7 +6,7 @@ import { NoteDeck } from "./NoteDeck";
 import { buildCard } from "./view";
 import { noteFontVars } from "./fonts";
 import { shellStyle } from "./view";
-import type { AxisDecl } from "./palette";
+import { kitOf, type AxisDecl } from "./palette";
 import "./note.css";
 
 /**
@@ -48,11 +48,11 @@ export function SharedNote({ note, children }: { note: SharedNoteData; children:
         </div>
         <p className="nt-eyebrow" style={{ marginTop: 14 }}>
           <span>Shared</span>
-          <span>Running Note</span>
+          <span>{kitOf(card.picks).brand}</span>
         </p>
         <h1 className="nt-head">
           <span>{note.code}</span>
-          {note.runner} 님의 러닝 노트예요
+          {card.runner} 님의 {kitOf(card.picks).brandKo}예요
         </h1>
         <p className="nt-sub">{note.typeName}</p>
         <NoteDeck cards={[card]} reveal={reveal} allowList={false} />

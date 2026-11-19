@@ -8,7 +8,7 @@ import { getAttemptModel } from "@/models/Attempt";
 import { getQuizModel } from "@/models/Quiz";
 import { getResultTypeModel } from "@/models/ResultType";
 import { getUserModel } from "@/models/User";
-import { AXIS_EN, cardTheme, meshCss, pickAxes, ROAST, roastLevel, type AxisDecl, lightestOf } from "@/components/note/palette";
+import { kitOfAxes, cardTheme, meshCss, pickAxes, ROAST, roastLevel, type AxisDecl, lightestOf } from "@/components/note/palette";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -99,7 +99,7 @@ export async function GET(req: Request) {
         attemptNo: a.attemptNo ?? 1,
         owner: a.owner.kind === "user" ? "member" : "guest",
         member: u ? { nickname: u.nickname ?? null, email: maskEmail(u.email), phone: maskPhone(u.phone) } : null,
-        runner: custom.name?.trim() || u?.nickname?.trim() || "러너",
+        runner: custom.name?.trim() || u?.nickname?.trim() || kitOfAxes(axes).personKo,
         result: { code: c, name: typeByCode.get(c)?.name ?? c, emoji: typeByCode.get(c)?.emoji ?? "" },
         card: {
           ink: theme.ink,
@@ -112,7 +112,7 @@ export async function GET(req: Request) {
           meshBase: mesh.base,
           roast: ROAST[roastLevel(picks)],
           axes: picks.map((p) => ({
-            axis: AXIS_EN[p.id] ?? p.id,
+            axis: kitOfAxes(axes).axisEn[p.id] ?? p.id,
             pole: p.pole,
             pct: p.pct,
             strength: p.strong ? "진하게" : "은은하게",

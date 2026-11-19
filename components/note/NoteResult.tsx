@@ -11,7 +11,7 @@ import { buildCard, lookOf, splitOutcomes, type NoteCardData } from "./view";
 import { GRAIN } from "./NoteCard";
 import { noteFontVars } from "./fonts";
 import { shellStyle } from "./view";
-import type { AxisDecl } from "./palette";
+import { kitOf, type AxisDecl } from "./palette";
 import "./note.css";
 
 /**
@@ -140,7 +140,7 @@ export function NoteResult({
         */}
         {/* 맨 위 띠는 살린다(사용자 2026-11-19) — 제목 · 코드 · 소개만 걷는다 */}
         <p className="nt-eyebrow">
-          <span>Running Note</span>
+          <span>{kitOf(card.picks).brand}</span>
           <span>No. {String(data.attemptNo).padStart(2, "0")}</span>
         </p>
         <h1 className="sr-only">
@@ -158,9 +158,9 @@ export function NoteResult({
         {/* 카드에 적힐 이름 — 카드 바로 아래(사용자 2026-11-18) */}
         {data.isOwner ? (
           <div className="nt-namebox">
-            <p className="nt-panel-eyebrow">Runner · 카드에 적힐 이름</p>
+            <p className="nt-panel-eyebrow">{kitOf(card.picks).person} · 카드에 적힐 이름</p>
             <div className="nt-name">
-              <input value={nameDraft} maxLength={10} onChange={(e) => setNameDraft(e.target.value)} placeholder="러너" aria-label="카드에 적힐 이름" />
+              <input value={nameDraft} maxLength={10} onChange={(e) => setNameDraft(e.target.value)} placeholder={kitOf(card.picks).personKo} aria-label="카드에 적힐 이름" />
               <button type="button" className="nt-chip nt-chip--main" onClick={() => void saveName()} disabled={nameDraft.trim() === name}>
                 바꾸기
               </button>
@@ -252,7 +252,8 @@ export function NoteResult({
             </div>
           ) : null}
           <div className="nts-fine">
-            <p>🫀 달리다 가슴이 아프거나 두근거리고 어지러우면 바로 멈추고 쉬어요. 기록보다 몸이 먼저예요.</p>
+            {/* 달리기 안전 안내는 러닝 노트에만 */}
+            {kitOf(card.picks).id === "run" ? <p>🫀 달리다 가슴이 아프거나 두근거리고 어지러우면 바로 멈추고 쉬어요. 기록보다 몸이 먼저예요.</p> : null}
             {data.quiz.disclaimer ? <p>{data.quiz.disclaimer}</p> : null}
           </div>
         </section>

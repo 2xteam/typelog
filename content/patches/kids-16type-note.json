@@ -1,0 +1,15 @@
+{
+  "$schema": "typelog/quiz/v1",
+  "mode": "content",
+  "_note": [
+    "어린이 MBTI 를 MBTI 노트로 바꾸기(2026-11-19) — 러닝 노트와 같은 화면, 물병 → 커피잔 · 메달 → 커피콩.",
+    "admin → TypeLog → 질문지 「JSON 으로 등록」 에 붙여넣고 검사 → 등록. 문항 · 결과 코드 · 채점은 그대로라 지난 응답도 카드로 보인다.",
+    "되돌리려면 quizMeta.experience 를 null, 한 줄 소개를 「열두 가지 질문으로 만나는 16가지 성향」 으로 다시 보낸다.",
+    "→ my-obsidian-vault / 50-Plans/K 러닝 노트.md"
+  ],
+  "quizSlug": "kids-16type",
+  "quizMeta": {
+    "tagline": "커피처럼 섞인 나만의 MBTI 노트가 나와요 ☕✨",
+    "experience": "note"
+  }
+}

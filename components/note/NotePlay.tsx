@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getGuestKey } from "@/lib/guestKey";
 import { Wheel } from "./Wheel";
-import { pickAxes, type AxisPick } from "./palette";
+import { pickAxes, type AxisPick, kitOfSlug } from "./palette";
 import { splitOutcomes } from "./view";
 import { noteFontVars } from "./fonts";
 import "./note.css";
@@ -67,7 +67,7 @@ export function NotePlay({
 }: {
   attemptId: string;
   resultPath: string;
-  quiz: { title: string; emoji: string | null };
+  quiz: { slug?: string; title: string; emoji: string | null };
   items: NoteItem[];
   initialAnswers: Answer[];
   api?: NoteApi;
@@ -149,7 +149,7 @@ export function NotePlay({
           ))}
         </div>
         <p className="np-title">
-          <span>Running Note</span>
+          <span>{kitOfSlug(quiz.slug).brand}</span>
           <span>
             {String(at + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
           </span>

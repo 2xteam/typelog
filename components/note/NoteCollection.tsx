@@ -7,7 +7,7 @@ import { getGuestKey } from "@/lib/guestKey";
 import { NoteDeck } from "./NoteDeck";
 import { buildCard, type NoteCardData } from "./view";
 import { noteFontVars } from "./fonts";
-import type { AxisDecl } from "./palette";
+import { kitOfAxes, type AxisDecl } from "./palette";
 import "./note.css";
 
 /**
@@ -86,10 +86,10 @@ export function NoteCollection({ slug }: { slug: string }) {
     <div className={`nt ${noteFontVars}`}>
       <div className="nt-shell">
         <p className="nt-eyebrow">
-          <span>Running Note</span>
+          <span>{data ? kitOfAxes(data.axes).brand : ""}</span>
           <span>{data ? `${data.total} cards` : ""}</span>
         </p>
-        <h1 className="nt-head">내가 모은 러닝 노트</h1>
+        <h1 className="nt-head">내가 모은 {data ? kitOfAxes(data.axes).brandKo : "노트"}</h1>
         <p className="nt-sub">
           {msg ?? (!data ? "모은 카드를 불러오는 중이에요 ☕" : !cards.length ? "아직 카드가 없어요." : "회차마다 한 장씩 쌓여요. 눌러서 꺼내 봐요.")}
         </p>

@@ -1,5 +1,6 @@
 "use client";
 
+import { kitOfSlug } from "@/components/note/palette";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Sheet } from "@/components/Sheet";
@@ -268,7 +269,7 @@ export function ResultView({
           </div>
           {data.isOwner ? <p className="result-fineprint">🔗 이 결과는 링크로 공유할 수 있어요. 받은 사람도 바로 참여해 볼 수 있어요.</p> : null}
           {shareBox}
-          {!bare ? <p className="result-fineprint">🔗 결과 링크로는 이 러닝 노트 카드가 보여요.</p> : null}
+          {!bare ? <p className="result-fineprint">🔗 결과 링크로는 이 {kitOfSlug(data.quiz.slug).brandKo} 카드가 보여요.</p> : null}
         </Sheet>
       </>
     );
