@@ -261,6 +261,8 @@ export type QuizImport =
         experience?: "running" | "note" | null;
         /** 목록 노출 순서 — 작을수록 위. 채점과 무관 */
         order?: number;
+        /** 추천 연령 — 채점과 무관(2026-11-19) */
+        ageRange?: { min: number; max?: number | null };
       } | null;
       resultTypes?: ResultTypeInput[];
     };

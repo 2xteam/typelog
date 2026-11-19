@@ -100,14 +100,22 @@ export function validateImport(payload: unknown): Report {
       if (!isPlainObject(qm)) err("quizMeta", "객체여야 해요.");
       else {
         for (const key of Object.keys(qm)) {
-          if (!["title", "tagline", "disclaimer", "experience", "order"].includes(key)) {
-            warn(`quizMeta.${key}`, "title · tagline · disclaimer · experience · order 만 고칠 수 있어요.");
+          if (!["title", "tagline", "disclaimer", "experience", "order", "ageRange"].includes(key)) {
+            warn(`quizMeta.${key}`, "title · tagline · disclaimer · experience · order · ageRange 만 고칠 수 있어요.");
           }
         }
         if (qm.title !== undefined && (typeof qm.title !== "string" || !qm.title.trim())) err("quizMeta.title", "비어 있어요.");
         // 화면 방식은 채점과 무관하다 — 공개 뒤에도 바꿀 수 있다(사용자 2026-11-18). 답 · 결과는 그대로
         if (qm.experience !== undefined && qm.experience !== null && !EXPERIENCES.includes(qm.experience as string)) {
           err("quizMeta.experience", `${EXPERIENCES.join(" · ")} · null 중 하나여야 해요.`);
+        }
+        // 추천 연령 — 채점과 무관해서 공개 뒤에도 바꾼다(사용자 2026-11-19, 어린이 MBTI → MBTI 노트)
+        if (qm.ageRange !== undefined) {
+          const ar = qm.ageRange as { min?: unknown; max?: unknown } | null;
+          const min = ar && typeof ar.min === "number" ? ar.min : NaN;
+          const max = ar && ar.max != null ? (ar.max as number) : null;
+          if (!isPlainObject(ar) || !Number.isInteger(min) || min < 3 || min > AGE_MAX) err("quizMeta.ageRange", `min 은 3부터 ${AGE_MAX} 사이 정수로 적어요.`);
+          else if (max !== null && (!Number.isInteger(max) || max < min || max > AGE_MAX)) err("quizMeta.ageRange", "max 는 min 이상이거나 null 이에요.");
         }
         // 노출 순서 — 작을수록 목록 위(사용자 2026-11-18). 채점과 무관해서 공개 뒤에도 바꾼다
         if (qm.order !== undefined && (!Number.isInteger(qm.order) || (qm.order as number) < 0 || (qm.order as number) > 9999)) {

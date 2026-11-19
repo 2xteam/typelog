@@ -105,6 +105,8 @@ export async function POST(req: Request) {
         if (qm.experience !== undefined) set.experience = qm.experience ?? null;
         // 노출 순서 — 작을수록 위
         if (typeof qm.order === "number") set.order = qm.order;
+        // 추천 연령(검사는 quizValidate)
+        if (qm.ageRange && typeof qm.ageRange.min === "number") set.ageRange = { min: qm.ageRange.min, max: qm.ageRange.max ?? null };
         if (Object.keys(set).length) await Quiz.updateOne({ _id: quizId }, { $set: set });
       }
       for (const t of body.resultTypes ?? []) {
