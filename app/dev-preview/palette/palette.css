@@ -1,67 +1,49 @@
-/* 러닝 노트 색상 방향 비교 — 로컬 미리보기 전용. 기존 note.css 위에 방향별 변수만 덮어쓴다 */
+/* 러닝 노트 디자인 리뷰 — 확정한 색 체계 + 카드 뷰어. 무대 · 카드는 실제 note.css 그대로 */
 .pp {
   min-height: 100vh; padding: 28px 18px 60px;
   background: linear-gradient(160deg, #E7DFEC 0%, #EFD9E2 55%, #E4DCEE 100%);
   font-family: var(--rf-sans), "Noto Sans KR", sans-serif; color: #241c2c;
 }
-.pp-head { max-width: 1180px; margin: 0 auto 18px; }
+.pp-head, .pp-sec, .pp-viewer { max-width: 1120px; margin: 0 auto; }
 .pp-head p:first-child { margin: 0; font-size: 12px; font-weight: 800; letter-spacing: 0.24em; color: #8E7C99; }
 .pp-head h1 { margin: 6px 0 0; font-size: 28px; font-weight: 900; letter-spacing: -0.03em; }
 .pp-lead { margin: 8px 0 0; font-size: 14.5px; line-height: 1.6; color: #4a3f53; }
-.pp-page { max-width: 1180px; margin: 0 auto 22px; }
-.pp-label { margin: 0 0 8px; font-size: 11.5px; font-weight: 800; letter-spacing: 0.2em; color: #8E7C99; }
+.pp-sec { margin-top: 22px; }
+.pp-label { margin: 18px 0 8px; font-size: 11.5px; font-weight: 800; letter-spacing: 0.18em; color: #8E7C99; }
 .pp-chips { display: flex; flex-wrap: wrap; gap: 10px; }
-.pp-chips--col { flex-direction: column; gap: 8px; margin: 12px 0 16px; }
-.pp-chip { display: grid; grid-template-columns: 54px 1fr; align-items: stretch; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 6px 16px rgba(36, 28, 44, 0.08); min-width: 220px; }
-.pp-chip i { display: block; min-height: 54px; }
-.pp-chip div { padding: 8px 12px; display: grid; }
-.pp-chip b { font-size: 13px; font-weight: 900; letter-spacing: 0.02em; }
+.pp-chips--col { flex-direction: column; gap: 8px; }
+.pp-chip { display: grid; grid-template-columns: 50px 1fr; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 6px 16px rgba(36, 28, 44, 0.08); min-width: 200px; }
+.pp-chip i { display: block; min-height: 52px; }
+.pp-chip div { padding: 7px 12px; display: grid; }
+.pp-chip b { font-size: 12.5px; font-weight: 900; }
 .pp-chip code { font-size: 11px; color: #6b6176; }
 .pp-chip span { font-size: 11.5px; color: #8E7C99; }
-.pp-grid { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 22px; align-items: start; }
-.pp-dir h2 { margin: 0; font-size: 19px; font-weight: 900; letter-spacing: -0.02em; }
-.pp-mood { margin: 4px 0 0; font-size: 13px; line-height: 1.5; color: #5a4e64; }
-.pp-nt { margin: 0; }
 
-/* 공통 — 바깥 글꼴은 Noto Sans, 무대는 그라데이션 없이 단색 + 아주 옅은 빛만 */
-.pp-nt { --en: var(--rf-sans), "Noto Sans KR", sans-serif; --ko: var(--rf-sans), "Noto Sans KR", sans-serif; }
-.pp-nt .nt-btn { font-weight: 800; }
-.pp-tags { display: flex; gap: 6px; margin-top: 12px; }
-.pp-tag { padding: 6px 12px; border-radius: 999px; font-size: 12.5px; font-weight: 700; border: 1px solid var(--nt-line); color: var(--nt-dim); }
-.pp-tag--on { background: var(--pp-point); color: var(--pp-on-point); border-color: transparent; }
+.pp-viewer { margin-top: 18px; display: grid; grid-template-columns: minmax(280px, 380px) minmax(320px, 1fr); gap: 24px; align-items: start; }
+.pp-controls { position: sticky; top: 16px; }
+.pp-types { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.pp-types button, .pp-axis button { border: 1px solid rgba(36, 28, 44, 0.16); background: rgba(255, 255, 255, 0.6); color: #241c2c; border-radius: 10px; padding: 9px 0; font: 800 13px/1 var(--rf-sans), sans-serif; letter-spacing: 0.06em; cursor: pointer; }
+.pp-types button[data-on="true"], .pp-axis button[data-on="true"] { background: #0B1430; color: #D0FF41; border-color: #0B1430; }
+.pp-axes { display: grid; gap: 6px; }
+.pp-axis { display: grid; grid-template-columns: 80px 1fr; align-items: center; gap: 8px; }
+.pp-axis span { font-size: 13px; font-weight: 700; }
+.pp-axis div { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.pp-axis button { padding: 8px 0; font-size: 12.5px; letter-spacing: 0; }
+.pp-key { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.pp-key code { padding: 9px 12px; border-radius: 10px; background: rgba(255, 255, 255, 0.6); font-size: 13px; min-width: 96px; }
+.pp-btn { border: 0; border-radius: 999px; padding: 10px 16px; background: #D0FF41; color: #0B1430; font: 800 13.5px/1 var(--rf-sans), sans-serif; cursor: pointer; box-shadow: 0 6px 16px rgba(36, 28, 44, 0.12); }
+.pp-btn--ghost { background: #0B1430; color: #F0EEE9; }
+.pp-nt { margin: 0; max-width: none; }
 
-/* A · Midnight Volt */
-.pp-a .pp-nt {
-  --pp-base: #0B1430; --pp-floor: #16224A; --pp-point: #D0FF41; --pp-on-point: #0B1430;
-  --nt-ivory: #F0EEE9; --nt-dim: #C6D0DD; --nt-accent: #D0FF41; --nt-line: rgba(198, 208, 221, 0.22);
-}
-/* B · Night Pace */
-.pp-b .pp-nt {
-  --pp-base: #0E1A3D; --pp-floor: #0f2a66; --pp-point: #FF5C34; --pp-on-point: #151A10;
-  --nt-ivory: #FFF0EB; --nt-dim: #C6D0DD; --nt-accent: #FF8A6B; --nt-line: rgba(198, 208, 221, 0.22);
-}
-/* C · Night Track */
-.pp-c .pp-nt {
-  --pp-base: #0A1024; --pp-floor: #16224A; --pp-point: #E4FF1A; --pp-on-point: #0A1024; --pp-point2: #FF5C34;
-  --nt-ivory: #F0EEE9; --nt-dim: #C6D0DD; --nt-accent: #E4FF1A; --nt-line: rgba(198, 208, 221, 0.22);
-}
+.pp-poles { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+.pp-pole { background: #fff; border-radius: 14px; padding: 12px; box-shadow: 0 6px 16px rgba(36, 28, 44, 0.08); }
+.pp-pole b { display: block; font-size: 13px; font-weight: 900; margin-bottom: 8px; }
+.pp-pole > div { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.pp-pole span { display: grid; align-content: end; min-height: 74px; padding: 6px; border-radius: 8px; }
+.pp-pole i, .pp-pole em { font-style: normal; font-size: 9.5px; font-weight: 700; line-height: 1.2; background: rgba(255, 255, 255, 0.85); color: #241c2c; padding: 2px 4px; border-radius: 4px; justify-self: start; }
+.pp-pole em { margin-top: 2px; font-weight: 600; }
 
-.pp-nt .nt-shell {
-  --nt-wall: radial-gradient(70% 40% at 50% 0%, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0) 70%);
-  --nt-bg: var(--nt-wall), var(--pp-base);
-  --nt-grad: var(--pp-point);
-  --nt-glow: color-mix(in srgb, var(--pp-point) 35%, transparent);
+@media (max-width: 760px) {
+  .pp-viewer { grid-template-columns: 1fr; }
+  .pp-controls { position: static; }
 }
-.pp-nt .nt-btn--main { color: var(--pp-on-point); }
-.pp-nt .nt-btn--ghost { background: transparent; border-color: color-mix(in srgb, var(--nt-dim) 40%, transparent); }
-.pp-nt .nt-floor {
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--pp-point) 45%, transparent) 0, transparent 2px),
-    radial-gradient(70% 110px at 50% 0, color-mix(in srgb, var(--pp-floor) 90%, #ffffff 10%), transparent 100%),
-    linear-gradient(180deg, var(--pp-floor) 0, var(--pp-base) 220px, var(--pp-base) 100%);
-}
-.pp-nt .nt-floor::after { display: none; }
-.pp-nt .nt-panel { background: var(--pp-base); border-color: var(--nt-line); }
-.pp-nt .nt-head span { color: var(--pp-point); }
-.pp-c .pp-nt .nt-eyebrow span:last-child { color: var(--pp-point2); }
-.pp-c .pp-nt .pp-tag:nth-child(2) { border-color: var(--pp-point2); color: var(--pp-point2); }
