@@ -151,7 +151,7 @@ export const CardBack = memo(function CardBack({ card, pour }: { card: NoteCardD
         <ol>
           {ROAST.map((r, i) => (
             <li key={r} data-on={i === level} aria-current={i === level ? "step" : undefined}>
-              {i === level ? kit.badge === "bean" ? <RoastBean colors={badgeColors} /> : <RoastMedal colors={badgeColors} /> : <i aria-hidden="true" />}
+              {i === level ? kit.badge === "bean" ? <RoastBean /> : <RoastMedal colors={badgeColors} /> : <i aria-hidden="true" />}
               <span>{r}</span>
             </li>
           ))}
@@ -225,21 +225,23 @@ function layerStops(picks: AxisPick[], full: number, BAND = 3.6) {
 }
 
 /**
- * 커피잔 — 어린이 MBTI 노트의 그릇(사용자 2026-11-19, 러닝 노트의 물병 자리). 물병과 같은 플랫 실루엣:
- * 받침 · 테두리 · 손잡이는 글자색 단색, 잔은 옅은 면 위에 4색이 아래(EI)부터 위(JP)로 층층이 찬다. 위에 김 두 줄
+ * 에스프레소 잔 — 어린이 MBTI 노트의 그릇(사용자 2026-11-19, 러닝 노트의 물병 자리. 레퍼런스: 이중 유리 에스프레소 잔).
+ * 둥근 유리 볼 · 받침 없음 · 손잡이도 유리(따로 색 없이 잔과 같은 옅은 면). 물병과 같은 플랫 실루엣 —
+ * 유리는 글자색을 옅게 깐 면, 안쪽에 4색이 아래(EI)부터 위(JP)로 층층이 찬다
  */
-const CUP = "M7 22 H49 L45 55.5 Q44.4 60 39.8 60 H16.2 Q11.6 60 11 55.5 Z";
+const GLASS = "M5 9 H51 C51 31 46.5 51 28 51 C9.5 51 5 31 5 9 Z";
+const INNER = "M8.6 12 H47.4 C47.4 30.5 43.6 47.4 28 47.4 C12.4 47.4 8.6 30.5 8.6 12 Z";
 function Cup({ picks, pour }: { picks: AxisPick[]; pour?: boolean }) {
   const id = useId().replace(/:/g, "");
-  const bottom = 60;
-  const full = (bottom - 25) * 0.9;
+  const bottom = 47.4;
+  const full = (bottom - 14) * 0.9;
   const surface = bottom - full;
-  const smooth = layerStops(picks, full, 3);
+  const smooth = layerStops(picks, full, 2.6);
   return (
-    <svg className="nc-bottle nc-cupsvg" viewBox="0 0 64 72" aria-hidden="true" data-pour={pour ? "true" : undefined}>
+    <svg className="nc-bottle nc-cupsvg" viewBox="0 0 64 56" aria-hidden="true" data-pour={pour ? "true" : undefined}>
       <defs>
         <clipPath id={`c${id}`}>
-          <path d={CUP} />
+          <path d={INNER} />
         </clipPath>
         <linearGradient id={`w${id}`} gradientUnits="userSpaceOnUse" x1="0" y1={bottom} x2="0" y2={surface}>
           {smooth.map((st) => (
@@ -247,42 +249,32 @@ function Cup({ picks, pour }: { picks: AxisPick[]; pour?: boolean }) {
           ))}
         </linearGradient>
       </defs>
-      {/* 김 — 두 줄 */}
-      <path d="M22 15 C19 11 25 9 22 4" className="nc-cup-steam" />
-      <path d="M32 15 C29 11 35 9 32 4" className="nc-cup-steam" />
-      {/* 손잡이 */}
-      <path d="M47.6 29 C58.5 28.5 58.5 46.5 45.6 47" className="nc-cup-handle" />
+      {/* 손잡이 — 유리 고리(잔과 같은 옅은 면) */}
+      <path d="M49.4 15.5 C61 14.6 61.4 35 46.4 37.4" className="nc-cup-handle" />
+      {/* 유리 볼 */}
+      <path d={GLASS} className="nc-bottle-body" />
       <g clipPath={`url(#c${id})`}>
-        <rect x="0" y="0" width="64" height="72" className="nc-bottle-body" />
         <g className="nc-liquid">
           <path
-            d={`M4 ${surface + 0.5} Q8 ${surface - 0.3} 12 ${surface + 0.5} T20 ${surface + 0.5} T28 ${surface + 0.5} T36 ${surface + 0.5} T44 ${surface + 0.5} T52 ${surface + 0.5} L52 ${bottom + 1} L4 ${bottom + 1} Z`}
+            d={`M4 ${surface + 0.4} Q8 ${surface - 0.3} 12 ${surface + 0.4} T20 ${surface + 0.4} T28 ${surface + 0.4} T36 ${surface + 0.4} T44 ${surface + 0.4} T52 ${surface + 0.4} L52 ${bottom + 1} L4 ${bottom + 1} Z`}
             fill={`url(#w${id})`}
             className="nc-layer"
             style={{ animationDelay: "0.25s" }}
           />
         </g>
       </g>
-      {/* 테두리 · 받침 */}
-      <rect x="5.4" y="20" width="45.2" height="3.4" rx="1.7" className="nc-bottle-solid" />
-      <rect x="2" y="61.6" width="52" height="4.2" rx="2.1" className="nc-bottle-solid" />
-      <text x="28" y="70.6" textAnchor="middle" className="nc-bottle-text">
-        MY JANE
-      </text>
     </svg>
   );
 }
 
 /**
- * 내 단계 — 어린이 MBTI 노트는 메달 대신 커피콩(사용자 2026-11-19). 플랫: 진하게 나온 색의 콩 + 가운데 갈라진 선(그 색을 어둡게)
+ * 내 단계 — 어린이 MBTI 노트는 메달 대신 커피콩(사용자 2026-11-19). 색은 고정 — 진하게 볶은 원두 갈색(성향 색을 쓰지 않는다)
  */
-function RoastBean({ colors }: { colors: string[] }) {
-  const c1 = colors[0] ?? "#7a4a2a";
-  const crease = `#${mix(rgb(c1), [20, 12, 8], 0.55).map((v) => Math.round(v).toString(16).padStart(2, "0")).join("")}`;
+function RoastBean() {
   return (
     <svg className="nc-medal nc-bean" viewBox="0 0 40 40" aria-hidden="true">
-      <ellipse cx="20" cy="24" rx="10.5" ry="13.5" transform="rotate(-28 20 24)" fill={c1} />
-      <path d="M15.2 13.2 C23.6 18.6 14.6 28.8 24.6 34.6" fill="none" stroke={crease} strokeWidth="2.4" strokeLinecap="round" />
+      <ellipse cx="20" cy="24" rx="10.5" ry="13.5" transform="rotate(-28 20 24)" fill="#4A2A17" />
+      <path d="M15.2 13.2 C23.6 18.6 14.6 28.8 24.6 34.6" fill="none" stroke="#22120A" strokeWidth="2.4" strokeLinecap="round" />
     </svg>
   );
 }
