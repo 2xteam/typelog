@@ -192,58 +192,69 @@ export function NoteResult({
       </section>
 
       {t ? (
-        <section className="nt-panel nt-panel--back" style={backStyle}>
+        <section className="nt-panel nt-panel--back nts" style={backStyle}>
+          {/*
+            맛평가 — 같은 크기 · 같은 간격의 표 행만 이어져 단조로웠다(사용자 2026-11-19).
+            내용의 성격대로 크기를 나눈다: 요약은 크게(인용) · 강점은 굵은 짧은 문장 · 조심/한 잔 더는 번호 붙은 본문 ·
+            블렌드는 카드 코드처럼 큰 세리프 · 알고 보면은 옅은 칸 · 건강 안내는 작게 맨 끝
+          */}
           <p className="nt-panel-eyebrow">Tasting · 맛평가</p>
-          <h2 className="nt-panel-title">
-            {t.emoji} {t.name}
-          </h2>
+          <div className="nts-hero">
+            <span className="nts-emoji" aria-hidden="true">{t.emoji}</span>
+            <h2 className="nts-title">{t.name}</h2>
+          </div>
           {/* 제목에 유형 이모지가 있으니 요약 첫머리의 같은 이모지는 뺀다 */}
-          <p className="nt-panel-text">{t.content.summary.startsWith(t.emoji) ? t.content.summary.slice(t.emoji.length).trim() : t.content.summary}</p>
-          <dl className="nt-notes">
-            <div>
-              <dt>강점</dt>
-              <dd>
-                {t.content.strengths.map((s) => (
-                  <p key={s}># {s}</p>
-                ))}
-              </dd>
+          <p className="nts-lead">{t.content.summary.startsWith(t.emoji) ? t.content.summary.slice(t.emoji.length).trim() : t.content.summary}</p>
+
+          <div className="nts-sec">
+            <p className="nts-label"><b>01</b> Strength <span>강점</span></p>
+            <ul className="nts-strong">
+              {t.content.strengths.map((s) => (
+                <li key={s}>{s}</li>
+              ))}
+            </ul>
+          </div>
+          {t.content.cautions?.length ? (
+            <div className="nts-sec">
+              <p className="nts-label"><b>02</b> Caution <span>조심</span></p>
+              {t.content.cautions.map((s) => (
+                <p key={s} className="nts-body">{s}</p>
+              ))}
             </div>
-            {t.content.cautions?.length ? (
-              <div>
-                <dt>조심</dt>
-                <dd>
-                  {t.content.cautions.map((s) => (
-                    <p key={s}>{s}</p>
-                  ))}
-                </dd>
-              </div>
-            ) : null}
-            {t.content.tips?.length ? (
-              <div>
-                <dt>한 잔 더</dt>
-                <dd>
-                  {t.content.tips.map((s) => (
-                    <p key={s}>{s}</p>
-                  ))}
-                </dd>
-              </div>
-            ) : null}
-            {data.result.goodWith.length ? (
-              <div>
-                <dt>잘 맞는 블렌드</dt>
-                <dd>
-                  {data.result.goodWith.map((g) => (
-                    <p key={g.code}>
-                      {g.emoji} {g.code} {g.name}
-                    </p>
-                  ))}
-                </dd>
-              </div>
-            ) : null}
-          </dl>
-          {t.content.funFact ? <p className="nt-fun">{t.content.funFact}</p> : null}
-          <p className="nt-heart">🫀 달리다 가슴이 아프거나 두근거리고 어지러우면 바로 멈추고 쉬어요. 기록보다 몸이 먼저예요.</p>
-          {data.quiz.disclaimer ? <p className="nt-fine">{data.quiz.disclaimer}</p> : null}
+          ) : null}
+          {t.content.tips?.length ? (
+            <div className="nts-sec">
+              <p className="nts-label"><b>03</b> One More Cup <span>한 잔 더</span></p>
+              {t.content.tips.map((s) => (
+                <p key={s} className="nts-body">{s}</p>
+              ))}
+            </div>
+          ) : null}
+          {data.result.goodWith.length ? (
+            <div className="nts-sec">
+              <p className="nts-label"><b>04</b> Pairs Well <span>잘 맞는 블렌드</span></p>
+              <ul className="nts-pairs">
+                {data.result.goodWith.map((g) => (
+                  <li key={g.code}>
+                    <b>{g.code}</b>
+                    <span>
+                      {g.emoji} {g.name}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+          {t.content.funFact ? (
+            <div className="nts-fun">
+              <p className="nts-label nts-label--plain">Did you know</p>
+              <p>{t.content.funFact}</p>
+            </div>
+          ) : null}
+          <div className="nts-fine">
+            <p>🫀 달리다 가슴이 아프거나 두근거리고 어지러우면 바로 멈추고 쉬어요. 기록보다 몸이 먼저예요.</p>
+            {data.quiz.disclaimer ? <p>{data.quiz.disclaimer}</p> : null}
+          </div>
         </section>
       ) : null}
 

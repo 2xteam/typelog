@@ -656,3 +656,43 @@ body:has(.nt), body:has(.np) { --bg-primary: linear-gradient(160deg, #E7DFEC 0%,
 .nt-panel--back .nt-swatches i { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--pi) 30%, transparent); }
 .nt-panel--back .nw[data-lit] .nw-shade[data-on] path,
 .nt-panel--back .nw[data-lit] .nw-pole[data-on] > .nw-pole-seg { stroke: var(--pi); }
+
+/* ── 맛평가 판(사용자 2026-11-19 — 단조로움을 걷는다). 색은 .nt-panel--back(카드 뒷면) 그대로 ── */
+.nts { padding: 26px 22px 20px; }
+.nts .nt-panel-eyebrow { text-align: left; padding-left: 0; }
+.nts-hero { margin-top: 18px; display: grid; gap: 10px; justify-items: start; }
+.nts-emoji { font-size: 40px; line-height: 1; }
+.nts-title { margin: 0; font: 800 27px/1.28 var(--ko); letter-spacing: -0.035em; word-break: keep-all; color: var(--pi); }
+.nts-lead {
+  position: relative; margin: 16px 0 0; padding: 0 0 22px; border-bottom: 1px solid var(--nt-rule);
+  font: 500 18px/1.65 var(--ko); letter-spacing: -0.02em; word-break: keep-all; color: var(--pi);
+}
+.nts-sec { margin-top: 26px; }
+.nts-label {
+  margin: 0 0 10px; display: flex; align-items: baseline; gap: 8px;
+  font: 600 12px/1 var(--nt-serif); letter-spacing: 0.22em; text-transform: uppercase; color: var(--nt-dim);
+}
+.nts-label b { font: 500 22px/1 var(--nt-serif); letter-spacing: 0; color: var(--pi); }
+.nts-label span { font: 700 12px/1 var(--ko); letter-spacing: 0.04em; text-transform: none; color: var(--pi); }
+.nts-label span::before { content: "· "; color: var(--nt-dim); }
+.nts-label--plain { margin-bottom: 8px; }
+/* 강점 — 굵고 짧게, 줄마다 굵은 짧은 선 */
+.nts-strong { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.nts-strong li { position: relative; padding-left: 20px; font: 700 17px/1.45 var(--ko); letter-spacing: -0.02em; word-break: keep-all; }
+.nts-strong li::before { content: ""; position: absolute; left: 0; top: 0.72em; width: 11px; height: 2px; background: currentColor; }
+.nts-body { margin: 0; font: 400 15.5px/1.72 var(--ko); letter-spacing: -0.01em; word-break: keep-all; color: var(--pi); }
+.nts-body + .nts-body { margin-top: 6px; }
+/* 잘 맞는 블렌드 — 카드 앞면 코드처럼 큰 세리프 */
+.nts-pairs { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.nts-pairs li { padding: 14px 14px 12px; border: 1px solid var(--nt-rule); border-radius: 10px; display: grid; gap: 8px; align-content: start; }
+.nts-pairs b { font: 500 28px/1 var(--nt-serif); letter-spacing: 0.24em; }
+.nts-pairs span { font: 500 13px/1.45 var(--ko); color: var(--nt-dim); word-break: keep-all; }
+/* 알고 보면 — 옅은 칸 */
+.nts-fun { margin-top: 26px; padding: 16px 16px 14px; border-radius: 10px; background: color-mix(in srgb, var(--pi) 8%, transparent); }
+.nts-fun p:last-child { margin: 0; font: 500 15px/1.65 var(--ko); word-break: keep-all; }
+/* 건강 안내 · 고지 — 작게 맨 끝 */
+.nts-fine { margin-top: 20px; display: grid; gap: 6px; }
+.nts-fine p { margin: 0; font-size: 12px; line-height: 1.6; color: var(--nt-dim); word-break: keep-all; }
+.nts.nt-panel::after { margin-top: 16px; }
+/* font 줄임말이 숫자 모양을 되돌린다 — 번호는 라이닝(가라몬드 기본은 키 낮은 옛 숫자) */
+.nts-label b, .nts-pairs b, .nt-head span { font-variant-numeric: lining-nums; }
