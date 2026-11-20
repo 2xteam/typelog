@@ -770,3 +770,9 @@ body:has(.nt), body:has(.np) { --bg-primary: linear-gradient(160deg, #E7DFEC 0%,
 .nx-pair { margin-top: 40px; }
 .nx-pair figcaption { font-family: var(--nf-garamond), serif; font-size: 15px; color: var(--nt-accent, #D0FF41); opacity: 0.85; }
 .nx-foot { white-space: nowrap; gap: 24px; color: rgba(240, 238, 233, 0.62); font-size: 12px; letter-spacing: 0.18em; }
+
+/* 카드만 한 면씩 저장(사용자 2026-11-20) — 큰 버튼 둘 아래 작은 줄. 찍기용 판은 카드 너비 540px(2배로 1080px), 바탕 없음 → 둥근 모서리 밖이 투명 */
+.nt-cardsave { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 2px; }
+.nt-cardsave span { font: 600 13px/1 var(--ko); color: var(--nt-dim); margin-right: 4px; }
+.nt-cardsave .nt-chip { padding: 9px 18px; font-size: 13.5px; }
+.nx-face { width: 540px; background: transparent; }

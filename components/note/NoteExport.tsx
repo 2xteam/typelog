@@ -28,15 +28,16 @@ export function NoteExport({ card }: { card: NoteCardData; /** 예전엔 보던 
   const [progress, setProgress] = useState<number | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
 
-  const render = useCallback(async (which: "single" | "spread") => {
-    const node = box.current?.querySelector<HTMLElement>(which === "single" ? ".nx-single" : ".nx-spread");
+  /** spread 앞뒤 양옆(무대 포함) · front/back 카드 한 면만(둥근 모서리 밖은 투명) */
+  const render = useCallback(async (which: "spread" | "front" | "back") => {
+    const node = box.current?.querySelector<HTMLElement>(which === "spread" ? ".nx-spread" : `.nx-face--${which}`);
     if (!node) throw new Error("이미지를 그릴 수 없어요.");
     const { toBlob } = await import("html-to-image");
     await document.fonts?.ready;
     setProgress(3);
     const fontEmbedCSS = await embedFontCSS(node, (k) => setProgress(3 + Math.round(k * 67)), FONT_VARS);
     setProgress(72);
-    const opts = { pixelRatio: 2, fontEmbedCSS, backgroundColor: which === "single" ? undefined : card.picks[0] ? stageOf(card.picks[0].color.hex).base : "#0b0b24" };
+    const opts = { pixelRatio: 2, fontEmbedCSS, backgroundColor: which !== "spread" ? undefined : card.picks[0] ? stageOf(card.picks[0].color.hex).base : "#0b0b24" };
     const ua = navigator.userAgent;
     if (/Safari/.test(ua) && !/Chrome|CriOS|Android/.test(ua)) {
       await toBlob(node, opts);
@@ -50,14 +51,14 @@ export function NoteExport({ card }: { card: NoteCardData; /** 예전엔 보던 
 
   const name = `myjane-${kitOf(card.picks).id === "kids" ? "mbti" : "running"}-note-${card.code}-${String(card.attemptNo).padStart(2, "0")}`;
 
-  const save = async () => {
+  const save = async (which: "spread" | "front" | "back" = "spread") => {
     setBusy(true);
     setMsg(null);
     try {
-      const blob = await render("spread");
+      const blob = await render(which);
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
-      a.download = `${name}.png`;
+      a.download = which === "spread" ? `${name}.png` : `${name}-${which}.png`;
       a.click();
       setTimeout(() => URL.revokeObjectURL(a.href), 4000);
       setMsg("✅ 이미지를 저장했어요. 인스타그램에 올려 보세요 📲");
@@ -99,6 +100,16 @@ export function NoteExport({ card }: { card: NoteCardData; /** 예전엔 보던 
         <button type="button" className="nt-btn nt-btn--ghost" disabled={busy} onClick={() => void save()}>
           이미지 저장
         </button>
+        {/* 카드만 한 면씩 — 둥근 모서리 밖은 투명 PNG(사용자 2026-11-20). 큰 두 버튼 아래 작은 줄로 */}
+        <div className="nt-cardsave">
+          <span>카드만 저장</span>
+          <button type="button" className="nt-chip" disabled={busy} onClick={() => void save("front")}>
+            앞면
+          </button>
+          <button type="button" className="nt-chip" disabled={busy} onClick={() => void save("back")}>
+            뒷면
+          </button>
+        </div>
       </div>
       {msg ? <p className="nt-msg">{msg}</p> : null}
       {/* 만드는 중 — 덱 카드(z-index 200)보다 위에 오도록 body 에 띄운다 */}
@@ -123,6 +134,16 @@ export function NoteExport({ card }: { card: NoteCardData; /** 예전엔 보던 
       {/* 화면 밖 — 찍기용 */}
       <div ref={box} className={`nx ${noteFontVars}`} aria-hidden="true">
         {/* 무대 색은 결과 화면과 같게(카드 첫 색의 어둠 · 밝은 강조, view.ts shellStyle). 위 제목(코드 · 이름)은 카드와 겹쳐 뺐다(사용자 2026-11-19) */}
+        <div className="nx-face nx-face--front">
+          <div className="nx-card">
+            <CardFront card={card} />
+          </div>
+        </div>
+        <div className="nx-face nx-face--back">
+          <div className="nx-card">
+            <CardBack card={card} />
+          </div>
+        </div>
         <div className="nx-spread" style={shellStyle(card.picks[0])}>
           <div className="nx-spot" />
           <header className="nx-head">
