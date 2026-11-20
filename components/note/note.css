@@ -776,3 +776,6 @@ body:has(.nt), body:has(.np) { --bg-primary: linear-gradient(160deg, #E7DFEC 0%,
 .nt-cardsave span { font: 600 13px/1 var(--ko); color: var(--nt-dim); margin-right: 4px; }
 .nt-cardsave .nt-chip { padding: 9px 18px; font-size: 13.5px; }
 .nx-face { width: 540px; background: transparent; }
+/* 카드만 공유 · 저장 두 줄 — 라벨 폭을 맞춰 버튼이 세로로 줄 맞게 */
+.nt-cardsave span { min-width: 76px; text-align: right; }
+.nt-cardsave + .nt-cardsave { margin-top: -4px; }

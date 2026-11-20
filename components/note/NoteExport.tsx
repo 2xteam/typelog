@@ -70,13 +70,13 @@ export function NoteExport({ card }: { card: NoteCardData; /** 예전엔 보던 
     }
   };
 
-  const share = async () => {
+  const share = async (which: "spread" | "front" | "back" = "spread") => {
     setBusy(true);
     setMsg(null);
     try {
       // 공유도 저장 이미지와 같은 앞뒤 양옆 한 장(사용자 2026-11-19 — 보던 면 한 장만 나가던 것을 바꿈)
-      const blob = await render("spread");
-      const file = new File([blob], `${name}.png`, { type: "image/png" });
+      const blob = await render(which);
+      const file = new File([blob], which === "spread" ? `${name}.png` : `${name}-${which}.png`, { type: "image/png" });
       if (navigator.canShare?.({ files: [file] })) {
         await navigator.share({ files: [file] });
         setMsg(null);
@@ -101,6 +101,16 @@ export function NoteExport({ card }: { card: NoteCardData; /** 예전엔 보던 
           이미지 저장
         </button>
         {/* 카드만 한 면씩 — 둥근 모서리 밖은 투명 PNG(사용자 2026-11-20). 큰 두 버튼 아래 작은 줄로 */}
+        {/* 카드만 한 면씩 — 공유 · 저장 둘 다(사용자 2026-11-20) */}
+        <div className="nt-cardsave">
+          <span>카드만 공유</span>
+          <button type="button" className="nt-chip" disabled={busy} onClick={() => void share("front")}>
+            앞면
+          </button>
+          <button type="button" className="nt-chip" disabled={busy} onClick={() => void share("back")}>
+            뒷면
+          </button>
+        </div>
         <div className="nt-cardsave">
           <span>카드만 저장</span>
           <button type="button" className="nt-chip" disabled={busy} onClick={() => void save("front")}>
