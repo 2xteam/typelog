@@ -779,3 +779,7 @@ body:has(.nt), body:has(.np) { --bg-primary: linear-gradient(160deg, #E7DFEC 0%,
 /* 카드만 공유 · 저장 두 줄 — 라벨 폭을 맞춰 버튼이 세로로 줄 맞게 */
 .nt-cardsave span { min-width: 76px; text-align: right; }
 .nt-cardsave + .nt-cardsave { margin-top: -4px; }
+/* 큰 버튼 바로 아래 붙는 작은 줄 — 다음 큰 버튼과는 조금 띄운다 */
+.nt-cardsave span { min-width: 0; text-align: left; }
+.nt-cardsave + .nt-cardsave { margin-top: 0; }
+.nt-actions .nt-cardsave { margin: -2px 0 6px; }

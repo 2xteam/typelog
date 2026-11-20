@@ -94,16 +94,12 @@ export function NoteExport({ card }: { card: NoteCardData; /** 예전엔 보던 
   return (
     <>
       <div className="nt-actions">
+        {/* 공유하기 · 그 아래 카드만 한 면씩 / 저장하기 · 그 아래 카드만 한 면씩(사용자 2026-11-20). 한 면은 둥근 모서리 밖이 투명한 PNG */}
         <button type="button" className="nt-btn nt-btn--main" disabled={busy} onClick={() => void share()}>
           공유하기
         </button>
-        <button type="button" className="nt-btn nt-btn--ghost" disabled={busy} onClick={() => void save()}>
-          이미지 저장
-        </button>
-        {/* 카드만 한 면씩 — 둥근 모서리 밖은 투명 PNG(사용자 2026-11-20). 큰 두 버튼 아래 작은 줄로 */}
-        {/* 카드만 한 면씩 — 공유 · 저장 둘 다(사용자 2026-11-20) */}
         <div className="nt-cardsave">
-          <span>카드만 공유</span>
+          <span>카드만</span>
           <button type="button" className="nt-chip" disabled={busy} onClick={() => void share("front")}>
             앞면
           </button>
@@ -111,8 +107,11 @@ export function NoteExport({ card }: { card: NoteCardData; /** 예전엔 보던 
             뒷면
           </button>
         </div>
+        <button type="button" className="nt-btn nt-btn--ghost" disabled={busy} onClick={() => void save()}>
+          저장하기
+        </button>
         <div className="nt-cardsave">
-          <span>카드만 저장</span>
+          <span>카드만</span>
           <button type="button" className="nt-chip" disabled={busy} onClick={() => void save("front")}>
             앞면
           </button>
