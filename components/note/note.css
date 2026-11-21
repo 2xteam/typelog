@@ -802,3 +802,32 @@ body:has(.nt), body:has(.np) { --bg-primary: linear-gradient(160deg, #E7DFEC 0%,
 .st-go { height: 60px; font-size: 18px; }
 .st-past { font-size: 14px; }
 .st-blocked { margin-top: 18px; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   남색 → 에스프레소(사용자 2026-11-21 — 홍보 카드의 짙은 커피색이 좋다). 카드 색이 없는 화면(설문 · 모은 카드 ·
+   이미지 만드는 중 · 원판 가운데 · 무대 기본값)의 바탕 · 강조를 홍보 이미지와 같은 계열로. 카드가 있는 무대는
+   그대로 첫 색에서 뽑는다(view.ts shellStyle 이 --st-* · --nt-accent 를 덮는다)
+   ══════════════════════════════════════════════════════════════════════════ */
+.nt, .np, .nt-making {
+  --st-base: #1A100B;
+  --st-top: #2B1A12;
+  --st-mid: #21150F;
+  --nt-ivory: #FFF1E8;
+  --nt-dim: #D8C3B8; /* #1A100B 위 10:1 */
+  --nt-accent: #FF8A5B; /* #1A100B 위 7.6:1 — 홍보 이미지의 강조색 */
+  --nt-line: rgba(255, 233, 221, 0.18);
+  --nt-grad: #FF8A5B;
+  --nt-glow: rgba(255, 138, 91, 0.24);
+  --nt-wall: radial-gradient(70% 34% at 50% 0%, rgba(255, 170, 120, 0.16), rgba(255, 170, 120, 0) 70%);
+  --nt-bg: var(--nt-wall), linear-gradient(180deg, #2B1A12 0%, #1A100B 55%, #120A07 100%);
+}
+/* 주 버튼 글자 — 밝은 강조 위 짙은 커피색 */
+.nt-btn, .nt-chip--main, .nt-actions .nt-btn--main { color: #1D1510; }
+.nt-making-bar i { background: var(--nt-accent); }
+.nt-making-card { background: linear-gradient(180deg, #2B1A12, #1A100B); border-color: rgba(255, 233, 221, 0.18); --nt-accent: #FF8A5B; --nt-dim: #D8C3B8; --nt-ivory: #FFF1E8; }
+.np-tile[data-chosen="true"] { background: rgba(255, 138, 91, 0.12); border-color: var(--nt-accent); box-shadow: 0 0 0 1px var(--nt-accent), 0 14px 34px rgba(255, 138, 91, 0.18); }
+.np-tile:hover:not(:disabled) { border-color: rgba(255, 138, 91, 0.55); }
+.np::before { background: linear-gradient(180deg, rgba(255, 233, 221, 0.12) 0, rgba(255, 233, 221, 0) 2px), linear-gradient(180deg, #24160F, #1A100B); }
+.nw-hole { fill: #1A100B; stroke: rgba(255, 233, 221, 0.3); }
+.nw-center, .nw-mark { fill: var(--nt-accent, #FF8A5B); }
+.nt-panel--back { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 12px 30px rgba(26, 16, 11, 0.22); }

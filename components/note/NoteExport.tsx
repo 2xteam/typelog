@@ -37,7 +37,7 @@ export function NoteExport({ card }: { card: NoteCardData; /** 예전엔 보던 
     setProgress(3);
     const fontEmbedCSS = await embedFontCSS(node, (k) => setProgress(3 + Math.round(k * 67)), FONT_VARS);
     setProgress(72);
-    const opts = { pixelRatio: 2, fontEmbedCSS, backgroundColor: which !== "spread" ? undefined : card.picks[0] ? stageOf(card.picks[0].color.hex).base : "#0b0b24" };
+    const opts = { pixelRatio: 2, fontEmbedCSS, backgroundColor: which !== "spread" ? undefined : card.picks[0] ? stageOf(card.picks[0].color.hex).base : "#1A100B" };
     const ua = navigator.userAgent;
     if (/Safari/.test(ua) && !/Chrome|CriOS|Android/.test(ua)) {
       await toBlob(node, opts);

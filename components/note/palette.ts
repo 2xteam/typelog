@@ -390,7 +390,7 @@ export function richer(hex: string) {
  */
 export const lightestOf = (p: AxisPick | undefined) => (p ? p.light ?? p.color.hex : undefined);
 
-export function glowOn(hex: string, bg = "#0B1430", target = 8) {
+export function glowOn(hex: string, bg = "#1A100B", target = 8) {
   const c = rgb(hex);
   for (let t = 0; t <= 1; t += 0.04) {
     const m = mix(c, [255, 255, 255], t);
