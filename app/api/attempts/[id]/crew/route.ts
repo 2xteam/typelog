@@ -68,7 +68,11 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       me: cardOf(me, myName ?? "나"),
       shareUrl: token ? `${SITE_URL}/r/${token}` : null,
       views: me.share?.viewCount ?? 0,
-      allTypes: types.map((t) => ({ code: t.code, name: t.name, emoji: t.emoji ?? null })),
+      allTypes: types.map((t) => {
+        const c = (t.content ?? {}) as { strengths?: string[]; goodWith?: string[] };
+        return { code: t.code, name: t.name, emoji: t.emoji ?? null, strengths: (c.strengths ?? []).slice(0, 2), goodWith: (c.goodWith ?? []).slice(0, 2) };
+      }),
+      crewName: (me.custom as { crewName?: string | null } | undefined)?.crewName ?? null,
       crew: rows.map((r, i) => cardOf(r, (r.custom as { name?: string | null } | undefined)?.name?.trim() || `크루 ${i + 1}`)),
     });
   } catch (err) {

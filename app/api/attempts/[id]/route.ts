@@ -230,7 +230,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       /** 저장하지 않는 답(키·몸무게) — 채점에만 쓴다 */
       transient?: Record<string, unknown>;
       /** 결과 화면에서 꾸미는 값 — 선수자격증 발급처 등 */
-      custom?: { issuer?: unknown; holo?: unknown; name?: unknown };
+      custom?: { issuer?: unknown; holo?: unknown; name?: unknown; crewName?: unknown };
     };
     try {
       body = await req.json();
@@ -251,11 +251,13 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     const target = body.answer?.linkId ? allItems.find((i) => i.linkId === body.answer!.linkId) : null;
 
     // 결과 꾸미기 — 끝난 기록에서 본인만. 점수와 무관하다
-    if (attempt.status === "completed" && body.custom && ("issuer" in body.custom || "holo" in body.custom || "name" in body.custom)) {
+    if (attempt.status === "completed" && body.custom && ("issuer" in body.custom || "holo" in body.custom || "name" in body.custom || "crewName" in body.custom)) {
       const set: Record<string, string | null> = {};
-      const out: { issuer?: string | null; holo?: string; name?: string | null } = {};
+      const out: { issuer?: string | null; holo?: string; name?: string | null; crewName?: string | null } = {};
       // 러닝 노트 카드에 적힐 이름(10자) — 성향 · 색은 바꿀 수 없고 이름만 바꾼다(사용자 2026-11-18)
       if ("name" in body.custom) out.name = set["custom.name"] = cleanLine(body.custom.name, 10) || null;
+      // 크루 이름(12자) — 내 크루 대표 카드에 적힌다(사용자 2026-11-21)
+      if ("crewName" in body.custom) out.crewName = set["custom.crewName"] = cleanLine(body.custom.crewName, 12) || null;
       if ("issuer" in body.custom) out.issuer = set["custom.issuer"] = cleanLine(body.custom.issuer, 9) || null;
       if ("holo" in body.custom) {
         if (!isHolo(body.custom.holo)) return badRequest("없는 홀로그램 무늬예요.");

@@ -34,3 +34,22 @@ export function evalCrew(codes: string[], axes: AxisDecl[]) {
   const title = codes.length < 2 ? "아직 혼자인 크루" : `${words.join(" · ")} 블렌드 크루`;
   return { per, title };
 }
+
+/**
+ * 크루 대표 카드(사용자 2026-11-21) — 다수결이 아니라 **쌓인 크루원 결과 전부를 합산**한다.
+ * 축마다 모든 크루원의 기운 값(pomp, 0=왼쪽 끝 · 100=오른쪽 끝)을 평균 → 평균이 50 미만이면 왼쪽 글자, 넘으면 오른쪽(딱 50이면 공유한 사람 쪽).
+ * 평균이 끝에 가까울수록 진하게. 색 · 무늬 씨앗에 크루 수를 넣어 한 명 늘 때마다 대표 카드(와 크루 화면 색)가 다시 블렌딩된다.
+ */
+export function crewBlend(cards: { code: string; pomp: Record<string, number> }[], axes: AxisDecl[]) {
+  const leader = cards[0];
+  const pomp: Record<string, number> = {};
+  let code = "";
+  axes.forEach((a, k) => {
+    const avg = cards.reduce((s, c) => s + (c.pomp[a.id] ?? 50), 0) / (cards.length || 1);
+    const left = avg === 50 ? leader?.code[k] === a.left?.code : avg < 50;
+    code += (left ? a.left?.code : a.right?.code) ?? "";
+    // 색을 고르는 pickAxes 도 50 미만을 왼쪽으로 본다 — 딱 50이면 고른 쪽으로 살짝 민다
+    pomp[a.id] = avg === 50 ? (left ? 49.9 : 50.1) : avg;
+  });
+  return { code, pomp };
+}
