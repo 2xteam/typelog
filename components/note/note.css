@@ -783,3 +783,22 @@ body:has(.nt), body:has(.np) { --bg-primary: linear-gradient(160deg, #E7DFEC 0%,
 .nt-cardsave span { min-width: 0; text-align: left; }
 .nt-cardsave + .nt-cardsave { margin-top: 0; }
 .nt-actions .nt-cardsave { margin: -2px 0 6px; }
+
+/* ── 홍보 시작 화면 /start/[slug] (사용자 2026-11-21) — 짧은 인트로 → 바로 설문 ── */
+.st-shell { padding-bottom: 26px; text-align: center; }
+.st-hook { margin: 26px 0 0; font: 900 clamp(34px, 9vw, 52px)/1.16 var(--ko); letter-spacing: -0.04em; word-break: keep-all; color: #FFF5EE; }
+.st-hook em { font-style: normal; color: var(--nt-accent); }
+.st-sub { margin: 12px auto 0; max-width: 30em; font-size: 15px; line-height: 1.6; color: var(--nt-dim); word-break: keep-all; }
+.st-fan { position: relative; height: clamp(250px, 72vw, 360px); margin: 26px auto 0; max-width: 460px; }
+.st-card { position: absolute; top: 0; width: 42%; filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.5)); }
+.st-card .nc { transition: none; }
+.st-card--0 { left: 2%; top: 9%; transform: rotate(-12deg); }
+.st-card--1 { left: 28%; z-index: 2; width: 44%; }
+.st-card--2 { right: 2%; top: 9%; transform: rotate(12deg); }
+.st-note { margin: 18px 0 0; font-size: 14px; color: var(--nt-dim); }
+.st-shell .nt-pills { margin-top: 14px; }
+.st-actions { display: grid; gap: 10px; margin-top: 20px; justify-items: center; }
+.st-actions .nt-btn { width: min(100%, 340px); }
+.st-go { height: 60px; font-size: 18px; }
+.st-past { font-size: 14px; }
+.st-blocked { margin-top: 18px; }

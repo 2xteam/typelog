@@ -35,7 +35,7 @@ function pompOf(q: Q, code: string, s: string) {
  * 결과 화면 하나(덱 하나)만 그린다 — 앞의 회차 네 장이 덱 목록에 함께 들어간다.
  * 공유 화면은 `?view=shared` 로 따로 본다(한 화면에 스와이프 카드가 여럿이면 헷갈린다, 사용자 2026-11-18).
  */
-export function DevNote({ quiz, slug, code, s, id, n, view }: { quiz: Q; slug: string; code: string; s: string; id: string; n: number; view: string }) {
+export function DevNote({ quiz, slug, code, s, id, n, view, name = "미리보기" }: { quiz: Q; slug: string; code: string; s: string; id: string; n: number; view: string; name?: string }) {
   const t = quiz.resultTypes.find((x) => x.code === code) ?? quiz.resultTypes[0];
   const pomp = pompOf(quiz, t.code, s);
   const completedAt = useMemo(() => new Date().toISOString(), []);
@@ -43,7 +43,7 @@ export function DevNote({ quiz, slug, code, s, id, n, view }: { quiz: Q; slug: s
     attemptId: id,
     attemptNo: n,
     isOwner: true,
-    ownerName: "미리보기",
+    ownerName: name,
     custom: null,
     quiz: { slug, title: quiz.quiz.title, disclaimer: quiz.quiz.disclaimer ?? null },
     result: {
@@ -69,7 +69,7 @@ export function DevNote({ quiz, slug, code, s, id, n, view }: { quiz: Q; slug: s
           code: c,
           typeName: quiz.resultTypes.find((r) => r.code === c)?.name ?? c,
           completedAt: new Date(Date.now() - (n - i) * 86400e3 * 9).toISOString(),
-          runner: "미리보기",
+          runner: name,
           axes: quiz.outcomes,
           pomp: pompOf(quiz, c, ["0101", "1111", "0000", "1010", "1100", "0011"][i % 6]),
         });
@@ -93,7 +93,7 @@ export function DevNote({ quiz, slug, code, s, id, n, view }: { quiz: Q; slug: s
               <span>{before.length + 1} cards</span>
             </p>
             <h1 className="nt-head">내가 모은 {kitOfSlug(slug).brandKo}</h1>
-            <NoteDeck cards={[...before, buildCard({ attemptId: id, attemptNo: n, code: t.code, typeName: t.name, completedAt, runner: "미리보기", axes: quiz.outcomes, pomp, strengths: t.content.strengths, goodWith: t.content.goodWith })]} start="list" />
+            <NoteDeck cards={[...before, buildCard({ attemptId: id, attemptNo: n, code: t.code, typeName: t.name, completedAt, runner: name, axes: quiz.outcomes, pomp, strengths: t.content.strengths, goodWith: t.content.goodWith })]} start="list" />
           </div>
         </div>
       ) : view === "shared" ? (
@@ -103,7 +103,7 @@ export function DevNote({ quiz, slug, code, s, id, n, view }: { quiz: Q; slug: s
             attemptNo: n,
             code: t.code,
             completedAt,
-            runner: "미리보기",
+            runner: name,
             typeName: t.name,
             subtitle: t.subtitle,
             strengths: t.content.strengths,
