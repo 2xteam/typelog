@@ -45,7 +45,7 @@ const DEEP: Pole[] = [
   {
     code: "F",
     ko: "즐김형",
-    note: "Joy",
+    note: "Fun", // F — 즐김(사용자 2026-11-21: 글자와 같은 머리글자로. 전엔 Joy)
     colors: [
       { ko: "앰버", en: "Amber", hex: "#8a5a10" },
       { ko: "오커", en: "Ochre", hex: "#835e1c" },
@@ -67,7 +67,7 @@ const DEEP: Pole[] = [
   {
     code: "P",
     ko: "개인형",
-    note: "Solo",
+    note: "Personal", // P — 개인(전엔 Solo)
     colors: [
       { ko: "딥 틸", en: "Deep Teal", hex: "#0f4f52" },
       { ko: "페트롤", en: "Petrol", hex: "#1a4b5e" },
@@ -89,7 +89,7 @@ const DEEP: Pole[] = [
   {
     code: "A",
     ko: "중독형",
-    note: "Daily",
+    note: "All day", // A — 중독(All day, 사용자 2026-11-21. 전엔 Daily)
     colors: [
       { ko: "아메시스트", en: "Amethyst", hex: "#4e2d73" },
       { ko: "인디고", en: "Indigo", hex: "#2f2c70" },
@@ -111,7 +111,7 @@ const DEEP: Pole[] = [
   {
     code: "I",
     ko: "간헐적형",
-    note: "Now & then",
+    note: "Intermittent", // I — 간헐적(Intermittent. 전엔 Now & then)
     colors: [
       { ko: "모카", en: "Mocha", hex: "#5e4334" },
       { ko: "카멜", en: "Camel", hex: "#7d5b37" },
@@ -185,6 +185,10 @@ export const POLES: Pole[] = TONE === "light" ? DEEP.map((p) => ({ ...p, colors:
 
 export const poleByCode = (code: string) => POLES.find((p) => p.code === code) ?? null;
 
+/*
+  글자 = 영문 노트의 머리글자(사용자 2026-11-21 점검). 러닝: C Crew · P Personal / L Long · S Short / A All day · I Intermittent / R Record · F Fun.
+  어린이 MBTI: E Extravert · I Introvert / S Sensing · N iNtuition / T Thinking · F Feeling / J Judging · P Perceiving
+*/
 /** 카드 표의 왼쪽 칸 — 축 순서(who · dist · freq · mind)와 같다 */
 export const AXIS_EN: Record<string, string> = { who: "Who", dist: "Distance", freq: "Rhythm", mind: "Mind" };
 
@@ -196,14 +200,14 @@ export const AXIS_EN: Record<string, string> = { who: "Who", dist: "Distance", f
 */
 const c4 = (...xs: [string, string][]) => xs.map(([en, hex]) => ({ ko: en.toUpperCase(), en, hex })) as Pole["colors"];
 const KIDS_POLES: Pole[] = [
-  { code: "E", ko: "바깥", note: "Outward", colors: c4(["Tangerine", "#FF7A1A"], ["Mango", "#FFA040"], ["Apricot", "#FFC58A"], ["Peach Cream", "#FFE6CF"]) },
-  { code: "I", ko: "안", note: "Inward", colors: c4(["Ocean", "#2F6FED"], ["Sky Blue", "#5B9BFF"], ["Baby Blue", "#A9CBFF"], ["Cloud", "#E1EDFF"]) },
-  { code: "S", ko: "지금", note: "Here", colors: c4(["Lemon Drop", "#FFD21F"], ["Banana", "#FFE15C"], ["Butter", "#FFEE9E"], ["Vanilla", "#FFF7D6"]) },
-  { code: "N", ko: "상상", note: "Dream", colors: c4(["Grape", "#7B4DFF"], ["Lavender Pop", "#A07CFF"], ["Lilac", "#CDB8FF"], ["Lilac Mist", "#EEE6FF"]) },
-  { code: "T", ko: "머리", note: "Head", colors: c4(["Apple Green", "#4CC94C"], ["Kiwi", "#8AD94A"], ["Mint Leaf", "#B9EBA6"], ["Pistachio", "#E2F7D8"]) },
-  { code: "F", ko: "마음", note: "Heart", colors: c4(["Bubblegum", "#FF4FA3"], ["Strawberry Milk", "#FF85BE"], ["Cotton Candy", "#FFB9DA"], ["Pink Cloud", "#FFE6F1"]) },
-  { code: "J", ko: "계획", note: "Plan", colors: c4(["Lagoon", "#14B8A6"], ["Seafoam", "#4FD1C5"], ["Aqua", "#A6EDE4"], ["Ice Mint", "#DDF8F4"]) },
-  { code: "P", ko: "그때", note: "Free", colors: c4(["Cherry", "#F2415A"], ["Watermelon", "#FF6F7E"], ["Coral Pink", "#FFA8B1"], ["Rose Milk", "#FFE1E4"]) },
+  { code: "E", ko: "바깥", note: "Extravert", colors: c4(["Tangerine", "#FF7A1A"], ["Mango", "#FFA040"], ["Apricot", "#FFC58A"], ["Peach Cream", "#FFE6CF"]) },
+  { code: "I", ko: "안", note: "Introvert", colors: c4(["Ocean", "#2F6FED"], ["Sky Blue", "#5B9BFF"], ["Baby Blue", "#A9CBFF"], ["Cloud", "#E1EDFF"]) },
+  { code: "S", ko: "지금", note: "Sensing", colors: c4(["Lemon Drop", "#FFD21F"], ["Banana", "#FFE15C"], ["Butter", "#FFEE9E"], ["Vanilla", "#FFF7D6"]) },
+  { code: "N", ko: "상상", note: "iNtuition", colors: c4(["Grape", "#7B4DFF"], ["Lavender Pop", "#A07CFF"], ["Lilac", "#CDB8FF"], ["Lilac Mist", "#EEE6FF"]) },
+  { code: "T", ko: "머리", note: "Thinking", colors: c4(["Apple Green", "#4CC94C"], ["Kiwi", "#8AD94A"], ["Mint Leaf", "#B9EBA6"], ["Pistachio", "#E2F7D8"]) },
+  { code: "F", ko: "마음", note: "Feeling", colors: c4(["Bubblegum", "#FF4FA3"], ["Strawberry Milk", "#FF85BE"], ["Cotton Candy", "#FFB9DA"], ["Pink Cloud", "#FFE6F1"]) },
+  { code: "J", ko: "계획", note: "Judging", colors: c4(["Lagoon", "#14B8A6"], ["Seafoam", "#4FD1C5"], ["Aqua", "#A6EDE4"], ["Ice Mint", "#DDF8F4"]) },
+  { code: "P", ko: "그때", note: "Perceiving", colors: c4(["Cherry", "#F2415A"], ["Watermelon", "#FF6F7E"], ["Coral Pink", "#FFA8B1"], ["Rose Milk", "#FFE1E4"]) },
 ];
 
 /** 노트 한 벌 — 질문지마다 색 계열 · 축 이름 · 카드 문구 · 그림(물병/커피잔, 메달/커피콩)이 다르다 */
