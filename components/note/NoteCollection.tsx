@@ -7,6 +7,7 @@ import { getGuestKey } from "@/lib/guestKey";
 import { NoteDeck } from "./NoteDeck";
 import { buildCard, type NoteCardData } from "./view";
 import { noteFontVars } from "./fonts";
+import { MyLinks } from "./MyLinks";
 import { kitOfAxes, type AxisDecl } from "./palette";
 import "./note.css";
 
@@ -111,6 +112,8 @@ export function NoteCollection({ slug }: { slug: string }) {
           </button>
         </div>
       </div>
+      {/* 내 공유 링크 · 크루 — 링크를 잊지 않게(사용자 2026-11-21) */}
+      <MyLinks slug={slug} />
     </div>
   );
 }

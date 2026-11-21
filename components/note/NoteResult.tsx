@@ -10,6 +10,7 @@ import { Wheel } from "./Wheel";
 import { buildCard, lookOf, splitOutcomes, type NoteCardData } from "./view";
 import { GRAIN } from "./NoteCard";
 import { CodeLegend } from "./CodeLegend";
+import { CrewBox } from "./CrewBox";
 import { noteFontVars } from "./fonts";
 import { shellStyle } from "./view";
 import { kitOf, type AxisDecl } from "./palette";
@@ -175,6 +176,8 @@ export function NoteResult({
         ) : null}
 
         <NoteExport card={card} face={face} />
+        {/* 내 러닝 크루 — 내 링크로 들어온 사람들의 카드(사용자 2026-11-21). 본인에게만 */}
+        {data.isOwner ? <CrewBox attemptId={data.attemptId} brandKo={kitOf(card.picks).brandKo} /> : null}
       </div>
 
       <section className="nt-panel nt-panel--back" style={backStyle}>

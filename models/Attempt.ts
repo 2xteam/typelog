@@ -98,7 +98,8 @@ const AttemptSchema = new Schema(
         {
           token: String,
           sharerUserId: { type: String, default: null, index: true },
-          sharerAttemptId: { type: String, default: null },
+          // 내 크루(사용자 2026-11-21) — 그 결과의 링크로 들어온 기록을 찾는다
+          sharerAttemptId: { type: String, default: null, index: true },
           at: { type: Date, default: Date.now },
         },
         { _id: false },

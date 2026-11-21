@@ -863,3 +863,43 @@ body:has(.nt), body:has(.np) { --bg-primary: linear-gradient(160deg, #E7DFEC 0%,
 .ncl-bfoot { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 12px; border-top: 1px solid color-mix(in srgb, var(--pi) 30%, transparent); }
 .ncl-bfoot span { font: 600 11px/1 var(--nf-garamond), serif; letter-spacing: 0.26em; text-transform: uppercase; }
 .ncl-bfoot button { border: 1px solid color-mix(in srgb, var(--pi) 40%, transparent); background: none; color: var(--pi); border-radius: 10px; padding: 8px 16px; font: 700 13px/1 var(--rf-sans), sans-serif; cursor: pointer; }
+
+/* ── 내 러닝 크루(사용자 2026-11-21) ── */
+.ncr-box { position: relative; z-index: 2; margin-top: 18px; padding: 16px 16px 14px; border: 1px solid var(--nt-line); border-radius: 14px; background: rgba(255, 255, 255, 0.03); text-align: center; }
+.ncr-eyebrow { margin: 0; font: 600 12px/1 var(--nf-garamond), serif; letter-spacing: 0.3em; text-transform: uppercase; color: var(--nt-accent); }
+.ncr-count { margin: 8px 0 0; font-size: 15px; color: var(--nt-ivory); word-break: keep-all; }
+.ncr-count b { color: var(--nt-accent); }
+.ncr-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+.ncr-btns .nt-btn { width: 100%; height: 48px; padding: 0 8px; font-size: 14.5px; border-radius: 12px; }
+.ncr-url { margin: 10px 0 0; font-size: 12px; color: var(--nt-dim); word-break: break-all; }
+.ncr-url span { color: var(--nt-ivory); }
+.ncr-fine { margin: 8px 0 0; font-size: 11.5px; color: var(--nt-dim); }
+.ncr-head { margin: 16px 0 0; text-align: center; font: 900 30px/1.25 var(--ko); letter-spacing: -0.03em; }
+.ncr-lineup ul, .ncr-links ul { list-style: none; margin: 10px 0 0; padding: 0; }
+.ncr-lineup li { display: grid; grid-template-columns: 76px 1fr auto; gap: 10px; align-items: baseline; padding: 11px 0; border-top: 1px solid var(--nt-rule); }
+.ncr-lineup li b { font: 600 19px/1 var(--nf-garamond), serif; letter-spacing: 0.16em; }
+.ncr-lineup li em { font-style: normal; font-weight: 800; }
+.ncr-links li { display: grid; gap: 8px; padding: 12px 0; border-top: 1px solid var(--nt-rule); }
+.ncr-links li b { display: block; font: 600 15px/1.2 var(--nf-garamond), serif; letter-spacing: 0.1em; }
+.ncr-links li span { display: block; margin-top: 4px; font-size: 12px; opacity: 0.75; word-break: break-all; }
+.ncr-links-btns { display: flex; gap: 8px; }
+/* 크루 평가 · 아직 없는 타입 */
+.ncr-eval ul, .ncr-missing ul { list-style: none; margin: 12px 0 0; padding: 0; }
+.ncr-eval li { padding: 12px 0; border-top: 1px solid var(--nt-rule); }
+.ncr-eval-axis { margin: 0 0 6px; font-size: 12.5px; font-weight: 700; opacity: 0.7; }
+.ncr-bar { display: flex; height: 28px; border-radius: 8px; overflow: hidden; font: 700 12.5px/28px var(--ko); }
+.ncr-bar span { min-width: 34px; padding: 0 9px; white-space: nowrap; }
+.ncr-bar span:first-child { background: color-mix(in srgb, var(--pi, #241c2c) 82%, transparent); color: var(--pb, #fff); }
+.ncr-bar span:last-child { background: color-mix(in srgb, var(--pi, #241c2c) 14%, transparent); text-align: right; }
+.ncr-eval-line { margin: 7px 0 0; font-size: 14px; line-height: 1.55; word-break: keep-all; }
+.ncr-missing ul { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.ncr-missing li { padding: 10px 12px; border: 1px dashed var(--nt-rule); border-radius: 10px; }
+.ncr-missing li b { display: block; font: 600 17px/1 var(--nf-garamond), serif; letter-spacing: 0.16em; }
+.ncr-missing li span { display: block; margin-top: 5px; font-size: 12.5px; line-height: 1.35; word-break: keep-all; opacity: 0.8; }
+.ncr-wanted { width: 100%; margin-top: 14px; }
+/* 크루 칸 다듬기 — 버튼 두 줄로(글자가 접혔다), 링크 버튼 글자색 · 밑줄, 목록 첫 줄 겹침 */
+.ncr-btns { grid-template-columns: 1fr; }
+a.nt-btn, a.nt-chip { text-decoration: none; }
+a.nt-btn--ghost, a.nt-chip:not(.nt-chip--main) { color: var(--nt-ivory); }
+a.nt-chip--main { color: #1D1510; }
+.ncr-links li:first-child, .ncr-lineup li:first-child, .ncr-eval li:first-child { border-top: 0; }
