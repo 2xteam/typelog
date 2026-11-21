@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { AppIcon } from "@/components/AppIcon";
 import { NoteDeck } from "./NoteDeck";
+import { CodeLegend } from "./CodeLegend";
 import { buildCard } from "./view";
 import { noteFontVars } from "./fonts";
 import { shellStyle } from "./view";
@@ -56,6 +57,9 @@ export function SharedNote({ note, children }: { note: SharedNoteData; children:
         </h1>
         <p className="nt-sub">{note.typeName}</p>
         <NoteDeck cards={[card]} reveal={reveal} allowList={false} />
+        <div className="ncl-row">
+          <CodeLegend card={card} axes={note.axes} />
+        </div>
         <div className="nt-share-cta">{children}</div>
       </div>
     </div>

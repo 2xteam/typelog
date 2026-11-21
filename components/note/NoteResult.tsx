@@ -9,6 +9,7 @@ import { NoteExport } from "./NoteExport";
 import { Wheel } from "./Wheel";
 import { buildCard, lookOf, splitOutcomes, type NoteCardData } from "./view";
 import { GRAIN } from "./NoteCard";
+import { CodeLegend } from "./CodeLegend";
 import { noteFontVars } from "./fonts";
 import { shellStyle } from "./view";
 import { kitOf, type AxisDecl } from "./palette";
@@ -154,6 +155,10 @@ export function NoteResult({
           </div>
         ) : null}
         <NoteDeck cards={[card]} reveal={reveal} allowList={false} onChange={onDeck} />
+        {/* 코드 읽는 법 — 누르면 노트로(사용자 2026-11-21) */}
+        <div className="ncl-row">
+          <CodeLegend card={card} axes={axes} />
+        </div>
 
         {/* 카드에 적힐 이름 — 카드 바로 아래(사용자 2026-11-18) */}
         {data.isOwner ? (
