@@ -92,16 +92,9 @@ export function License({ v, athlete = false }: { v: RunView; athlete?: boolean 
             // eslint-disable-next-line @next/next/no-img-element
             <img src={v.photo} alt="" />
           ) : (
-            <svg viewBox="0 0 300 404" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-              <defs>
-                <linearGradient id="rl-sil" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0" stopColor="#962fbf" stopOpacity=".35" />
-                  <stop offset="1" stopColor="#d62976" stopOpacity=".35" />
-                </linearGradient>
-              </defs>
-              <circle cx="150" cy="150" r="70" fill="url(#rl-sil)" />
-              <path d="M30 404 C30 300 80 250 150 250 C220 250 270 300 270 404 Z" fill="url(#rl-sil)" />
-            </svg>
+            // 생성 이미지 — 실제 사진이 없을 때도 레퍼런스 같은 러너 프로필을 보여 준다.
+            // eslint-disable-next-line @next/next/no-img-element
+            <img className="rl-placeholder-image" src="/runner-placeholder-v2.png" alt="" />
           )}
         </div>
         <div className="rl-info">

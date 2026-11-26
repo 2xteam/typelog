@@ -8,6 +8,7 @@ import { NoteCard } from "@/components/note/NoteCard";
 import { buildCard, shellStyle } from "@/components/note/view";
 import { kitOfSlug, type AxisDecl } from "@/components/note/palette";
 import { noteFontVars } from "@/components/note/fonts";
+import { StartLicense } from "@/components/StartLicense";
 import { getGuestKey } from "@/lib/guestKey";
 import { loginUrl, signupUrl } from "@/lib/portal";
 import "@/components/note/note.css";
@@ -196,6 +197,17 @@ export default function StartPage({ params }: { params: Promise<{ slug: string }
           {data.quiz.disclaimer ? <p className="nt-fine">{data.quiz.disclaimer}</p> : null}
         </div>
       </div>
+    );
+  }
+
+  if (data.quiz.experience === "running") {
+    return (
+      <StartLicense>
+        {pills}
+        {actions}
+        {msg ? <p className="nt-fine">{msg}</p> : null}
+        {data.quiz.disclaimer ? <p className="nt-fine">{data.quiz.disclaimer}</p> : null}
+      </StartLicense>
     );
   }
 

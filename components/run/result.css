@@ -30,6 +30,8 @@
 .rl-photo { width: 327px; height: 440px; border-radius: 6px; overflow: hidden; position: relative; background: linear-gradient(160deg, #fdf2f8 0%, #f3e8ff 100%); }
 .rl-photo svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 .rl-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; display: block; }
+.rl-photo .rl-placeholder-image { object-position: 50% 50%; }
+.rl-photo .rl-placeholder { display: none; }
 .rl-info { display: flex; flex-direction: column; }
 .rl-lic { margin: 6px 0 0; font-size: 17px; font-weight: 800; letter-spacing: 0.01em; }
 .rl-lic-no { margin: 6px 0 0 24px; font-size: 28px; letter-spacing: 0.14em; color: #6e6e73; font-variant-numeric: tabular-nums; }

@@ -1,0 +1,33 @@
+.sl-page {
+  --sl-bg: #171321;
+  --sl-ink: #fff;
+  --sl-dim: rgba(255, 255, 255, 0.72);
+  --rf-sans: Pretendard, -apple-system, sans-serif;
+  --rf-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --rf-seal: Georgia, serif;
+  --rr-sans: var(--rf-sans);
+  min-height: calc(100vh - 72px);
+  margin: -20px -16px 0;
+  padding: 28px 16px 34px;
+  background:
+    radial-gradient(120% 55% at 50% 0%, rgba(150, 47, 191, 0.34), transparent 70%),
+    linear-gradient(180deg, #211832 0%, var(--sl-bg) 55%, #100d17 100%);
+  color: var(--sl-ink);
+}
+.sl-shell { max-width: 720px; margin: 0 auto; text-align: center; }
+.sl-eyebrow { margin: 0; color: #feda75; font: 700 12px/1.2 var(--rf-mono), monospace; letter-spacing: 0.16em; }
+.sl-hook { margin: 22px 0 0; font: 900 clamp(35px, 9vw, 54px)/1.15 var(--rf-sans), sans-serif; letter-spacing: -0.06em; word-break: keep-all; }
+.sl-hook em { color: #feda75; font-style: normal; }
+.sl-sub { margin: 12px auto 0; color: var(--sl-dim); font-size: 15px; line-height: 1.6; word-break: keep-all; }
+.sl-card-wrap { margin: 28px auto 0; width: min(100%, 680px); }
+.sl-card-frame { position: relative; width: 100%; overflow: hidden; }
+.sl-card-inner { width: 1000px; transform-origin: 0 0; }
+.sl-card-inner .rl-card { box-shadow: 0 24px 54px rgba(0, 0, 0, 0.35); }
+.sl-note { margin: 16px 0 0; color: var(--sl-dim); font-size: 14px; }
+.sl-page .nt-pills { margin-top: 14px; }
+.sl-page .st-actions { margin-top: 20px; }
+.sl-page .st-actions .nt-btn { color: #1d1510; }
+@media (max-width: 420px) {
+  .sl-page { margin-left: -8px; margin-right: -8px; padding-left: 10px; padding-right: 10px; }
+  .sl-card-wrap { margin-top: 24px; }
+}
