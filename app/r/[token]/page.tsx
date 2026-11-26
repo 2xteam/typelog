@@ -236,9 +236,12 @@ export default function SharedLanding({ params }: { params: Promise<{ token: str
           {data.quiz.ageLabel ? (
             <span className="pill pill--age">{data.quiz.ageLabel} 추천</span>
           ) : null}
-          {data.quiz.itemCount ? <span className="pill">질문 {data.quiz.itemCount}개</span> : null}
-          {data.quiz.estimatedMinutes ? (
-            <span className="pill">약 {data.quiz.estimatedMinutes}분</span>
+          {data.quiz.itemCount || data.quiz.estimatedMinutes ? (
+            <span className="pill pill--meta">
+              {data.quiz.itemCount ? `질문 ${data.quiz.itemCount}개` : null}
+              {data.quiz.itemCount && data.quiz.estimatedMinutes ? <span aria-hidden="true">·</span> : null}
+              {data.quiz.estimatedMinutes ? `약 ${data.quiz.estimatedMinutes}분` : null}
+            </span>
           ) : null}
           <span className="pill">가입 없이 한 번</span>
         </div>

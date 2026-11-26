@@ -158,8 +158,13 @@ export default function TypesPage() {
                 <div style={{ display: "flex", gap: 6, marginTop: 10, flexWrap: "wrap" }}>
                   {/* 추천 연령을 맨 앞에 둔다 — 카드에서 가장 먼저 보고 걸러야 하는 값이다 */}
                   {q.ageLabel ? <span className="pill pill--age">{q.ageLabel} 추천</span> : null}
-                  <span className="pill">질문 {q.itemCount}개</span>
-                  {q.estimatedMinutes ? <span className="pill">약 {q.estimatedMinutes}분</span> : null}
+                  {q.itemCount || q.estimatedMinutes ? (
+                    <span className="pill pill--meta">
+                      {q.itemCount ? `질문 ${q.itemCount}개` : null}
+                      {q.itemCount && q.estimatedMinutes ? <span aria-hidden="true">·</span> : null}
+                      {q.estimatedMinutes ? `약 ${q.estimatedMinutes}분` : null}
+                    </span>
+                  ) : null}
                   {q.comingSoon ? (
                     <span className="pill pill--gold">{openDate(q.startAt)} 오픈</span>
                   ) : null}
