@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
    * 운영 로그인 쿠키(.myjane.co.kr)를 그대로 받는다. 그 주소에서 여는
    * 개발 리소스(HMR 등)를 막지 않도록 허용해 둔다 → 볼트 30-Patterns/개발 서버와 검증 환경.md
    */
-  allowedDevOrigins: ["local.myjane.co.kr"],
+  allowedDevOrigins: ["local.myjane.co.kr", "*.myjane.co.kr"],
 };
 
 export default nextConfig;

@@ -23,6 +23,8 @@ const PORTAL_ORIGIN =
  * → my-obsidian-vault / 30-Patterns/인증과 세션 공유.md
  */
 const LOCAL_PORTAL_PORT = 3000;
+/** local-* 주소로 열었을 때의 로컬 포털 */
+const LOCAL_DEV_PORTAL = "https://local-www.myjane.co.kr";
 
 function portalOrigin(): string {
   if (typeof window !== "undefined") {
@@ -30,6 +32,8 @@ function portalOrigin(): string {
     if (host === "localhost" || host === "127.0.0.1" || host.endsWith(".localhost")) {
       return `${window.location.protocol}//${host}:${LOCAL_PORTAL_PORT}`;
     }
+    /* https://local-<앱>.myjane.co.kr — 로컬 포털도 local-www 로 (Dev/.local-dev/localdev.sh) */
+    if (/^local-[a-z0-9-]+\.myjane\.co\.kr$/.test(host)) return LOCAL_DEV_PORTAL;
   }
   return PORTAL_ORIGIN;
 }
